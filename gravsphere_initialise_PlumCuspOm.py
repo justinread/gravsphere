@@ -6,7 +6,7 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-whichgal = 'PlumCoreOm'
+whichgal = 'PlumCuspOm'
 infile = './Output/GCmock/'+whichgal+'/'+whichgal
 outdirbase = './Output/GCmock/'+whichgal+'/'
 
@@ -31,12 +31,12 @@ virialshape = 'yes'
 #in: ranal,betatrue(ranal),betatruestar(ranal),
 #truemass(ranal),trueden(ranal),truedlnrhodlnr(ranal).
 overtrue = 'yes'
-rho0 = 400./1000. * 1000.**3.
+rho0 = 64./1000. * 1000.**3.
 r0 = 1.0
 alp = 1.0
 bet = 3.0
-gam = 0.0
-rstar = 25./100.*r0
+gam = 1.0
+rstar = 10./100.*r0
 ra = 100./100.*rstar
 ranal = np.logspace(-2,1,np.int(250))
 betatrue = ranal**2./(ranal**2. + ra**2.)
@@ -81,7 +81,7 @@ mWDM = -1
 if (mWDM > 0):
     cosmo_cfunc = lambda M200,h : \
         cosmo_cfunc_WDM(M200,h,OmegaM,rhocrit,mWDM)
-        
+
 #Velocity anisotropy priors:
 betr0min = -2
 betr0max = 0.0

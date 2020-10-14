@@ -35,7 +35,8 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 
 #from binulator_initialise_Draco import *
 #from binulator_initialise_SMCmock import *
-from binulator_initialise_PlumCoreOm import *
+#from binulator_initialise_PlumCoreOm import *
+from binulator_initialise_PlumCuspOm import *
 
 #Some output about parameter choices:
 if (Nbin > 0):

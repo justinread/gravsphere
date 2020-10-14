@@ -122,12 +122,11 @@ def lnlike_single(theta, x1, x2, y1, y1err, y2, y2err):
     if (cosmo_cprior == 'cosmo_c'):
         #Add the conc. to the likelihood function
         #as a Gaussian in logspace:
-        sigc = 0.1
         M200 = Mparsu[0]
         log_conc = np.log10(Mparsu[1])
         log_cmean = np.log10(cosmo_cfunc(M200,h))
-        lnlike_out = lnlike_out * \
-                     np.exp(-(log_conc-log_cmean)**2.0/(2.0*sigc**2.0))
+        lnlike_out = lnlike_out - \
+                     (log_conc-log_cmean)**2.0/(2.0*sig_c200**2.0)
     
     if (lnlike_out != lnlike_out):
         lnlike_out = -np.inf
@@ -168,12 +167,11 @@ def lnlike_single_vs(theta, x1, x2, y1, y1err, y2, y2err, \
     if (cosmo_cprior == 'cosmo_c'):
         #Add the conc. to the likelihood function
         #as a Gaussian in logspace:
-        sigc = 0.1
         M200 = Mparsu[0]
         log_conc = np.log10(Mparsu[1])
         log_cmean = np.log10(cosmo_cfunc(M200,h))
-        lnlike_out = lnlike_out * \
-                     np.exp(-(log_conc-log_cmean)**2.0/(2.0*sigc**2.0))
+        lnlike_out = lnlike_out - \
+                     (log_conc-log_cmean)**2.0/(2.0*sig_c200**2.0)
     
     if (lnlike_out != lnlike_out):
         lnlike_out = -np.inf
@@ -212,12 +210,11 @@ def lnlike_single_prop(theta, x1, x2, y1, y1err, y2, y2err, \
     if (cosmo_cprior == 'cosmo_c'):
         #Add the conc. to the likelihood function
         #as a Gaussian in logspace:
-        sigc = 0.1
         M200 = Mparsu[0]
         log_conc = np.log10(Mparsu[1])
         log_cmean = np.log10(cosmo_cfunc(M200,h))
-        lnlike_out = lnlike_out * \
-                     np.exp(-(log_conc-log_cmean)**2.0/(2.0*sigc**2.0))
+        lnlike_out = lnlike_out - \
+                     (log_conc-log_cmean)**2.0/(2.0*sig_c200**2.0)
         
     if (lnlike_out != lnlike_out):
         lnlike_out = -np.inf            
@@ -254,15 +251,24 @@ nwalkers = 250
 nmodels = 1000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 #Initialise the galaxy model:
 #from gravsphere_initialise_Draco import *
-from gravsphere_initialise_PlumCoreOm import *
+#from gravsphere_initialise_PlumCoreOm import *
+#from gravsphere_initialise_PlumCuspOm import *
+from gravsphere_initialise_SMCmock import *
 
 #Output some key choices:
-print('Derived model parameters:')
+print('Model parameters:')
+print('M200low, M200high [1e9 Msun]:', \
+    10.0**logM200low/1.0e9, 10.0**logM200high/1.0e9)
 print('clow, chigh:', clow, chigh)
+if (cosmo_cprior == 'yes'):
+    if (mWDM > 0):
+        print('Warm dark matter cosmology with mWDM(keV):',mWDM)
+    else:
+        print('Cold dark matter cosmology')
 
 #Set up output data folder structure:
 outdir = outdirbase

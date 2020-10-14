@@ -12,7 +12,21 @@ def cosmo_cfunc(M200,h):
     #defined in 200c system in units of Msun:
     c = 10.**(0.905 - 0.101 * (np.log10(M200*h)-12.))
     return c
-
+    
+def cosmo_cfunc_WDM(M200,h,OmegaM,rhocrit,mWDM):
+    #Use formula in https://arxiv.org/pdf/1112.0330.pdf
+    #to modify CDM M200-c200 relation to the WDM 
+    #one. Assumes mWDM in keV, dimensionless h
+    #M200 in Msun and rhocrit in Msun kpc^-3.
+    cCDM = cosmo_cfunc(M200,h)
+    gamma1 = 15.0
+    gamma2 = 0.3
+    lamfseff = 0.049*(mWDM)**(-1.11)*\
+        (OmegaM/0.25)**(0.11)*(h/0.7)**(1.22)*1000.0
+    lamhm = 13.93*lamfseff
+    Mhm = 4.0/3.0*np.pi*rhocrit*(lamhm/2.0)**3.0
+    cWDM = cCDM * (1.0 + gamma1*Mhm / M200)**(-gamma2)
+    return cWDM
 
 ###########################################################
 #For constraining particle DM models:

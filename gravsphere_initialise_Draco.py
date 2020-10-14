@@ -11,11 +11,11 @@ infile = './Output/'+whichgal+'/'+whichgal
 outdirbase = './Output/'+whichgal+'/'
 
 #Plot ranges and sample points [-1 means auto-calculate]:
-rplot_inner = -1
-rplot_outer = -1
+rplot_inner = 1e-2
+rplot_outer = 5.0
 rplot_pnts = 100
 y_sigLOSmax = 15
-ymin_Sigstar = 1e-6
+ymin_Sigstar = 1e-4
 ymax_Sigstar = 100
 yMlow = 1e4
 yMhigh = 1e10
@@ -57,8 +57,18 @@ bar_pnts = 250
 #around the best-fit value from the binulator.
 tracertol = 0.5
 
-#Cosmology priors on the coreNFWtides model:
+#Cosmology priors on the coreNFWtides model. mWDM(keV) is
+#the mass of a thermal relic; <0 means CDM; sig_c200 is 
+#the scatter of c200 in log10 space. If the cosmo_cprior
+#is set, then we include a Gaussian spread in M200-c200 in
+#the likelihood. Without this, M200-c200 enters only if 
+#used to set the priors, below.
 cosmo_cprior = 'no'
+sig_c200 = 0.1
+mWDM = -1
+if (mWDM > 0):
+    cosmo_cfunc = lambda M200,h : \
+        cosmo_cfunc_WDM(M200,h,OmegaM,rhocrit,mWDM)
 
 #Velocity anisotropy priors:
 betr0min = -2
@@ -74,10 +84,10 @@ betinfmax = 1.0
 logM200low = 8.5
 logM200high = 10.5
 clow = cosmo_cfunc(10.0**logM200high,h)
-logclow = np.log10(clow)-0.1
+logclow = np.log10(clow)-sig_c200
 clow = 10.0**logclow
 chigh = cosmo_cfunc(10.0**logM200low,h)*1.4
-logchigh = np.log10(chigh)+0.2
+logchigh = np.log10(chigh)+sig_c200*2.0
 chigh = 10.0**logchigh
 rclow = 1e-2
 rchigh = 10.0**0.5

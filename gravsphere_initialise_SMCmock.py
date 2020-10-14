@@ -6,21 +6,22 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-whichgal = 'PlumCoreOm'
-infile = './Output/GCmock/'+whichgal+'/'+whichgal
-outdirbase = './Output/GCmock/'+whichgal+'/'
+whichgal = 'SMCmock'
+infile = './Output/'+whichgal+'/'+whichgal
+outdirbase = './Output/'+whichgal+'/'
 
 #Plot ranges and sample points [-1 means auto-calculate]:
 rplot_inner = 1e-2
-rplot_outer = 5.0
-rplot_pnts = 5e3
+rplot_outer = 20.0
+rplot_pnts = 100
 y_sigLOSmax = 15
 ymin_Sigstar = 1e-6
-ymax_Sigstar = 100
+ymax_Sigstar = 1e-1
 yMlow = 1e4
 yMhigh = 1e10
-yrholow = 1e7
+yrholow = 1e4
 yrhohigh = 1e9
+alp3sig = 0.0
 
 #Code options:
 propermotion = 'no'
@@ -30,31 +31,18 @@ virialshape = 'yes'
 #yes, then the true solutions should be passed
 #in: ranal,betatrue(ranal),betatruestar(ranal),
 #truemass(ranal),trueden(ranal),truedlnrhodlnr(ranal).
-overtrue = 'yes'
-rho0 = 400./1000. * 1000.**3.
-r0 = 1.0
-alp = 1.0
-bet = 3.0
-gam = 0.0
-rstar = 25./100.*r0
-ra = 100./100.*rstar
-ranal = np.logspace(-2,1,np.int(250))
-betatrue = ranal**2./(ranal**2. + ra**2.)
-betatruestar = betatrue/(2.0-betatrue)
-truemass = alpbetgammass(ranal,rho0,r0,alp,bet,gam)
-trueden = alpbetgamden(ranal,rho0,r0,alp,bet,gam)
-truedlnrhodlnr = alpbetgamdlnrhodlnr(ranal,rho0,r0,alp,bet,gam)
+overtrue = 'no'
 
 #Radial grid range for Jeans calculation:
-rmin = -1.0
-rmax = -1.0
+rmin = 0.01
+rmax = 50.0
 
 #Galaxy properties. Assume here that the baryonic mass
 #has the same radial profile as the tracer stars. If this
 #is not the case, you should set Mstar_rad and Mstar_prof 
 #here. The variables barrad_min, barrad_max and bar_pnts 
 #set the radial range and sampling of the baryonic mass model.
-Mstar = -1.0
+Mstar = 0.0
 Mstar_err = 1.0
 baryonmass_follows_tracer = 'yes'
 barrad_min = 0.0
@@ -81,7 +69,7 @@ mWDM = -1
 if (mWDM > 0):
     cosmo_cfunc = lambda M200,h : \
         cosmo_cfunc_WDM(M200,h,OmegaM,rhocrit,mWDM)
-        
+
 #Velocity anisotropy priors:
 betr0min = -2
 betr0max = 0.0
@@ -93,16 +81,12 @@ betinfmin = -1.0
 betinfmax = 1.0
 
 #CoreNFWtides priors:
-logM200low = 8.5
-logM200high = 10.5
-clow = cosmo_cfunc(10.0**logM200high,h)
-logclow = np.log10(clow)-sig_c200
-clow = 10.0**logclow
-chigh = cosmo_cfunc(10.0**logM200low,h)*1.4
-logchigh = np.log10(chigh)+sig_c200*2.0
-chigh = 10.0**logchigh
+logM200low = 5.5
+logM200high = 9.5
+clow = 1.0
+chigh = 100.0
 rclow = 1e-2
-rchigh = 10.0**0.5
+rchigh = 5.0
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
 sigmlow = 1e-3
@@ -114,7 +98,7 @@ rthigh = 10.0
 logrtlow = np.log10(rtlow)
 logrthigh = np.log10(rthigh)
 dellow = 3.01
-delhigh = 5.0
+delhigh = 8.0
 
 
 ###########################################################
