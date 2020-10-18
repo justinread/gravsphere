@@ -20,7 +20,7 @@ vzfourpltmax = 1e6
 
 #Number of stars per bin [-1 indicates that
 #binning was already done elsewhere]:
-Nbin = 30
+Nbin = 15
 Nbinkin = 30
 
 #Priors for surface density fit. Array values are:
@@ -36,8 +36,8 @@ Rfitmax = -1
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-15,1.0,1.0,1e-4,-300.0,25.0])
-p0vin_max = np.array([15,25.0,3.0,0.5,300.0,300.0])
+p0vin_min = np.array([-15,1.0,1.0,1e-5,-300.0,25.0])
+p0vin_max = np.array([15,25.0,3.0,1e-4,300.0,300.0])
 vfitmin = 0
 vfitmax = 0
 
@@ -45,7 +45,7 @@ vfitmax = 0
 #powerlaw index for the assumed fall-off of <vlos^4>
 #beyond the outermost data point.
 alpmin = 0.0
-alpmax = 3.0
+alpmax = 1.0
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.
@@ -53,3 +53,17 @@ alpmax = 3.0
 #we include it here as a sanity check.
 R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
     gc_api(data_file,Nbin)
+
+#Calculate true VSPs and output for comparison:
+rho0s,r0s,alps,bets,gams = np.array([1.0,0.1,2,5,0.1])
+rho0,r0,alp,bet,gam,rstar,ra = \
+    np.array([64./1000. * 1000.**3.,1.0,1.0,\
+              3.0,1.0,10./100.,100./100.*10./100.])
+vsp1, vsp2, zeta_A, zeta_B = \
+    alpbetgamvsp(rho0s,r0s,alps,bets,gams,\
+                 rho0,r0,alp,bet,gam,ra)
+print('True VSPs:',vsp1,vsp2)
+
+#Richardson / Fairbairn VSPs:
+vsp1_RF, vsp2_RF = richfair_vsp(vz,Rkin,mskin)
+print('Richardson/Fairbairn VSPs:',vsp1_RF,vsp2_RF)

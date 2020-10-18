@@ -39,6 +39,7 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 from binulator_initialise_PlumCuspOm import *
 
 #Some output about parameter choices:
+print('Doing galaxy:',whichgal)
 if (Nbin > 0):
     print('Number of stars per photometric bin:', Nbin)
 else:   
@@ -55,7 +56,8 @@ Rplot,surf_int,Rhalf_int,p0best = \
               Rfitmin,Rfitmax,\
               p0in_min,p0in_max)
 print('Fitted Rhalf: %f -%f +%f' % \
-    (Rhalf_int[0],Rhalf_int[0]-Rhalf_int[1],Rhalf_int[2]-Rhalf_int[0]))
+    (Rhalf_int[0],Rhalf_int[0]-Rhalf_int[1],\
+     Rhalf_int[2]-Rhalf_int[0]))
 
 #Bin the velocity data and calculate the VSPs with uncertainties:
 print('Fitting the velocity data:\n')
@@ -72,7 +74,7 @@ rbin,vzmeanbin,vzmeanbinerr,vztwobin,vztwobinerr,\
            alpmin,alpmax,nsamples,outfile)
 print('Fitted VSP1: %f+/-%f' % (vsp1,vsp1err))
 print('Fitted VSP2: %f+/-%f' % (vsp2,vsp2err))
-
+    
 
 ###########################################################
 #Store the surface density, velocity dispersions, VSPs,

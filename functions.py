@@ -169,8 +169,8 @@ def vmax_func(M200,c200,h):
     
 
 ###########################################################
-#For DM mass profile of GC mocks (for overlaying true
-#solution):
+#For DM mass profile and VSPs of GC mocks (for overlaying 
+#true solution):
 def alpbetgamden(r,rho0,r0,alp,bet,gam):
     return rho0*(r/r0)**(-gam)*(1.0+(r/r0)**alp)**((gam-bet)/alp)
 
@@ -180,15 +180,79 @@ def alpbetgamdlnrhodlnr(r,rho0,r0,alp,bet,gam):
 def alpbetgammass(r,rho0,r0,alp,bet,gam):
     den = rho0*(r/r0)**(-gam)*(1.0+(r/r0)**alp)**((gam-bet)/alp)
     mass = np.zeros(len(r))
-    for i in range(1,len(r)):
-        if (i == 1):
-            mass[i] = mass[i-1] + 4.0*np.pi*r[i]**2.*\
-                den[i]*(r[i]-r[i-1])/2.0
-        else:
-            mass[i] = mass[i-1] + 4.0*np.pi*r[i]**2.*\
-                den[i]*(r[i]-r[i-1])
+    for i in range(3,len(r)):
+        mass[i] = integrator(4.0*np.pi*r[:i]**2.*den[:i],r[:i])
     return mass
+    
+def alpbetgamsigr(r,rho0s,r0s,alps,bets,gams,rho0,r0,alp,bet,gam,ra):
+    nu = alpbetgamden(r,rho0s,r0s,alps,bets,gams)
+    mass = alpbetgammass(r,rho0,r0,alp,bet,gam)
+    gf = gfunc_osipkov(r,ra)
+    sigr = np.zeros(len(r))
+    for i in range(len(r)-3):
+        sigr[i] = 1.0/nu[i]/gf[i] * \
+            integrator(Guse*mass[i:]*nu[i:]/r[i:]**2.0*\
+                       gf[i:],r[i:])
+    return sigr
 
+def osipkov(r,r0):
+    return r**2.0/(r**2.0+r0**2.0)
+    
+def gfunc_osipkov(r,r0):
+    n0 = 2.0
+    bet0 = 0.0
+    betinf = 1.0
+    gfunc = r**(2.0*betinf)*\
+        ((r0/r)**n0+1.0)**(2.0/n0*(betinf-bet0))
+    return gfunc
+
+def alpbetgamvsp(rho0s,r0s,alps,bets,gams,rho0,r0,alp,bet,gam,ra):
+    intpnts = 1e4
+    r = np.logspace(np.log10(r0s/50.0),np.log10(500.0*r0s),\
+                    np.int(intpnts))
+    nu = alpbetgamden(r,rho0s,r0s,alps,bets,gams)
+    massnu = alpbetgamden(r,rho0s,r0s,alps,bets,gams)
+    mass = alpbetgammass(r,rho0,r0,alp,bet,gam)
+    sigr = alpbetgamsigr(r,rho0s,r0s,alps,bets,gams,rho0,\
+                         r0,alp,bet,gam,ra)
+    bet = osipkov(r,ra)
+    sigstar = np.zeros(len(r))
+    for i in range(1,len(r)-3):
+        sigstar[i] = 2.0*integrator(nu[i:]*r[i:]/\
+                               np.sqrt(r[i:]**2.0-r[i-1]**2.0),\
+                               r[i:])
+ 
+    #Normalise similarly to the data:
+    norm = integrator(sigstar*2.0*np.pi*r,r)
+    nu = nu / norm
+    sigstar = sigstar / norm
+
+    #VSPs:
+    vsp1 = \
+        integrator(2.0/5.0*Guse*mass*nu*(5.0-2.0*bet)*\
+            sigr*r,r)/1.0e12
+    vsp2 = \
+        integrator(4.0/35.0*Guse*mass*nu*(7.0-6.0*bet)*\
+            sigr*r**3.0,r)/1.0e12
+        
+    #Richardson & Fairbairn zeta parameters:
+    Ntotuse = integrator(sigstar*r,r)
+    sigint = integrator(sigstar*r**3.0,r)
+    zeta_A = 9.0/10.0*Ntotuse*integrator(Guse*mass*nu*(\
+        5.0-2.0*bet)*sigr*r,r)/\
+        (integrator(Guse*mass*nu*r,r))**2.0
+    zeta_B = 9.0/35.0*Ntotuse**2.0*\
+        integrator(Guse*mass*nu*(7.0-6.0*bet)*sigr*r**3.0,r)/\
+        ((integrator(Guse*mass*nu*r,r))**2.0*sigint)
+    return vsp1, vsp2, zeta_A, zeta_B
+
+#Richardson-Fairbairn VSP estimators:
+def richfair_vsp(vz,Rkin,mskin):
+    vsp1_RF = 1.0/(np.pi*2.0)*\
+        np.sum(vz**4.0*mskin)/np.sum(mskin)
+    vsp2_RF = 1.0/(np.pi*2.0)*\
+        np.sum(vz**4.0*mskin*Rkin**2.0)/np.sum(mskin*Rkin**2.0)
+    return vsp1_RF, vsp2_RF
 
 ###########################################################
 #For Jeans modelling:

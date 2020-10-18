@@ -13,14 +13,15 @@ outdirbase = './Output/GCmock/'+whichgal+'/'
 #Plot ranges and sample points [-1 means auto-calculate]:
 rplot_inner = 1e-2
 rplot_outer = 5.0
-rplot_pnts = 5e3
+rplot_pnts = 50
 y_sigLOSmax = 15
 ymin_Sigstar = 1e-6
 ymax_Sigstar = 100
 yMlow = 1e4
-yMhigh = 1e10
-yrholow = 1e7
-yrhohigh = 1e9
+yMhigh = 1e9
+yrholow = 1e4
+yrhohigh = 1e10
+alp3sig = 0.0
 
 #Code options:
 propermotion = 'no'
@@ -31,14 +32,10 @@ virialshape = 'yes'
 #in: ranal,betatrue(ranal),betatruestar(ranal),
 #truemass(ranal),trueden(ranal),truedlnrhodlnr(ranal).
 overtrue = 'yes'
-rho0 = 64./1000. * 1000.**3.
-r0 = 1.0
-alp = 1.0
-bet = 3.0
-gam = 1.0
-rstar = 10./100.*r0
-ra = 100./100.*rstar
-ranal = np.logspace(-2,1,np.int(250))
+rho0,r0,alp,bet,gam,rstar,ra = \
+    np.array([64./1000. * 1000.**3.,1.0,1.0,\
+              3.0,1.0,10./100.,100./100.*10./100.])
+ranal = np.logspace(-3,1,np.int(250))
 betatrue = ranal**2./(ranal**2. + ra**2.)
 betatruestar = betatrue/(2.0-betatrue)
 truemass = alpbetgammass(ranal,rho0,r0,alp,bet,gam)
@@ -86,15 +83,15 @@ if (mWDM > 0):
 betr0min = -2
 betr0max = 0.0
 betnmin = 1.0
-betnmax = 10.0
-bet0min = -1.0
-bet0max = 1.0
-betinfmin = -1.0
+betnmax = 3.0
+bet0min = -0.01
+bet0max = 0.01
+betinfmin = -0.01
 betinfmax = 1.0
 
 #CoreNFWtides priors:
-logM200low = 8.5
-logM200high = 10.5
+logM200low = 7.5
+logM200high = 11.5
 clow = cosmo_cfunc(10.0**logM200high,h)
 logclow = np.log10(clow)-sig_c200
 clow = 10.0**logclow
@@ -102,7 +99,7 @@ chigh = cosmo_cfunc(10.0**logM200low,h)*1.4
 logchigh = np.log10(chigh)+sig_c200*2.0
 chigh = 10.0**logchigh
 rclow = 1e-2
-rchigh = 10.0**0.5
+rchigh = 10.0
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
 sigmlow = 1e-3
@@ -110,7 +107,7 @@ sigmhigh = 5.0
 nlow = 0.0
 nhigh = 1.0
 rtlow = 1.0
-rthigh = 10.0
+rthigh = 20.0
 logrtlow = np.log10(rtlow)
 logrthigh = np.log10(rthigh)
 dellow = 3.01

@@ -245,21 +245,20 @@ print('###### GRAVSPHERE VERSION 1.0 ######\n')
 ###########################################################
 #Code parameters:
 datadir = './Data/'
-#nwalkers = 1000
-#nmodels = 5000
-nwalkers = 250
-nmodels = 1000
+nwalkers = 300
+nmodels = 5000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 #Initialise the galaxy model:
 #from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_PlumCoreOm import *
-#from gravsphere_initialise_PlumCuspOm import *
-from gravsphere_initialise_SMCmock import *
+from gravsphere_initialise_PlumCuspOm import *
+#from gravsphere_initialise_SMCmock import *
 
 #Output some key choices:
+print('Doing galaxy:',whichgal)
 print('Model parameters:')
 print('M200low, M200high [1e9 Msun]:', \
     10.0**logM200low/1.0e9, 10.0**logM200high/1.0e9)
@@ -599,7 +598,7 @@ elif (codemode == 'plot'):
     print('Min/max chisq:', np.min(chisq), np.max(chisq))
 
     #Cut the confidence intervals from the chains:
-    nsamples = 5000
+    nsamples = 1000
     sample_choose = index[np.random.randint(len(index), \
                                             size=nsamples)]
 
@@ -1323,7 +1322,7 @@ elif (codemode == 'plot'):
     plt.ylabel(r'$N$',fontsize=myfontsize)
     
     plt.xlim([logM200low,logM200high])
-    plt.ylim([0,1])
+    plt.ylim([0,np.max(n)])
     
     plt.savefig(outdir+'output_M200.pdf',bbox_inches='tight')
 
@@ -1350,7 +1349,7 @@ elif (codemode == 'plot'):
     plt.ylabel(r'$N$',fontsize=myfontsize)
 
     plt.xlim([vmaxlow,vmaxhigh])
-    plt.ylim([0,1])
+    plt.ylim([0,np.max(n)])
     
     plt.savefig(outdir+'output_vmax.pdf',bbox_inches='tight')
     
@@ -1374,7 +1373,7 @@ elif (codemode == 'plot'):
     plt.ylabel(r'$N$',fontsize=myfontsize)
 
     plt.xlim([clow,chigh])
-    plt.ylim([0,0.25])
+    plt.ylim([0,np.max(n)])
 
     plt.savefig(outdir+'output_c.pdf',bbox_inches='tight')
   
@@ -1399,7 +1398,7 @@ elif (codemode == 'plot'):
     plt.xlim([logrclow,logrchigh])
 
     plt.ylabel(r'$N$',fontsize=myfontsize) 
-    plt.ylim([0,2])
+    plt.ylim([0,np.max(n)])
     plt.savefig(outdir+'output_rc.pdf',bbox_inches='tight')
 
     fig = plt.figure(figsize=(figx,figy))
@@ -1444,7 +1443,7 @@ elif (codemode == 'plot'):
                   normed=True,facecolor='k', \
                   histtype='bar',alpha=0.5)
 
-    plt.xlim([0.0,1.0])
+    plt.xlim([0.0,np.max(n)])
     plt.xlabel(r'$\sigma/m\,({\rm cm}^2/{\rm g})$',fontsize=myfontsize)
     plt.ylabel(r'$N$',fontsize=myfontsize)
     plt.savefig(outdir+'output_sigm.pdf',bbox_inches='tight')
@@ -1470,7 +1469,7 @@ elif (codemode == 'plot'):
     plt.ylabel(r'$N$',fontsize=myfontsize)
     
     plt.xlim([nlow,nhigh])
-    plt.ylim([0,0.25])
+    plt.ylim([0,np.max(n)])
     plt.savefig(outdir+'output_n.pdf',bbox_inches='tight')
 
     fig = plt.figure(figsize=(figx,figy))
@@ -1494,7 +1493,7 @@ elif (codemode == 'plot'):
     plt.ylabel(r'$N$',fontsize=myfontsize)
 
     plt.xlim([dellow,delhigh])
-    plt.ylim([0,0.25])
+    plt.ylim([0,np.max(n)])
     plt.savefig(outdir+'output_del.pdf',bbox_inches='tight')
 
     #Calculate M200 +/- 68%:

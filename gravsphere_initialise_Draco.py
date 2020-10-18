@@ -13,7 +13,7 @@ outdirbase = './Output/'+whichgal+'/'
 #Plot ranges and sample points [-1 means auto-calculate]:
 rplot_inner = 1e-2
 rplot_outer = 5.0
-rplot_pnts = 100
+rplot_pnts = 50
 y_sigLOSmax = 15
 ymin_Sigstar = 1e-4
 ymax_Sigstar = 100
@@ -74,9 +74,9 @@ if (mWDM > 0):
 betr0min = -2
 betr0max = 0.0
 betnmin = 1.0
-betnmax = 10.0
-bet0min = -1.0
-bet0max = 1.0
+betnmax = 3.0
+bet0min = -0.01
+bet0max = 0.01
 betinfmin = -1.0
 betinfmax = 1.0
 
@@ -90,7 +90,7 @@ chigh = cosmo_cfunc(10.0**logM200low,h)*1.4
 logchigh = np.log10(chigh)+sig_c200*2.0
 chigh = 10.0**logchigh
 rclow = 1e-2
-rchigh = 10.0**0.5
+rchigh = 3.0
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
 sigmlow = 1e-3
