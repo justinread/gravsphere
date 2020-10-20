@@ -69,8 +69,11 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
     #Starting guess
     ndims = len(p0in_min)
     pos = np.zeros((nwalkers, ndims), dtype='float')
+    p0in_startmin = (p0in_min + p0in_max)/2.0*0.9
+    p0in_startmax = (p0in_min + p0in_max)/2.0*1.1  
     for i in range(ndims):
-        pos[:,i] = np.random.uniform(p0in_min[i],p0in_max[i],nwalkers)
+        pos[:,i] = np.random.uniform(p0in_startmin[i],\
+            p0in_startmax[i],nwalkers)
 
     #Run chains:
     sampler = emcee.EnsembleSampler(nwalkers, ndims, lnprob_surf, \

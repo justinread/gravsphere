@@ -156,13 +156,11 @@ def lnlike_single_vs(theta, x1, x2, y1, y1err, y2, y2err, \
 
     inv_sigma2_1 = 1.0/y1err**2
     inv_sigma2_2 = 1.0/y2err**2
-    inv_sigma2_3 = 1.0/y3err**2
-    inv_sigma2_4 = 1.0/y4err**2
 
     lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
-                 np.sum((y2-model2)**2*inv_sigma2_2)+\
-                 np.sum((y3-model3)**2*inv_sigma2_3)+\
-                 np.sum((y4-model4)**2*inv_sigma2_4))
+                 np.sum((y2-model2)**2*inv_sigma2_2))+\
+                 np.log(vsp_pdf(model3,vsp1val,vsp1pdf))+\
+                 np.log(vsp_pdf(model4,vsp2val,vsp2pdf))
 
     if (cosmo_cprior == 'cosmo_c'):
         #Add the conc. to the likelihood function
@@ -245,8 +243,8 @@ print('###### GRAVSPHERE VERSION 1.0 ######\n')
 ###########################################################
 #Code parameters:
 datadir = './Data/'
-nwalkers = 300
-nmodels = 5000
+nwalkers = 250
+nmodels = 10000
 
 #Codemode [run or plot]:
 codemode = 'run'
@@ -301,7 +299,12 @@ elif (propermotion == 'yes'):
 
 
 ###########################################################
-#Read in the the data:
+#Read in the the data. We assume here that the errors
+#on the velocity dispersion are Gaussian symmetric.
+#If this is not a good approximation (c.f. output from the 
+#binulator), then this can be improved. The errors on the 
+#VSPs are rarely Gaussian symmetric and so we use the 
+#correct likelihood function from the binulator in this case.
 f = open(infile+'_p0best.txt','r')
 data = np.genfromtxt(f)
 f.close()
@@ -320,13 +323,28 @@ f = open(infile+'_vel.txt','r')
 data = np.genfromtxt(f)
 f.close()
 rbin_kin = data[:,0]
-sigpmean = data[:,3]
-sigperr = data[:,4]
+sigpmean = data[:,4]
+sigperr = (data[:,6]-data[:,5])/2.0
 f = open(infile+'_vsps.txt','r')
 data = np.genfromtxt(f)
 f.close()
-vs1bin, vs1err = data[0,:]
-vs2bin, vs2err = data[1,:]
+vs1bin = data[0,0]
+vs1err = (data[0,2]-data[0,1])/2.0
+vs1lo = data[0,1]
+vs1hi = data[0,2]
+vs2bin = data[1,0]
+vs2err = (data[1,2]-data[1,1])/2.0
+vs2lo = data[1,1]
+vs2hi = data[1,2]
+f = open(infile+'_vsp1full.txt','r')
+data = np.genfromtxt(f)
+f.close()
+vsp1val, vsp1pdf = vsppdf_calc(data)
+f = open(infile+'_vsp2full.txt','r')
+data = np.genfromtxt(f)
+f.close()
+vsp2val, vsp2pdf = vsppdf_calc(data)
+
 print('Inner/outer radial bin (phot):', \
     np.min(rbin_phot),np.max(rbin_phot))
 print('Inner/outer radial bin (kin):', \
@@ -511,7 +529,7 @@ if (codemode == 'run'):
                    (rbin_phot[i], surfden[i], surfdenerr[i]))
         f.close()
 
-    burn = np.int(0.5*nmodels)
+    burn = np.int(0.75*nmodels)
     chisq = -2.0 * sampler.lnprobability[:, burn:].reshape(-1)
     par_test = np.zeros((len(chisq),ndim), dtype='float')
     for i in range(ndim):
@@ -595,7 +613,7 @@ elif (codemode == 'plot'):
     #In practice, this cut makes no difference to the end result.
     min_chisq = np.min(chisq)
     index = np.where(chisq < min_chisq*500.0)[0]
-    print('Min/max chisq:', np.min(chisq), np.max(chisq))
+    print('Min/max chisq:', np.min(chisq[index]), np.max(chisq[index]))
 
     #Cut the confidence intervals from the chains:
     nsamples = 1000
@@ -1261,15 +1279,14 @@ elif (codemode == 'plot'):
         plt.yticks(fontsize=myfontsize)
         nbin = 25
 
-        mph = 1.0
-        n, bins, patches = plt.hist(vs1store/mph,bins=nbin,\
-                range=(np.min(vs1store)/mph,\
-                       np.max(vs1store)/mph),\
-                normed=1, facecolor='b', \
+        n, bins, patches = plt.hist(vs1store,bins=nbin,\
+                range=(np.min(vs1store),\
+                       np.max(vs1store)),\
+                facecolor='b', \
                 histtype='bar',alpha=0.5, \
                 label='vs_1')
-        plt.errorbar([vs1bin/mph],[0.5*np.max(n)],\
-                     xerr=vs1err/mph,fmt='ob')
+        plt.errorbar([vs1bin],[0.5*np.max(n)],\
+                     xerr=[[vs1bin-vs1lo],[vs1hi-vs1bin]],fmt='ob')
  
         plt.xlabel(r'$v_{s1}\,[{\rm km}^4\,{\rm s}^{-4}]$',\
                    fontsize=myfontsize)
@@ -1285,13 +1302,13 @@ elif (codemode == 'plot'):
         plt.yticks(fontsize=myfontsize)
         nbin = 25
 
-        n, bins, patches = plt.hist(vs2store/mph,bins=nbin,\
-                range=(np.min(vs2store)/mph,\
-                       np.max(vs2store)/mph),\
-                normed=1, facecolor='r', \
+        n, bins, patches = plt.hist(vs2store,bins=nbin,\
+                range=(np.min(vs2store),\
+                       np.max(vs2store)),\
+                facecolor='r', \
                        histtype='bar',alpha=0.5)
-        plt.errorbar([vs2bin/mph],[0.5*np.max(n)],\
-                     xerr=vs2err/mph,fmt='or')
+        plt.errorbar(vs2bin,[0.5*np.max(n)],\
+                     xerr=[[vs2bin-vs2lo],[vs2hi-vs2bin]],fmt='or')
 
         plt.xlabel(r'$v_{s2}\,[{\rm km}^4\,{\rm s}^{-4}\,{\rm kpc}^2]$',\
                    fontsize=myfontsize)
@@ -1314,7 +1331,7 @@ elif (codemode == 'plot'):
     
     n, bins, patches = plt.hist(np.log10(M200store),bins=nbin,\
                                 range=(logM200low,logM200high),\
-                                normed=1, facecolor='b', \
+                                facecolor='b', \
                                 histtype='bar',alpha=0.5)
 
     plt.xlabel(r'${\rm Log}_{10}[M_{200}/{\rm M}_\odot]$',\
@@ -1341,7 +1358,7 @@ elif (codemode == 'plot'):
     vmaxhigh = 50.0
     n, bins, patches = plt.hist(vmaxstore,bins=nbin,\
                                 range=(vmaxlow,vmaxhigh),\
-                                normed=1, facecolor='b', \
+                                facecolor='b', \
                                 histtype='bar',alpha=0.5)
 
     plt.xlabel(r'$v_{\rm max}\,[{\rm km/s}]$',\
@@ -1366,7 +1383,7 @@ elif (codemode == 'plot'):
     
     n, bins, patches = plt.hist(cstore,bins=nbin,\
                                 range=(clow,chigh),\
-                                normed=1, facecolor='b', \
+                                facecolor='b', \
                                 histtype='bar',alpha=0.5)
 
     plt.xlabel(r'$c$',fontsize=myfontsize)
@@ -1391,7 +1408,7 @@ elif (codemode == 'plot'):
     
     n, bins, patches = plt.hist(np.log10(rcstore),bins=nbin,\
                                 range=(logrclow,logrchigh),\
-                                normed=1, facecolor='k', \
+                                facecolor='k', \
                                 histtype='bar',alpha=0.5)
         
     plt.xlabel(r'${\rm Log}_{10}[r_c/{\rm kpc}]$',fontsize=myfontsize)
@@ -1415,7 +1432,7 @@ elif (codemode == 'plot'):
     n, bins, patches = plt.hist(np.log10(rtstore),bins=nbin,\
                                 range=(logrtlow,\
                                        logrthigh),\
-                                normed=1, facecolor='k', \
+                                facecolor='k', \
                                 histtype='bar',alpha=0.5)
 
     plt.xlabel(r'${\rm Log}_{10}[r_t/{\rm kpc}]$',fontsize=myfontsize)
@@ -1440,7 +1457,7 @@ elif (codemode == 'plot'):
 
     n, bins, patches = plt.hist(sigmstore,bins=nbin,\
                   range=(0.0,1.0),\
-                  normed=True,facecolor='k', \
+                  facecolor='k', \
                   histtype='bar',alpha=0.5)
 
     plt.xlim([0.0,np.max(n)])
@@ -1461,7 +1478,7 @@ elif (codemode == 'plot'):
     
     n, bins, patches = plt.hist(nstore,bins=nbin,\
                                 range=(nlow,nhigh),\
-                                normed=1, facecolor='b', \
+                                facecolor='b', \
                                 histtype='bar',alpha=0.5)
 
     plt.xlabel(r'$n$',\
@@ -1485,7 +1502,7 @@ elif (codemode == 'plot'):
 
     n, bins, patches = plt.hist(delstore,bins=nbin,\
                                 range=(dellow,delhigh),\
-                                normed=1, facecolor='b', \
+                                facecolor='b', \
                                 histtype='bar',alpha=0.5)
 
     plt.xlabel(r'$\delta$',\

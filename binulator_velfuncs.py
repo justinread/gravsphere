@@ -22,22 +22,28 @@ def velfit(R,vz,vzerr,ms,Nbin,\
     #<vlos> (vzmeanbin), 
     #<vlos^2>^1/2 (vztwobin),
     #<vlos^4> (vzfourbin),
-    #and their errors; and
+    #and their confidence intervals; and
     #the mean and dispersion of the background
     #model.
     rbin = np.zeros(len(R))
     vzmeanbin = np.zeros(len(R))
-    vzmeanbinerr = np.zeros(len(R))    
+    vzmeanbinlo = np.zeros(len(R))    
+    vzmeanbinhi = np.zeros(len(R))    
     vztwobin = np.zeros(len(R))
-    vztwobinerr = np.zeros(len(R))
+    vztwobinlo = np.zeros(len(R))
+    vztwobinhi = np.zeros(len(R))
     vzfourbin = np.zeros(len(R))
-    vzfourbinerr = np.zeros(len(R))
+    vzfourbinlo = np.zeros(len(R))
+    vzfourbinhi = np.zeros(len(R))
     backampbin = np.zeros(len(R))
-    backampbinerr = np.zeros(len(R))
+    backampbinlo = np.zeros(len(R))
+    backampbinhi = np.zeros(len(R))
     backmeanbin = np.zeros(len(R))
-    backmeanbinerr = np.zeros(len(R))
+    backmeanbinlo = np.zeros(len(R))
+    backmeanbinhi = np.zeros(len(R))
     backsigbin = np.zeros(len(R))
-    backsigbinerr = np.zeros(len(R))
+    backsigbinlo = np.zeros(len(R))
+    backsigbinhi = np.zeros(len(R))
     
     #This for storing the vzfour pdf
     #for calculating the VSPs:
@@ -91,25 +97,25 @@ def velfit(R,vz,vzerr,ms,Nbin,\
                 vzerruse = vzerruse_t
                 msuse = msuse_t
            
-            vzmeanbin[cnt],vzmeanbinerr[cnt],vztwobin[cnt],\
-            vztwobinerr[cnt],\
-            vzfourbin[cnt],vzfourbinerr[cnt],\
-            backampbin[cnt],backampbinerr[cnt],\
-            backmeanbin[cnt],backmeanbinerr[cnt],\
-            backsigbin[cnt],backsigbinerr[cnt],\
+            vzmeanbin[cnt],vzmeanbinlo[cnt],vzmeanbinhi[cnt],\
+            vztwobin[cnt],vztwobinlo[cnt],vztwobinhi[cnt],\
+            vzfourbin[cnt],vzfourbinlo[cnt],vzfourbinhi[cnt],\
+            backampbin[cnt],backampbinlo[cnt],backampbinhi[cnt],\
+            backmeanbin[cnt],backmeanbinlo[cnt],backmeanbinhi[cnt],\
+            backsigbin[cnt],backsigbinlo[cnt],backsigbinhi[cnt],\
             vzfour_store,p0vbest = \
                 velfitbin(vzuse,vzerruse,msuse,\
                           p0vin_min,p0vin_max,nsamples)
             vzfour_pdf[:,cnt] = vzfour_store
 
             #Output the fit values:
-            print('Bin %d | vzmean %f+/-%f | vztwo %f+/-%f | vzfour %f+/-%f | bamp %f+/-%f | bmean %f+/-%f | bsig %f+/-%f\n' \
-                  % (cnt,vzmeanbin[cnt],vzmeanbinerr[cnt],\
-                     vztwobin[cnt],vztwobinerr[cnt],\
-                     vzfourbin[cnt],vzfourbinerr[cnt],\
-                     backampbin[cnt],backampbinerr[cnt],\
-                     backmeanbin[cnt],backmeanbinerr[cnt],\
-                     backsigbin[cnt],backsigbinerr[cnt])
+            print('Bin %d | vzmean %f+%f-%f | vztwo %f+%f-%f | vzfour %f+%f-%f | bamp %f+%f-%f | bmean %f+%f-%f | bsig %f+%f-%f\n' \
+                  % (cnt,vzmeanbin[cnt],vzmeanbin[cnt]-vzmeanbinlo[cnt],vzmeanbinhi[cnt]-vzmeanbin[cnt],\
+                     vztwobin[cnt],vztwobinhi[cnt]-vztwobin[cnt],vztwobin[cnt]-vztwobinlo[cnt],\
+                     vzfourbin[cnt],vzfourbinhi[cnt]-vzfourbin[cnt],vzfourbin[cnt]-vzfourbinlo[cnt],\
+                     backampbin[cnt],backampbinhi[cnt]-backampbin[cnt],backampbin[cnt]-backampbinlo[cnt],\
+                     backmeanbin[cnt],backmeanbinhi[cnt]-backmeanbin[cnt],backmeanbin[cnt]-backmeanbinlo[cnt],\
+                     backsigbin[cnt],backsigbinhi[cnt]-backsigbin[cnt],backsigbin[cnt]-backsigbinlo[cnt])
                  )
             
             #Make a plot of the fit:
@@ -137,6 +143,7 @@ def velfit(R,vz,vzerr,ms,Nbin,\
             pdf = velpdffast(vplot,vperr,p0vbest)
             plt.plot(vplot,pdf/np.max(pdf)*np.max(n),\
                      linewidth=mylinewidth)
+            plt.xlim([-50,50])
             plt.savefig(outfile+'vzhist_%d.pdf' % (cnt),\
                 bbox_inches='tight')
 
@@ -148,17 +155,23 @@ def velfit(R,vz,vzerr,ms,Nbin,\
     #Cut back the output arrays:
     rbin = rbin[:cnt]
     vzmeanbin = vzmeanbin[:cnt]
-    vzmeanbinerr = vzmeanbinerr[:cnt]
+    vzmeanbinlo = vzmeanbinlo[:cnt]
+    vzmeanbinhi = vzmeanbinhi[:cnt]
     vztwobin = vztwobin[:cnt]
-    vztwobinerr = vztwobinerr[:cnt]
+    vztwobinlo = vztwobinlo[:cnt]
+    vztwobinhi = vztwobinhi[:cnt]
     vzfourbin = vzfourbin[:cnt]
-    vzfourbinerr = vzfourbinerr[:cnt]
+    vzfourbinlo = vzfourbinlo[:cnt]
+    vzfourbinhi = vzfourbinhi[:cnt]
     backampbin = backampbin[:cnt]
-    backampbinerr = backampbinerr[:cnt]
+    backampbinlo = backampbinlo[:cnt]
+    backampbinhi = backampbinhi[:cnt]
     backmeanbin = backmeanbin[:cnt]
-    backmeanbinerr = backmeanbinerr[:cnt]
+    backmeanbinlo = backmeanbinlo[:cnt]
+    backmeanbinhi = backmeanbinhi[:cnt]
     backsigbin = backsigbin[:cnt]
-    backsigbinerr = backsigbinerr[:cnt]
+    backsigbinlo = backsigbinlo[:cnt]
+    backsigbinhi = backsigbinhi[:cnt]
     
     #Calculate the VSPs with uncertainties. This
     #assumes negligible error in the surface density 
@@ -188,17 +201,16 @@ def velfit(R,vz,vzerr,ms,Nbin,\
     vsp2_int[0], vsp2_int[1], vsp2_int[2], vsp2_int[3], \
         vsp2_int[4], vsp2_int[5], vsp2_int[6] = \
         calcmedquartnine(vsp2)
-    vsp1out = vsp1_int[0]
-    vsp1outerr = (vsp1_int[2]-vsp1_int[1])/2.0
-    vsp2out = vsp2_int[0]
-    vsp2outerr = (vsp2_int[2]-vsp2_int[1])/2.0
     
-    return rbin,vzmeanbin,vzmeanbinerr,vztwobin,vztwobinerr,\
-        vzfourbin,vzfourbinerr,\
-        backampbin,backampbinerr,\
-        backmeanbin,backmeanbinerr,backsigbin,backsigbinerr,\
-        vsp1out,vsp1outerr,vsp2out,vsp2outerr,\
-        ranal,vzfourstore
+    return rbin,vzmeanbin,vzmeanbinlo,vzmeanbinhi,\
+        vztwobin,vztwobinlo,vztwobinhi,\
+        vzfourbin,vzfourbinlo,vzfourbinhi,\
+        backampbin,backampbinlo,backampbinhi,\
+        backmeanbin,backmeanbinlo,backmeanbinhi,\
+        backsigbin,backsigbinlo,backsigbinhi,\
+        vsp1_int[0],vsp1_int[1],vsp1_int[2],\
+        vsp2_int[0],vsp2_int[1],vsp2_int[2],\
+        ranal,vzfourstore,vsp1,vsp2
     
 def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
     #Fit the model velocity pdf to a single bin:
@@ -237,13 +249,16 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
 
     #Emcee parameters:
     nwalkers = 250
-    nmodels = 5000
+    nmodels = 10000
 
     #Starting guess
     ndims = len(p0vin_min)
     pos = np.zeros((nwalkers, ndims), dtype='float')
+    p0vin_startmin = p0vin_min
+    p0vin_startmax = p0vin_max    
     for i in range(ndims):
-        pos[:,i] = np.random.uniform(p0vin_min[i],p0vin_max[i],nwalkers)
+        pos[:,i] = np.random.uniform(p0vin_startmin[i],\
+            p0vin_startmax[i],nwalkers)
 
     #Run chains:
     sampler = emcee.EnsembleSampler(nwalkers, ndims, lnprob_vel, \
@@ -308,13 +323,13 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
         backsig_int[4], backsig_int[5], backsig_int[6] = \
         calcmedquartnine(backsig_store)
 
-    #Output median and symmetrised 68% confidence errors.
+    #Output median and 68% confidence intervals.
     #Pass back full vzfour distribution for VSP 
     #calculation.
-    return vzmean_int[0],(vzmean_int[2]-vzmean_int[1])/2.0,\
-           vztwo_int[0],(vztwo_int[2]-vztwo_int[1])/2.0,\
-           vzfour_int[0],(vzfour_int[2]-vzfour_int[1])/2.0,\
-           backamp_int[0],(backamp_int[2]-backamp_int[1])/2.0,\
-           backmean_int[0],(backmean_int[2]-backmean_int[1])/2.0,\
-           backsig_int[0],(backsig_int[2]-backsig_int[1])/2.0,\
+    return vzmean_int[0],vzmean_int[1],vzmean_int[2],\
+           vztwo_int[0],vztwo_int[1],vztwo_int[2],\
+           vzfour_int[0],vzfour_int[1],vzfour_int[2],\
+           backamp_int[0],backamp_int[1],backamp_int[2],\
+           backmean_int[0],backmean_int[1],backmean_int[2],\
+           backsig_int[0],backsig_int[1],backsig_int[2],\
            vzfour_store,p0best

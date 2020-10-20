@@ -92,26 +92,22 @@ betinfmax = 1.0
 #CoreNFWtides priors:
 logM200low = 7.5
 logM200high = 11.5
-clow = cosmo_cfunc(10.0**logM200high,h)
-logclow = np.log10(clow)-sig_c200
-clow = 10.0**logclow
-chigh = cosmo_cfunc(10.0**logM200low,h)*1.4
-logchigh = np.log10(chigh)+sig_c200*2.0
-chigh = 10.0**logchigh
+clow = 1.0
+chigh = 100.0
 rclow = 1e-2
-rchigh = 10.0
+rchigh = 5.0
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
 sigmlow = 1e-3
 sigmhigh = 5.0
 nlow = 0.0
 nhigh = 1.0
-rtlow = 1.0
-rthigh = 20.0
+rtlow = 1e-1
+rthigh = 10.0
 logrtlow = np.log10(rtlow)
 logrthigh = np.log10(rthigh)
-dellow = 3.01
-delhigh = 5.0
+dellow = 1.0
+delhigh = 4.0
 
 
 ###########################################################

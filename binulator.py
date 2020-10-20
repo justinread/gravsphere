@@ -33,10 +33,10 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #Nbin, Nbinkin, Rkin, vz, vzerr, mskin etc. (see e.g.
 #binulator_initialise_Draco.py for details).
 
-#from binulator_initialise_Draco import *
+from binulator_initialise_Draco import *
 #from binulator_initialise_SMCmock import *
 #from binulator_initialise_PlumCoreOm import *
-from binulator_initialise_PlumCuspOm import *
+#from binulator_initialise_PlumCuspOm import *
 
 #Some output about parameter choices:
 print('Doing galaxy:',whichgal)
@@ -48,6 +48,8 @@ if (Nbinkin > 0):
     print('Number of stars per kinematic bin:', Nbinkin)
 else:
     print('Kinematic data pre-binned')
+print('Priors allow for kurtosis in the range: %.2f < k < %.2f' % \
+      (kurt_calc(p0vin_max),kurt_calc(p0vin_min)))
 
 #Fit surface density:
 print('Fitting the surface density profile:\n')
@@ -61,19 +63,21 @@ print('Fitted Rhalf: %f -%f +%f' % \
 
 #Bin the velocity data and calculate the VSPs with uncertainties:
 print('Fitting the velocity data:\n')
-nsamples = 500
-rbin,vzmeanbin,vzmeanbinerr,vztwobin,vztwobinerr,\
-        vzfourbin,vzfourbinerr,\
-        backampbin,backampbinerr,\
-        backmeanbin,backmeanbinerr,backsigbin,backsigbinerr,\
-        vsp1,vsp1err,vsp2,vsp2err,\
-        ranal,vzfourstore = \
+nsamples = 2500
+rbin,vzmeanbin,vzmeanbinlo,vzmeanbinhi,\
+        vztwobin,vztwobinlo,vztwobinhi,\
+        vzfourbin,vzfourbinlo,vzfourbinhi,\
+        backampbin,backampbinlo,backampbinhi,\
+        backmeanbin,backmeanbinlo,backmeanbinhi,\
+        backsigbin,backsigbinlo,backsigbinhi,\
+        vsp1,vsp1lo,vsp1hi,vsp2,vsp2lo,vsp2hi,\
+        ranal,vzfourstore,vsp1store,vsp2store = \
     velfit(Rkin,vz,vzerr,mskin,Nbinkin,\
            vfitmin,vfitmax,\
            p0vin_min,p0vin_max,p0best,\
            alpmin,alpmax,nsamples,outfile)
-print('Fitted VSP1: %f+/-%f' % (vsp1,vsp1err))
-print('Fitted VSP2: %f+/-%f' % (vsp2,vsp2err))
+print('Fitted VSP1: %f+%f-%f' % (vsp1,vsp1hi-vsp1,vsp1-vsp1lo))
+print('Fitted VSP2: %f+%f-%f' % (vsp2,vsp2hi-vsp2,vsp2-vsp2lo))
     
 
 ###########################################################
@@ -95,17 +99,25 @@ for i in range(len(Rhalf_int)):
 f.close()
 f = open(outfile+'_vel.txt','w')
 for i in range(len(rbin)):
-    f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
-            (rbin[i],vzmeanbin[i],vzmeanbinerr[i],vztwobin[i],\
-             vztwobinerr[i],\
-             vzfourbin[i],vzfourbinerr[i],\
-             backampbin[i],backampbinerr[i],\
-             backmeanbin[i],backmeanbinerr[i],backsigbin[i],\
-             backsigbinerr[i]))
+    f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
+            (rbin[i],vzmeanbin[i],vzmeanbinlo[i],vzmeanbinhi[i],\
+             vztwobin[i],vztwobinlo[i],vztwobinhi[i],\
+             vzfourbin[i],vzfourbinlo[i],vzfourbinhi[i],\
+             backampbin[i],backampbinlo[i],backampbinhi[i],\
+             backmeanbin[i],backmeanbinlo[i],backmeanbinhi[i],\
+             backsigbin[i],backsigbinlo[i],backsigbinhi[i]))
 f.close()
 f = open(outfile+'_vsps.txt','w')
-f.write('%f %f\n' % (vsp1,vsp1err))
-f.write('%f %f\n' % (vsp2,vsp2err))
+f.write('%f %f %f\n' % (vsp1,vsp1lo,vsp1hi))
+f.write('%f %f %f\n' % (vsp2,vsp2lo,vsp2hi))
+f.close()
+f = open(outfile+'_vsp1full.txt','w')
+for i in range(len(vsp1store)):
+    f.write('%f\n' % (vsp1store[i]))
+f.close()
+f = open(outfile+'_vsp2full.txt','w')
+for i in range(len(vsp2store)):
+    f.write('%f\n' % (vsp2store[i]))
 f.close()
 
 
@@ -173,7 +185,10 @@ plt.ylabel(r'Velocity dispersion [${\rm km\,s}^{-1}$]',\
 
 plt.semilogx()
 
-plt.errorbar(rbin,vztwobin,vztwobinerr,color='black',ecolor='black',\
+plt.errorbar(rbin,vztwobin,\
+             yerr=[vztwobin-vztwobinlo,\
+                   vztwobinhi-vztwobin],\
+             color='black',ecolor='black',\
              fmt='o',\
              linewidth=mylinewidth,marker='o',markersize=5,alpha=0.75)
 
@@ -204,7 +219,10 @@ plt.ylabel(r'Fourth velocity moment [${\rm km}^4\,{\rm s}^{-4}$]',\
 
 plt.loglog()
 
-plt.errorbar(rbin,vzfourbin,vzfourbinerr,color='black',ecolor='black',\
+plt.errorbar(rbin,vzfourbin,\
+             yerr=[vzfourbin-vzfourbinlo,\
+                   vzfourbinhi-vzfourbin],\
+             color='black',ecolor='black',\
              fmt='o',\
              linewidth=mylinewidth,marker='o',markersize=5,alpha=0.75)
 
@@ -221,6 +239,49 @@ plt.xlim([xpltmin,xpltmax])
 plt.ylim([vzfourpltmin,vzfourpltmax])
 
 plt.savefig(outfile+'_vzfour.pdf',bbox_inches='tight')
+
+#Plot VSP1 and VSP2 histograms:
+fig = plt.figure(figsize=(figx,figy))
+ax = fig.add_subplot(111)
+for axis in ['top','bottom','left','right']:
+    ax.spines[axis].set_linewidth(mylinewidth)
+plt.xticks(fontsize=myfontsize)
+plt.yticks(fontsize=myfontsize)
+
+nbin = 25
+n, bins, patches = plt.hist(vsp1store,bins=nbin,\
+        range=(np.min(vsp1store),\
+               np.max(vsp1store)),\
+        facecolor='b', \
+        histtype='bar',alpha=0.5, \
+        label='vs_1')
+ 
+plt.xlabel(r'$v_{s1}\,[{\rm km}^4\,{\rm s}^{-4}]$',\
+           fontsize=myfontsize)
+plt.ylabel(r'$N$',fontsize=myfontsize)
+plt.ylim([0,np.max(n)])
+plt.savefig(outfile+'output_vsp1.pdf',bbox_inches='tight')
+
+fig = plt.figure(figsize=(figx,figy))
+ax = fig.add_subplot(111)
+for axis in ['top','bottom','left','right']:
+    ax.spines[axis].set_linewidth(mylinewidth)
+plt.xticks(fontsize=myfontsize)
+plt.yticks(fontsize=myfontsize)
+
+nbin = 25
+n, bins, patches = plt.hist(vsp2store,bins=nbin,\
+        range=(np.min(vsp2store),\
+               np.max(vsp2store)),\
+        facecolor='b', \
+        histtype='bar',alpha=0.5, \
+        label='vs_2')
+ 
+plt.xlabel(r'$v_{s2}\,[{\rm km}^4\,{\rm s}^{-4}]$',\
+           fontsize=myfontsize)
+plt.ylabel(r'$N$',fontsize=myfontsize)
+plt.ylim([0,np.max(n)])
+plt.savefig(outfile+'output_vsp2.pdf',bbox_inches='tight')
 
 
 ###########################################################

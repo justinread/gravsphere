@@ -36,8 +36,8 @@ Rfitmax = -1
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-15,1.0,1.0,1e-5,-300.0,25.0])
-p0vin_max = np.array([15,25.0,3.0,1e-4,300.0,300.0])
+p0vin_min = np.array([-0.1,1.0,1.0,1e-5,-300.0,25.0])
+p0vin_max = np.array([0.1,25.0,5.0,1e-4,300.0,300.0])
 vfitmin = 0
 vfitmax = 0
 

@@ -20,8 +20,8 @@ vzfourpltmax = 1e6
 
 #Number of stars per bin [-1 indicates that
 #binning was already done elsewhere]:
-Nbin = 25
-Nbinkin = 25
+Nbin = 30
+Nbinkin = 30
 
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
@@ -36,8 +36,8 @@ Rfitmax = -1
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-15,1.0,1.0,1e-4,-300.0,25.0])
-p0vin_max = np.array([15,25.0,3.0,0.5,300.0,300.0])
+p0vin_min = np.array([-0.1,1.0,1.0,1e-5,-300.0,25.0])
+p0vin_max = np.array([0.1,25.0,5.0,1e-4,300.0,300.0])
 vfitmin = 0
 vfitmax = 0
 
@@ -45,7 +45,7 @@ vfitmax = 0
 #powerlaw index for the assumed fall-off of <vlos^4>
 #beyond the outermost data point.
 alpmin = 0.0
-alpmax = 3.0
+alpmax = 1.0
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.

@@ -1,3 +1,4 @@
+:::: GRAVSPHERE + BINULATOR ::::
 Welcome to GravSphere and the binulator.
 
 Use the binulator (binulator.py) to bin your discrete velocity 
@@ -7,6 +8,13 @@ GravSphere (gravsphere.py) needs to mass model these data.
 For further details, please see the comments in the 
 python source files.
 
+
+:::: DEPENDENCIES ::::
+To run these codes, you will need to install:
+python3.0, numpy, scipy, matplotlib and emcee
+
+
+:::: CITATIONS ::::
 If using this code, please cite the following code papers:
 
 https://ui.adsabs.harvard.edu/abs/2017MNRAS.471.4541R/abstract
@@ -20,6 +28,8 @@ Please acknowledge use of the gravsphere code and/or
 binulator, and link to its github page:
 https://github.com/justinread/gravsphere
 
+
+:::: EXAMPLES ::::
 Many examples are included for you to play with. You can run
 all of the Milky Way "classical" dwarfs (and CVnI), two
 Gaia Challenge mocks, and more. Please have a look in ./Data/
@@ -30,8 +40,12 @@ gravsphere_initialise_<name>.py
 
 for example initialisation scripts for running these models.
 
+
+:::: BUGS ::::
 If you spot any bugs, please let me know!
 
+
+:::: NOTES ::::
 Note that this public release of the code is distinct from
 the "FreeForm" version used in most of the above publications. 
 In particular, it bins the data in an entirely new way that is

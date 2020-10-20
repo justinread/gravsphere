@@ -747,6 +747,14 @@ def vzfour_calc(theta):
     sig = vztwo_calc(theta)
     kurt = gamma(5.0/bet)*gamma(1.0/bet)/(gamma(3.0/bet))**2.0
     return kurt*sig**4.0
+    
+def kurt_calc(theta):
+    #Calculate kurtosis from generalised
+    #Gaussian parameters:
+    alp = theta[1]
+    bet = theta[2]
+    kurt = gamma(5.0/bet)*gamma(1.0/bet)/(gamma(3.0/bet))**2.0
+    return kurt
 
 def vzfourfunc(ranal,rbin,vzfourbin,alp):
     #Interpolate and extrapolate
@@ -757,3 +765,19 @@ def vzfourfunc(ranal,rbin,vzfourbin,alp):
     vzfour[sel] = \
         vzfourmean*(ranal[sel]/np.max(rbin))**(-alp)
     return vzfour
+    
+#For calculating the Likelihood from the vsp array:
+def vsppdf_calc(vsp):
+    #First bin the data:
+    nbins = 50
+    bins_plus_one = np.linspace(np.min(vsp),np.max(vsp),nbins+1)
+    bins = np.linspace(np.min(vsp),np.max(vsp),nbins)
+    vsp_pdf, bins_plus_one = np.histogram(vsp, bins=bins_plus_one)
+    vsp_pdf = vsp_pdf / np.max(vsp_pdf)
+    binsout = bins[vsp_pdf > 0]
+    vsp_pdfout = vsp_pdf[vsp_pdf > 0]
+    return binsout, vsp_pdfout
+
+def vsp_pdf(vsp,bins,vsp_pdf):
+    return np.interp(vsp,bins,vsp_pdf,left=0,right=0)
+    
