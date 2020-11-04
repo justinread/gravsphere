@@ -22,6 +22,8 @@ yMhigh = 1e10
 yrholow = 1e4
 yrhohigh = 1e9
 alp3sig = 0.0
+sigmlow = 1e-3
+sigmhigh = 5.0
 
 #Code options:
 propermotion = 'no'
@@ -31,11 +33,24 @@ virialshape = 'yes'
 #yes, then the true solutions should be passed
 #in: ranal,betatrue(ranal),betatruestar(ranal),
 #truemass(ranal),trueden(ranal),truedlnrhodlnr(ranal).
-overtrue = 'no'
+#Pass a zero array if one of these is not available.
+overtrue = 'yes'
+f = open('./Data/SMC_mock/SMCmock_density.dat')
+data = np.genfromtxt(f)
+f.close()
+ranal = data[:,2]
+trueden = data[:,0]
+f = open('./Data/SMC_mock/SMCmock_anisotropy.dat')
+data = np.genfromtxt(f)
+f.close()
+betatrue = np.interp(ranal,data[:,2],data[:,0])
+betatruestar = betatrue/(2.0-betatrue)
+truemass = np.zeros(len(ranal))
+truedlnrhodlnr = np.zeros(len(ranal))
 
 #Radial grid range for Jeans calculation:
-rmin = 0.01
-rmax = 50.0
+rmin = -1
+rmax = -1
 
 #Galaxy properties. Assume here that the baryonic mass
 #has the same radial profile as the tracer stars. If this
@@ -55,7 +70,7 @@ bar_pnts = 250
 
 #For surface density fit tracertol = [0,1] sets the spread 
 #around the best-fit value from the binulator.
-tracertol = 0.5
+tracertol = 0.1
 
 #Cosmology priors on the coreNFWtides model. mWDM(keV) is
 #the mass of a thermal relic; <0 means CDM; sig_c200 is 
@@ -72,25 +87,23 @@ if (mWDM > 0):
 
 #Velocity anisotropy priors:
 betr0min = -2
-betr0max = 0.0
+betr0max = 1.0
 betnmin = 1.0
-betnmax = 10.0
-bet0min = -1.0
-bet0max = 1.0
+betnmax = 3.0
+bet0min = -0.01
+bet0max = 0.01
 betinfmin = -1.0
 betinfmax = 1.0
 
 #CoreNFWtides priors:
-logM200low = 5.5
-logM200high = 9.5
+logM200low = 7.5
+logM200high = 11.5
 clow = 1.0
 chigh = 100.0
 rclow = 1e-2
 rchigh = 5.0
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
-sigmlow = 1e-3
-sigmhigh = 5.0
 nlow = 0.0
 nhigh = 1.0
 rtlow = 1.0

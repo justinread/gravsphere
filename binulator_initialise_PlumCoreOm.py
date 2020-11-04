@@ -3,9 +3,31 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-whichgal = 'PlumCoreOm'
-data_file = \
-    './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_1000_0_err.dat'
+nstars = 1000
+if (nstars == 1000):
+    whichgal = 'PlumCoreOm'
+    data_file_kin = \
+        './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_1000_0_err.dat'
+    #Number of stars per bin [-1 indicates that
+    #binning was already done elsewhere]:
+    Nbinkin = 30
+elif (nstars == 100):
+    whichgal = 'PlumCoreOm100'
+    data_file_kin = \
+        './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_100_0_err.dat'
+    #Number of stars per bin [-1 indicates that
+    #binning was already done elsewhere]:
+    Nbinkin = 25
+else:
+    whichgal = 'PlumCoreOm10000'
+    data_file_kin = \
+        './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_10000_0_err.dat'
+    #Number of stars per bin [-1 indicates that
+    #binning was already done elsewhere]:
+    Nbinkin = 100
+Nbin = 100
+data_file_phot = \
+    './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_10000_0_err.dat'
 outfile = './Output/GCmock/'+whichgal+'/'+whichgal
 
 #Plot ranges:
@@ -17,11 +39,6 @@ vztwopltmin = 0
 vztwopltmax = 25
 vzfourpltmin = 1e3
 vzfourpltmax = 1e7
-
-#Number of stars per bin [-1 indicates that
-#binning was already done elsewhere]:
-Nbin = 15
-Nbinkin = 30
 
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
@@ -49,10 +66,14 @@ alpmax = 1.0
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.
-#This is superseded later by the calculation from the fit but
-#we include it here as a sanity check.
+#If use_dataRhalf = 'yes', then we will use this data Rhalf
+#instead of the fitted Rhalf. This can be useful if the 
+#SB falls off very steeply, which cannot be captured easily
+#by the sum over Plummer spheres that binulator/gravsphere
+#assumes.
 R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
-    gc_api(data_file,Nbin)
+    gc_api(data_file_phot,data_file_kin,Nbin)
+use_dataRhalf = 'no'
     
 #Calculate true VSPs and output for comparison:
 rho0s,r0s,alps,bets,gams = np.array([1.0,0.25,2,5,0.1])

@@ -67,5 +67,6 @@ plt.plot(ranal,corenfwtides,linewidth=mylinewidth,color='green',\
     label='coreNFWtides',alpha=0.5)
 
 plt.legend(fontsize=mylegendfontsize)
+plt.xlim([1e-2,5])
 plt.savefig('./Output/coreNFWtides_example.pdf',bbox_inches='tight')
 

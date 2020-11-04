@@ -23,7 +23,7 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
 
         inv_sigma2 = 1.0/(yerr)**2.0
         lnlike_out = -0.5*(np.sum((y-model)**2*inv_sigma2))
-    
+        
         if (lnlike_out != lnlike_out):
             lnlike_out = -np.inf
     
@@ -69,8 +69,8 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
     #Starting guess
     ndims = len(p0in_min)
     pos = np.zeros((nwalkers, ndims), dtype='float')
-    p0in_startmin = (p0in_min + p0in_max)/2.0*0.9
-    p0in_startmax = (p0in_min + p0in_max)/2.0*1.1  
+    p0in_startmin = p0in_min
+    p0in_startmax = p0in_max 
     for i in range(ndims):
         pos[:,i] = np.random.uniform(p0in_startmin[i],\
             p0in_startmax[i],nwalkers)

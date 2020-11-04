@@ -6,21 +6,21 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-whichgal = 'Draco'
+whichgal = 'And21'
 infile = './Output/'+whichgal+'/'+whichgal
 outdirbase = './Output/'+whichgal+'/'
 
 #Plot ranges and sample points [-1 means auto-calculate]:
-rplot_inner = 1e-2
-rplot_outer = 5.0
+rplot_inner = 5e-2
+rplot_outer = 10.0
 rplot_pnts = 50
 y_sigLOSmax = 15
-ymin_Sigstar = 1e-4
-ymax_Sigstar = 100
+ymin_Sigstar = 1e-5
+ymax_Sigstar = 1
 yMlow = 1e4
 yMhigh = 1e10
-yrholow = 1e5
-yrhohigh = 1e10
+yrholow = 5e3
+yrhohigh = 5e8
 alp3sig = 0.0
 sigmlow = 1e-3
 sigmhigh = 5.0
@@ -44,7 +44,7 @@ rmax = -1.0
 #is not the case, you should set Mstar_rad and Mstar_prof 
 #here. The variables barrad_min, barrad_max and bar_pnts 
 #set the radial range and sampling of the baryonic mass model.
-Mstar = 0.29e6
+Mstar = 0.76e6
 Mstar_err = Mstar * 0.25
 baryonmass_follows_tracer = 'yes'
 barrad_min = 0.0

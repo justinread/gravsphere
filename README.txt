@@ -11,7 +11,7 @@ python source files.
 
 :::: DEPENDENCIES ::::
 To run these codes, you will need to install:
-python3.0, numpy, scipy, matplotlib and emcee
+python3.x, numpy, scipy, matplotlib and emcee
 
 
 :::: CITATIONS ::::

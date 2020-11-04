@@ -28,6 +28,7 @@ pars[5] = 50.0
 vz = np.linspace(-50,50,np.int(1e3))
 vzerr = np.zeros(len(vz)) + 25.0
 pdf = velpdf(vz,vzerr,pars)
+pdfmonte = velpdfmonte(vz,vzerr,pars)
 pdffast = velpdffast(vz,vzerr,pars)
 pdfnoerr = velpdf_noerr(vz,pars)
 
@@ -49,6 +50,7 @@ plt.xlabel(r'v$_z$ [km/s]',fontsize=myfontsize)
 plt.ylabel(r'frequency',fontsize=myfontsize)
 
 plt.plot(vz,pdf,linewidth=mylinewidth,color='blue',label='PDF',alpha=0.5)
+plt.plot(vz,pdfmonte,linewidth=mylinewidth,color='black',label='PDFmonte',alpha=0.5)
 plt.plot(vz,pdffast,linewidth=mylinewidth,color='green',\
     label='PDFfast',alpha=0.5)
 plt.plot(vz,pdfnoerr,linewidth=mylinewidth,color='red',alpha=0.5,\

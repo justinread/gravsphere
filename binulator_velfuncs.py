@@ -9,6 +9,9 @@ from figures import *
 import emcee
 import sys
 
+#Select velocity distribution functin:
+velpdfuse = velpdffast
+
 #Functions for emcee (velocity data):
 def velfit(R,vz,vzerr,ms,Nbin,\
            vfitmin,vfitmax,\
@@ -134,16 +137,16 @@ def velfit(R,vz,vzerr,ms,Nbin,\
             plt.ylabel(r'frequency',\
                 fontsize=myfontsize)
             
-            n, bins, patches = plt.hist(vzuse,50,weights=msuse,\
+            n, bins, patches = plt.hist(vzuse,10,weights=msuse,\
                                         facecolor='g',\
                                         alpha=0.75)
-            vplot = np.linspace(-50,50,np.int(500))
+            vplot = np.linspace(-150,150,np.int(500))
             vperr = np.zeros(len(vplot))+\
                 np.sum(vzerruse*msuse)/np.sum(msuse)
-            pdf = velpdffast(vplot,vperr,p0vbest)
+            pdf = velpdfuse(vplot,vperr,p0vbest)
             plt.plot(vplot,pdf/np.max(pdf)*np.max(n),\
                      linewidth=mylinewidth)
-            plt.xlim([-50,50])
+            plt.xlim([-150,150])
             plt.savefig(outfile+'vzhist_%d.pdf' % (cnt),\
                 bbox_inches='tight')
 
@@ -223,7 +226,7 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
         return lp + lnlike_vel(theta, y, yerr, ms)
 
     def lnlike_vel(theta, y, yerr, ms):
-        modelpdf = velpdffast(y,yerr,theta)
+        modelpdf = velpdfuse(y,yerr,theta)
         lnlike_out = np.sum(np.log(modelpdf)*ms)
     
         if (lnlike_out != lnlike_out):
@@ -266,7 +269,7 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
     sampler.run_mcmc(pos, nmodels)
 
     #Extract results + errors:
-    burn = np.int(0.5*nmodels)
+    burn = np.int(0.75*nmodels)
     chisq = -2.0 * sampler.lnprobability[:, burn:].reshape(-1)
     par_test = np.zeros((len(chisq),ndims), dtype='float')
     for i in range(ndims):
@@ -277,8 +280,10 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
     p0best = par_test[index[0],:]
 
     #Choose number of models to draw from the chains:
-    sample_choose = np.random.randint(len(chisq), \
-                        size=nsamples)    
+    min_chisq = np.min(chisq)
+    index = np.where(chisq < min_chisq*500.0)[0]
+    sample_choose = index[np.random.randint(len(index), \
+                          size=nsamples)]
 
     #Set up arrays to store med,68%,95%,99% confidence intervals:
     vzmean_int = np.zeros(7)

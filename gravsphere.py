@@ -21,7 +21,8 @@
 
 ###########################################################
 #Functions for emcee Jeans fitting:
-def lnprior_set_single(theta,n_betpars,bet0min,bet0max,betinfmin,betinfmax,\
+def lnprior_set_single(theta,n_betpars,bet0min,bet0max,\
+                       betinfmin,betinfmax,\
                        betr0min,betr0max,betnmin,betnmax,\
                        nu_components,nupars_min,nupars_max,\
                        n_mpars,logM200low,logM200high,\
@@ -42,20 +43,12 @@ def lnprior_set_single(theta,n_betpars,bet0min,bet0max,betinfmin,betinfmax,\
     minarr[3] = betnmin
     maxarr[3] = betnmax
 
-    if (cosmo_cprior == 'yes'):
-        M200u = 10.0**theta[n_betpars+nu_components*2]
-        clowu = 10.0**(np.log10(cosmo_cfunc(M200u,h))-0.1)
-        chighu = 10.0**(np.log10(cosmo_cfunc(M200u,h))+0.1)
-    else:
-        clowu = clow
-        chighu = chigh
-
     minarr[n_betpars:n_betpars+nu_components*2] = nupars_min
     maxarr[n_betpars:n_betpars+nu_components*2] = nupars_max
     minarr[n_betpars+nu_components*2] = logM200low
     maxarr[n_betpars+nu_components*2] = logM200high
-    minarr[n_betpars+nu_components*2+1] = clowu
-    maxarr[n_betpars+nu_components*2+1] = chighu
+    minarr[n_betpars+nu_components*2+1] = clow
+    maxarr[n_betpars+nu_components*2+1] = chigh
     minarr[n_betpars+nu_components*2+2] = logrclow
     maxarr[n_betpars+nu_components*2+2] = logrchigh
     minarr[n_betpars+nu_components*2+3] = nlow
@@ -119,7 +112,7 @@ def lnlike_single(theta, x1, x2, y1, y1err, y2, y2err):
     lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2))
 
-    if (cosmo_cprior == 'cosmo_c'):
+    if (cosmo_cprior == 'yes'):
         #Add the conc. to the likelihood function
         #as a Gaussian in logspace:
         M200 = Mparsu[0]
@@ -162,7 +155,7 @@ def lnlike_single_vs(theta, x1, x2, y1, y1err, y2, y2err, \
                  np.log(vsp_pdf(model3,vsp1val,vsp1pdf))+\
                  np.log(vsp_pdf(model4,vsp2val,vsp2pdf))
 
-    if (cosmo_cprior == 'cosmo_c'):
+    if (cosmo_cprior == 'yes'):
         #Add the conc. to the likelihood function
         #as a Gaussian in logspace:
         M200 = Mparsu[0]
@@ -205,7 +198,7 @@ def lnlike_single_prop(theta, x1, x2, y1, y1err, y2, y2err, \
                        np.sum((y3-model3)**2*inv_sigma2_3)+\
                        np.sum((y4-model4)**2*inv_sigma2_4))
 
-    if (cosmo_cprior == 'cosmo_c'):
+    if (cosmo_cprior == 'yes'):
         #Add the conc. to the likelihood function
         #as a Gaussian in logspace:
         M200 = Mparsu[0]
@@ -247,13 +240,25 @@ nwalkers = 250
 nmodels = 10000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
-#Initialise the galaxy model:
+###########################################################
+#Input data selection here:
+
+#MW satellites:
 #from gravsphere_initialise_Draco import *
+from gravsphere_initialise_Fornax import *
+#from gravsphere_initialise_Fornax_tides import *
+#from gravsphere_initialise_SMC import *
+#from gravsphere_initialise_SMC_posbeta import *
+
+#Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
-from gravsphere_initialise_PlumCuspOm import *
+#from gravsphere_initialise_PlumCuspOm import *
 #from gravsphere_initialise_SMCmock import *
+
+#M31 satellites:
+#from gravsphere_initialise_And21 import *
 
 #Output some key choices:
 print('Doing galaxy:',whichgal)
@@ -408,10 +413,32 @@ elif (propermotion == 'yes'):
         sigp_prop(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
                   Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
 
-#Set the priors on the tracer density profile:
-nupars_min = pfits*(1.0-tracertol)
-nupars_max = pfits*(1.0+tracertol)
-
+#Set the priors and starting blob for the tracer density profile.
+#Code is a bit more involved here just to cope with potentially
+#negative Plummer masses, used to fit some steeply falling tracer
+#density profiles:
+nupars_min = np.zeros(len(pfits))
+nupars_max = np.zeros(len(pfits))
+nupars_minstart = np.zeros(len(pfits))
+nupars_maxstart = np.zeros(len(pfits))
+for i in range(len(pfits)):
+    if (pfits[i] > 0):
+        nupars_min[i] = pfits[i]*(1.0-tracertol)
+        nupars_max[i] = pfits[i]*(1.0+tracertol)
+    else:
+        nupars_min[i] = pfits[i]*(1.0+tracertol)
+        nupars_max[i] = pfits[i]*(1.0-tracertol)
+    if (tracertol < 0.01):
+        nupars_minstart[i] = nupars_min[i]
+        nupars_maxstart[i] = nupars_max[i]
+    else:
+        if (pfits[i] > 0):
+            nupars_minstart[i] = pfits[i]*0.99
+            nupars_maxstart[i] = pfits[i]*1.01
+        else:
+            nupars_minstart[i] = pfits[i]*1.01
+            nupars_maxstart[i] = pfits[i]*0.99
+                
 
 ###########################################################
 #Emcee fitting code:
@@ -429,7 +456,8 @@ if (codemode == 'run'):
     pos[:,3] = np.random.uniform(betnmin,betnmax,nwalkers)
     for i in range(len(pfits)):
         pos[:,n_betpars+i] = \
-            np.random.uniform(pfits[i]*0.99,pfits[i]*1.01,nwalkers)
+            np.random.uniform(nupars_minstart[i],\
+                nupars_maxstart[i],nwalkers)
     pos[:,n_betpars+nu_components*2] = \
         np.random.uniform(logM200low,logM200high,nwalkers)
     pos[:,n_betpars+nu_components*2+1] = \
@@ -611,8 +639,10 @@ elif (codemode == 'plot'):
 
     #Make sure no *really* bad models remain in the chains. 
     #In practice, this cut makes no difference to the end result.
-    min_chisq = np.min(chisq)
-    index = np.where(chisq < min_chisq*500.0)[0]
+    if (np.min(chisq) == np.inf):
+        print('No viable models. Uh oh... bye bye. Minimum chisq:', np.min(chisq))
+        sys.exit(0)
+    index = np.where(chisq < np.min(chisq)*500.0)[0]
     print('Min/max chisq:', np.min(chisq[index]), np.max(chisq[index]))
 
     #Cut the confidence intervals from the chains:
@@ -1456,12 +1486,13 @@ elif (codemode == 'plot'):
     plt.yticks(fontsize=myfontsize)
 
     n, bins, patches = plt.hist(sigmstore,bins=nbin,\
-                  range=(0.0,1.0),\
+                  range=(sigmlow,sigmhigh),\
                   facecolor='k', \
                   histtype='bar',alpha=0.5)
 
-    plt.xlim([0.0,np.max(n)])
-    plt.xlabel(r'$\sigma/m\,({\rm cm}^2/{\rm g})$',fontsize=myfontsize)
+    plt.ylim([0.0,np.max(n)])
+    plt.xlabel(r'$\sigma/m\,({\rm cm}^2/{\rm g})$',\
+        fontsize=myfontsize)
     plt.ylabel(r'$N$',fontsize=myfontsize)
     plt.savefig(outdir+'output_sigm.pdf',bbox_inches='tight')
 

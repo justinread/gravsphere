@@ -3,9 +3,9 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-whichgal = 'Draco'
-infile_kin = './Data/Walker_dwarfs/dra_justin1_spec.dat'
-infile_phot = './Data/Walker_dwarfs/dra_justin1_phot.dat'
+whichgal = 'Fornax'
+infile_kin = './Data/Walker_dwarfs/for_justin1_spec.dat'
+infile_phot = './Data/Walker_dwarfs/for_justin1_phot.dat'
 outfile = './Output/'+whichgal+'/'+whichgal
 
 #Plot ranges:
@@ -14,20 +14,20 @@ xpltmax = 10.0
 surfpltmin = 1e-6
 surfpltmax = 100
 vztwopltmin = 0
-vztwopltmax = 15
-vzfourpltmin = 1e2
-vzfourpltmax = 1e6
+vztwopltmax = 25
+vzfourpltmin = 5e3
+vzfourpltmax = 5e6
 
 #Number of stars per bin [-1 indicates that
 #binning was already done elsewhere]:
-Nbin = 30
-Nbinkin = 30
+Nbin = 25
+Nbinkin = 25
 
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
 #and scale length. [-1 means use full radial range].
-p0in_min = np.array([1e-4,1e-4,1e-4,0.01,0.01,0.01])
-p0in_max = np.array([1e2,1e2,1e2,1.0,1.0,1.0])
+p0in_min = np.array([-1e1,-1e1,-1e1,0.01,0.01,0.01])
+p0in_max = np.array([1e2,1e2,1e2,1.0,1.0,2.0])
 Rfitmin = -1
 Rfitmax = -1
 
@@ -54,7 +54,7 @@ alpmax = 1.0
 #SB falls off very steeply, which cannot be captured easily
 #by the sum over Plummer spheres that binulator/gravsphere
 #assumes.
-dgal_kpc = 76.0
+dgal_kpc = 138.0
 R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
     walker_api(infile_phot,infile_kin,dgal_kpc,Nbin)
 use_dataRhalf = 'no'

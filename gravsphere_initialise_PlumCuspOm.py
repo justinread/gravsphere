@@ -6,7 +6,11 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-whichgal = 'PlumCuspOm'
+nstars = 1000
+if (nstars == 1000):
+    whichgal = 'PlumCuspOm'
+else:
+    whichgal = 'PlumCuspOm10000'
 infile = './Output/GCmock/'+whichgal+'/'+whichgal
 outdirbase = './Output/GCmock/'+whichgal+'/'
 
@@ -22,6 +26,8 @@ yMhigh = 1e9
 yrholow = 1e4
 yrhohigh = 1e10
 alp3sig = 0.0
+sigmlow = 1e-3
+sigmhigh = 5.0
 
 #Code options:
 propermotion = 'no'
@@ -64,7 +70,7 @@ bar_pnts = 250
 
 #For surface density fit tracertol = [0,1] sets the spread 
 #around the best-fit value from the binulator.
-tracertol = 0.5
+tracertol = 0.1
 
 #Cosmology priors on the coreNFWtides model. mWDM(keV) is
 #the mass of a thermal relic; <0 means CDM; sig_c200 is 
@@ -86,7 +92,7 @@ betnmin = 1.0
 betnmax = 3.0
 bet0min = -0.01
 bet0max = 0.01
-betinfmin = -0.01
+betinfmin = -0.1
 betinfmax = 1.0
 
 #CoreNFWtides priors:
@@ -95,19 +101,17 @@ logM200high = 11.5
 clow = 1.0
 chigh = 100.0
 rclow = 1e-2
-rchigh = 5.0
+rchigh = 10.0
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
-sigmlow = 1e-3
-sigmhigh = 5.0
-nlow = 0.0
+nlow = 0.99
 nhigh = 1.0
-rtlow = 1e-1
-rthigh = 10.0
+rtlow = 1.0
+rthigh = 20.0
 logrtlow = np.log10(rtlow)
 logrthigh = np.log10(rthigh)
-dellow = 1.0
-delhigh = 4.0
+dellow = 3.01
+delhigh = 5.0
 
 
 ###########################################################

@@ -6,21 +6,21 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-whichgal = 'Draco'
+whichgal = 'SMC'
 infile = './Output/'+whichgal+'/'+whichgal
 outdirbase = './Output/'+whichgal+'/'
 
 #Plot ranges and sample points [-1 means auto-calculate]:
 rplot_inner = 1e-2
-rplot_outer = 5.0
-rplot_pnts = 50
-y_sigLOSmax = 15
-ymin_Sigstar = 1e-4
+rplot_outer = 20.0
+rplot_pnts = 100
+y_sigLOSmax = 35
+ymin_Sigstar = 1e-6
 ymax_Sigstar = 100
 yMlow = 1e4
 yMhigh = 1e10
-yrholow = 1e5
-yrhohigh = 1e10
+yrholow = 1e4
+yrhohigh = 1e9
 alp3sig = 0.0
 sigmlow = 1e-3
 sigmhigh = 5.0
@@ -36,16 +36,16 @@ virialshape = 'yes'
 overtrue = 'no'
 
 #Radial grid range for Jeans calculation:
-rmin = -1.0
-rmax = -1.0
+rmin = -1
+rmax = -1
 
 #Galaxy properties. Assume here that the baryonic mass
 #has the same radial profile as the tracer stars. If this
 #is not the case, you should set Mstar_rad and Mstar_prof 
 #here. The variables barrad_min, barrad_max and bar_pnts 
 #set the radial range and sampling of the baryonic mass model.
-Mstar = 0.29e6
-Mstar_err = Mstar * 0.25
+Mstar = 460.0e6
+Mstar_err = Mstar*0.25
 baryonmass_follows_tracer = 'yes'
 barrad_min = 0.0
 barrad_max = 10.0
@@ -57,7 +57,7 @@ bar_pnts = 250
 
 #For surface density fit tracertol = [0,1] sets the spread 
 #around the best-fit value from the binulator.
-tracertol = 0.1
+tracertol = 1e-4
 
 #Cosmology priors on the coreNFWtides model. mWDM(keV) is
 #the mass of a thermal relic; <0 means CDM; sig_c200 is 
@@ -79,7 +79,7 @@ betnmin = 1.0
 betnmax = 3.0
 bet0min = -0.01
 bet0max = 0.01
-betinfmin = -0.1
+betinfmin = -1.0
 betinfmax = 1.0
 
 #CoreNFWtides priors:

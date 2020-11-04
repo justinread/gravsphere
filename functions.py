@@ -2,6 +2,7 @@ import numpy as np
 from scipy.integrate.quadrature import simps as integrator
 from scipy.misc.common import derivative
 from scipy.special import gamma
+from scipy.integrate import quad
 from constants import *
 multimode = 'normal'
 
@@ -38,6 +39,7 @@ def sidm_novel(rc,M200,c,oden,rhocrit,GammaX):
     #model fit. For this to be valid, the coreNFWtides fit
     #should assume a pure-core model, with n=1. See
     #Read et al. 2018 for further details.
+    #Returns cross section/particle mass in cm^2 / g.
     GammaX = 0.005/(1e9*year)
     Guse = G*Msun/kpc
     rho_unit = Msun/kpc**3.0
@@ -639,6 +641,9 @@ def multiplummass(r,pars):
 def threeplumsurf(r,M1,M2,M3,a1,a2,a3):
     return multiplumsurf(r,[M1,M2,M3,\
                             a1,a2,a3])
+def threeplumden(r,M1,M2,M3,a1,a2,a3):
+    return multiplumden(r,[M1,M2,M3,\
+                           a1,a2,a3])
 def threeplummass(r,M1,M2,M3,a1,a2,a3):
     return multiplummass(r,[M1,M2,M3,\
                             a1,a2,a3])
@@ -661,6 +666,13 @@ def Rhalf_func(M1,M2,M3,a1,a2,a3):
 
 ###########################################################
 #For fitting the velocity distribution in each bin [no errors]:
+def monte(func,a,b,n):
+    #Function to perform fast 1D Monte-Carlo integration
+    #for convolution integrals:
+    xrand = np.random.uniform(a,b,n)
+    integral = func(xrand).sum()
+    return (b-a)/np.float(n)*integral
+
 def velpdf_noerr(vz,theta):
     vzmean = theta[0]
     alp = theta[1]
@@ -718,18 +730,40 @@ def velpdf_func(vz,vzerr,vzint,theta):
 def velpdf(vz,vzerr,theta):
     #Generalised Gaussian + Gaussian convolved with
     #vzerr, assuming Gaussian errors:
-    npnts = 1e5
     vzmean = theta[0]
     sig = vztwo_calc(theta)
-    vzint = np.linspace(-sig*10+vzmean,sig*10+vzmean,np.int(npnts))  
+    vzlow = -sig*10+vzmean
+    vzhigh = sig*10+vzmean
     if (type(vz) == np.ndarray):
         pdf = np.zeros(len(vz))
         for i in range(len(vz)):
-            pdf_func = velpdf_func(vz[i],vzerr[i],vzint,theta)
-            pdf[i] = integrator(pdf_func,vzint)
+            pdf_func = lambda vzint : velpdf_func(vz[i],\
+                vzerr[i],vzint,theta)
+            pdf[i] = quad(pdf_func,vzlow,vzhigh)[0]
     else:
-        pdf_func = velpdf_func(vz,vzerr,vzint,theta)
-        pdf = integrator(pdf_func,vzint)
+        pdf_func = lambda vzint : velpdf_func(vz,\
+            vzerr,vzint,theta)
+        pdf = quad(pdf_func,vzlow,vzhigh)[0]
+    return pdf
+
+def velpdfmonte(vz,vzerr,theta):
+    #Generalised Gaussian + Gaussian convolved with
+    #vzerr, assuming Gaussian errors:
+    npnts = np.int(500)
+    vzmean = theta[0]
+    sig = vztwo_calc(theta)
+    vzlow = -sig*10+vzmean
+    vzhigh = sig*10+vzmean
+    if (type(vz) == np.ndarray):
+        pdf = np.zeros(len(vz))
+        for i in range(len(vz)):
+            pdf_func = lambda vzint : velpdf_func(vz[i],\
+                vzerr[i],vzint,theta)
+            pdf[i] = monte(pdf_func,vzlow,vzhigh,npnts)
+    else:
+        pdf_func = lambda vzint : velpdf_func(vz,\
+            vzerr,vzint,theta)
+        pdf = monte(pdf_func,vzlow,vzhigh,npnts)
     return pdf
 
 def vztwo_calc(theta):
@@ -780,4 +814,4 @@ def vsppdf_calc(vsp):
 
 def vsp_pdf(vsp,bins,vsp_pdf):
     return np.interp(vsp,bins,vsp_pdf,left=0,right=0)
-    
+
