@@ -25,3 +25,6 @@ OmegaM = OmegaM_h2 / h**2.0
 
 #Specific to gravsphere:
 Guse = G * Msun / kpc
+
+#Output directory:
+output_base = './Output/'

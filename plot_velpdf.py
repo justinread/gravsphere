@@ -57,5 +57,5 @@ plt.plot(vz,pdfnoerr,linewidth=mylinewidth,color='red',alpha=0.5,\
     label='PDF no error')
 
 plt.legend(fontsize=mylegendfontsize)
-plt.savefig('./Output/velpdf_example.pdf',bbox_inches='tight')
+plt.savefig(output_base+'velpdf_example.pdf',bbox_inches='tight')
 

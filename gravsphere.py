@@ -250,7 +250,6 @@ codemode = 'plot'
 from gravsphere_initialise_Fornax import *
 #from gravsphere_initialise_Fornax_tides import *
 #from gravsphere_initialise_SMC import *
-#from gravsphere_initialise_SMC_posbeta import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *

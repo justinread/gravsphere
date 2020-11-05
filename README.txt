@@ -29,18 +29,6 @@ binulator, and link to its github page:
 https://github.com/justinread/gravsphere
 
 
-:::: EXAMPLES ::::
-Many examples are included for you to play with. You can run
-all of the Milky Way "classical" dwarfs (and CVnI), two
-Gaia Challenge mocks, and more. Please have a look in ./Data/
-for these examples, and see:
-
-binulator_initialise_<name>.py
-gravsphere_initialise_<name>.py 
-
-for example initialisation scripts for running these models.
-
-
 :::: BUGS ::::
 If you spot any bugs, please let me know!
 
@@ -61,5 +49,59 @@ independent public release here:
 https://github.com/AnnaGenina/pyGravSphere
 
 
-Justin Read
+:::: EXAMPLES ::::
+Many examples are included for you to play with. You can run
+all of the Milky Way "classical" dwarfs (and CVnI), two
+Gaia Challenge mocks, and more. Please have a look in ./Data/
+for these examples, and see:
+
+binulator_initialise_<name>.py
+gravsphere_initialise_<name>.py 
+
+for example initialisation scripts for running these models.
+
+To run an example: 
+
+1. First set the Output directory, <output_base> in
+   contsants.py
+
+2. Next select the galaxy to analyse in binulator.py. For
+   example to run the Gaia Challenge PlumCuspOm mock, 
+   select: from binulator_initialise_PlumCuspOm import *
+
+3. You will need to set up folders inside your output directory
+   to store the output files. For PlumCuspOm, for example,
+   this should be <out_base>/GCmock/PlumCuspOm/ for 1000 tracers.
+   This folder structure is defined by <outfile> in:
+   binulator_initalise_PlumCoreOm.py
+
+4. You can now run python binulator.py
+
+5. Once binulator has run, you will need to add further folders
+   for the gravsphere output. Normally, you will want to run with
+   "VirialShape" parameters, which requires:
+   <out_base>/GCmock/PlumCuspOm/VirialShape/
+   Propermotion output requires similarly:
+   <out_base>/GCmock/PlumCuspOm/Propermotion/
+   If using the "cosmo_cprior = 'yes'" option, this will be stored
+   in a further subfolder:
+   <out_base>/GCmock/PlumCuspOm/VirialShape/CosmoC/
+
+6. Next, select the same galaxy in gravsphere.py to run. For
+   example to run the Gaia Challenge PlumCuspOm mock, 
+   select: from gravsphere_initialise_PlumCuspOm import *
+
+7. You can now run python gravsphere.py. You should run first with
+   codemode = 'run'. Once the run has completed, you can run 
+   again with codemode = 'plot' to produce some plots and output
+   ASCII files. This output will appear in the output folder
+   structure defined above.
+
+8. Note that both binulator and gravsphere can take some time to run.
+   On a fairly fast modern laptop, binulator can take up to an hour,
+   while gravsphere will need to run overnight.
+
+
+
+Justin Read | 04/11/20 
 

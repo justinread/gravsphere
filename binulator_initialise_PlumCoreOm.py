@@ -24,11 +24,11 @@ else:
         './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_10000_0_err.dat'
     #Number of stars per bin [-1 indicates that
     #binning was already done elsewhere]:
-    Nbinkin = 100
+    Nbinkin = 30
 Nbin = 100
 data_file_phot = \
     './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_10000_0_err.dat'
-outfile = './Output/GCmock/'+whichgal+'/'+whichgal
+outfile = output_base+'GCmock/'+whichgal+'/'+whichgal
 
 #Plot ranges:
 xpltmin = 1e-2

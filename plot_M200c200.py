@@ -49,5 +49,5 @@ for i in range(len(mWDM)):
             label=r'm$_X$=%.2f' % (mWDM[i]))
 
 plt.legend(fontsize=mylegendfontsize)
-plt.savefig('./Output/plot_M200c200.pdf',bbox_inches='tight')
+plt.savefig(output_base+'plot_M200c200.pdf',bbox_inches='tight')
 

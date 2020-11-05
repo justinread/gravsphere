@@ -7,8 +7,8 @@ from functions import *
 
 #Data files and output base filename:
 whichgal = 'SMCmock'
-infile = './Output/'+whichgal+'/'+whichgal
-outdirbase = './Output/'+whichgal+'/'
+infile = output_base+whichgal+'/'+whichgal
+outdirbase = output_base+whichgal+'/'
 
 #Plot ranges and sample points [-1 means auto-calculate]:
 rplot_inner = 1e-2
@@ -92,7 +92,7 @@ betnmin = 1.0
 betnmax = 3.0
 bet0min = -0.01
 bet0max = 0.01
-betinfmin = -1.0
+betinfmin = -0.1
 betinfmax = 1.0
 
 #CoreNFWtides priors:

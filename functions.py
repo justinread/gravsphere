@@ -793,11 +793,12 @@ def kurt_calc(theta):
 def vzfourfunc(ranal,rbin,vzfourbin,alp):
     #Interpolate and extrapolate
     #vzfour(R) over and beyond the data:
-    vzfourmean = np.sum(vzfourbin)/np.float(len(vzfourbin))
+#    vzfourmean = np.sum(vzfourbin)/np.float(len(vzfourbin))
+#    vzfour = np.interp(ranal,rbin,vzfourbin)
+#    sel = ranal >= np.max(rbin)
+#    vzfour[sel] = \
+#        vzfourmean*(ranal[sel]/np.max(rbin))**(-alp)        
     vzfour = np.interp(ranal,rbin,vzfourbin)
-    sel = ranal >= np.max(rbin)
-    vzfour[sel] = \
-        vzfourmean*(ranal[sel]/np.max(rbin))**(-alp)
     return vzfour
     
 #For calculating the Likelihood from the vsp array:

@@ -6,7 +6,7 @@ from constants import *
 whichgal = 'Fornax'
 infile_kin = './Data/Walker_dwarfs/for_justin1_spec.dat'
 infile_phot = './Data/Walker_dwarfs/for_justin1_phot.dat'
-outfile = './Output/'+whichgal+'/'+whichgal
+outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
 xpltmin = 1e-2
@@ -20,8 +20,8 @@ vzfourpltmax = 5e6
 
 #Number of stars per bin [-1 indicates that
 #binning was already done elsewhere]:
-Nbin = 25
-Nbinkin = 25
+Nbin = 30
+Nbinkin = 30
 
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass

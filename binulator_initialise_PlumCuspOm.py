@@ -3,7 +3,7 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-nstars = 1000
+nstars = 10000
 if (nstars == 1000):
     whichgal = 'PlumCuspOm'
     data_file_kin = \
@@ -24,11 +24,11 @@ else:
         './Data/GC_mock/PlumCuspOm/gs010_bs050_rcrs010_rarc100_cusp_0064mpc3_df_10000_0_err.dat'
     #Number of stars per bin [-1 indicates that
     #binning was already done elsewhere]:
-    Nbinkin = 100
+    Nbinkin = 30
 Nbin = 100
 data_file_phot = \
     './Data/GC_mock/PlumCuspOm/gs010_bs050_rcrs010_rarc100_cusp_0064mpc3_df_10000_0_err.dat'
-outfile = './Output/GCmock/'+whichgal+'/'+whichgal
+outfile = output_base+'GCmock/'+whichgal+'/'+whichgal
 
 #Plot ranges:
 xpltmin = 1e-2

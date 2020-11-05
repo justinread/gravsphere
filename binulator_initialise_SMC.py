@@ -6,7 +6,7 @@ from constants import *
 whichgal = 'SMC'
 infile_kin = './Data/SMC/Obs_Radial_Vel_raw.dat'
 infile_phot = './Data/SMC/Zaritsky_counts.dat'
-outfile = './Output/'+whichgal+'/'+whichgal
+outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
 xpltmin = 1e-2

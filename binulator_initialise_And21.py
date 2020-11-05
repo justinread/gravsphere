@@ -6,7 +6,7 @@ from constants import *
 whichgal = 'And21'
 infile_kin = './Data/And21/And21_spec.asc'
 infile_phot = './Data/And21/And21_phot.asc'
-outfile = './Output/'+whichgal+'/'+whichgal
+outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
 xpltmin = 1e-2

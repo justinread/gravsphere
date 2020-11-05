@@ -215,8 +215,6 @@ surfbest = threeplumsurf(Rplot,p0best[0],p0best[1],p0best[2],\
                          p0best[3],p0best[4],p0best[5])
 plt.plot(Rplot,surfbest,color='red',linewidth=2)
 
-plt.axvline(x=Rhalf,color='black',alpha=0.5,\
-            linewidth=mylinewidth)
 plt.axvline(x=Rhalf_int[0],color='blue',alpha=0.5,\
             linewidth=mylinewidth)
 
@@ -245,8 +243,6 @@ denbest = threeplumden(Rplot,p0best[0],p0best[1],p0best[2],\
                          p0best[3],p0best[4],p0best[5])
 plt.plot(Rplot,denbest,color='red',linewidth=2)
 
-plt.axvline(x=Rhalf,color='black',alpha=0.5,\
-            linewidth=mylinewidth)
 plt.axvline(x=Rhalf_int[0],color='blue',alpha=0.5,\
             linewidth=mylinewidth)
 
@@ -275,8 +271,6 @@ massbest = threeplummass(Rplot,p0best[0],p0best[1],p0best[2],\
                          p0best[3],p0best[4],p0best[5])
 plt.plot(Rplot,massbest,color='red',linewidth=2)
 
-plt.axvline(x=Rhalf,color='black',alpha=0.5,\
-            linewidth=mylinewidth)
 plt.axvline(x=Rhalf_int[0],color='blue',alpha=0.5,\
             linewidth=mylinewidth)
 
@@ -312,8 +306,6 @@ if (quicktestSB == 'no'):
              linewidth=mylinewidth,marker='o',\
              markersize=5,alpha=0.5)
 
-    plt.axvline(x=Rhalf,color='black',alpha=0.5,\
-            linewidth=mylinewidth)
     plt.axvline(x=Rhalf_int[0],color='blue',alpha=0.5,\
             linewidth=mylinewidth)
 
@@ -351,8 +343,6 @@ if (quicktestSB == 'no'):
     for i in range(nsamples):
         plt.plot(ranal,vzfourstore[i,:],linewidth=1,alpha=0.25)
 
-    plt.axvline(x=Rhalf,color='black',alpha=0.5,\
-            linewidth=mylinewidth)
     plt.axvline(x=Rhalf_int[0],color='blue',alpha=0.5,\
             linewidth=mylinewidth)
 

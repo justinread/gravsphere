@@ -6,7 +6,7 @@ from constants import *
 whichgal = 'SMCmock'
 infile_kin = './Data/SMC_mock/Sims_Radial_Vel_raw.dat'
 infile_phot = './Data/SMC_mock/Sims_Star_counts_full.dat'
-outfile = './Output/'+whichgal+'/'+whichgal
+outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
 xpltmin = 1e-2
@@ -29,7 +29,7 @@ Nbinkin = 150
 p0in_min = np.array([1e-4,1e-4,1e-4,0.01,0.01,0.01])
 p0in_max = np.array([1e2,1e2,1e2,2.0,2.0,5.0])
 Rfitmin = -1
-Rfitmax = 2.0
+Rfitmax = 1.0
 
 #Priors for binulator velocity dispersion calculation. 
 #Array values are: [vzmean,alp,bet,backamp,backmean,backsig], 

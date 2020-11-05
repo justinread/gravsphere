@@ -6,7 +6,7 @@ from constants import *
 whichgal = 'Draco'
 infile_kin = './Data/Walker_dwarfs/dra_justin1_spec.dat'
 infile_phot = './Data/Walker_dwarfs/dra_justin1_phot.dat'
-outfile = './Output/'+whichgal+'/'+whichgal
+outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
 xpltmin = 1e-2
