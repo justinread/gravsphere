@@ -6,7 +6,7 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-nstars = 1000
+nstars = 10000
 if (nstars == 1000):
     whichgal = 'PlumCuspOm'
 else:
@@ -121,10 +121,4 @@ delhigh = 5.0
 get_Juse = get_J
 calc_Jfac = 'no'
 alpha_Jfac_deg = 0.5 
-
-  
-
-
-
-
 

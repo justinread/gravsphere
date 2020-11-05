@@ -27,4 +27,4 @@ OmegaM = OmegaM_h2 / h**2.0
 Guse = G * Msun / kpc
 
 #Output directory:
-output_base = './Output/'
+output_base = '/vol/ph/astro_temp/jread/gravsphere/Output/'

@@ -270,10 +270,9 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
 
     #Extract results + errors:
     burn = np.int(0.75*nmodels)
-    chisq = -2.0 * sampler.lnprobability[:, burn:].reshape(-1)
-    par_test = np.zeros((len(chisq),ndims), dtype='float')
-    for i in range(ndims):
-        par_test[:,i] = sampler.chain[:, burn:, i].reshape(-1)
+    chisq = -2.0 * \
+            sampler.get_log_prob(discard=burn, flat=True)
+    par_test = sampler.get_chain(discard=burn, flat=True)
 
     #Store best fit model:
     index = np.argsort(chisq)

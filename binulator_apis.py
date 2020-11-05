@@ -28,9 +28,7 @@ from functions import *
 
 def walker_api(infile_phot,infile_kin,dgal_kpc,Nbin):    
     #First surface density:
-    f = open(infile_phot,'r')
-    data_phot = np.genfromtxt(f)
-    f.close()
+    data_phot = np.genfromtxt(infile_phot,dtype='f8')
     R = data_phot[:,4]*dgal_kpc/arcmin
     ms = data_phot[:,10]
     print('Total effective no. of tracers (photometric):', np.sum(ms))
@@ -39,9 +37,7 @@ def walker_api(infile_phot,infile_kin,dgal_kpc,Nbin):
     print('Data Rhalf:', Rhalf)
 
     #Now velocity data:
-    f = open(infile_kin,'r')
-    data_kin_vs = np.genfromtxt(f)
-    f.close()
+    data_kin_vs = np.genfromtxt(infile_kin,dtype='f8')
     gotvz = np.where(data_kin_vs[:,6])[0]
     Rkin = data_kin_vs[gotvz,4]*dgal_kpc/arcmin
     vz = data_kin_vs[gotvz,6]
@@ -54,9 +50,7 @@ def walker_api(infile_phot,infile_kin,dgal_kpc,Nbin):
 
 def collins_api(infile_phot,infile_kin,Nbin):    
     #First surface density:
-    f = open(infile_phot,'r')
-    data_phot = np.genfromtxt(f)
-    f.close()
+    data_phot = np.genfromtxt(infile_phot,dtype='f8')
     R = data_phot[:,0]/1000.0
     ms = data_phot[:,1]
     print('Total effective no. of tracers (photometric):', np.sum(ms))
@@ -65,9 +59,7 @@ def collins_api(infile_phot,infile_kin,Nbin):
     print('Data Rhalf:', Rhalf)
 
     #Now velocity data:
-    f = open(infile_kin,'r')
-    data_kin_vs = np.genfromtxt(f)
-    f.close()
+    data_kin_vs = np.genfromtxt(infile_kin,dtype='f8')
     Rkin = data_kin_vs[:,0]/1000.0
     vz = data_kin_vs[:,1]
     vzerr = data_kin_vs[:,2]
@@ -79,9 +71,7 @@ def collins_api(infile_phot,infile_kin,Nbin):
     
 def smc_api(infile_phot,infile_kin):    
     #First surface density:
-    f = open(infile_phot,'r')
-    data_phot = np.genfromtxt(f)
-    f.close()
+    data_phot = np.genfromtxt(infile_phot,dtype='f8')
     
     #This is already binned:
     rbin = data_phot[:,2]
@@ -96,9 +86,7 @@ def smc_api(infile_phot,infile_kin):
     print('Data Rhalf:', Rhalf)
 
     #Now velocity data:
-    f = open(infile_kin,'r')
-    data_kin = np.genfromtxt(f)
-    f.close()
+    data_kin = np.genfromtxt(infile_kin,dtype='f8')
     Rkin = data_kin[:,2]
     vz = data_kin[:,0]
     vzerr = data_kin[:,1]
@@ -110,9 +98,7 @@ def smc_api(infile_phot,infile_kin):
     
 def gc_api(data_file_phot,data_file_kin,Nbin): 
     #Read in the data:
-    f = open(data_file_phot,'r')
-    data = np.genfromtxt(f)
-    f.close()
+    data = np.genfromtxt(data_file_phot,dtype='f8')
 
     #Surface density:
     R = np.sqrt(data[:,0]**2.0 + data[:,1]**2.0)
@@ -123,9 +109,7 @@ def gc_api(data_file_phot,data_file_kin,Nbin):
     print('Data Rhalf:', Rhalf)
     
     #Velocity data:
-    f = open(data_file_kin,'r')
-    data = np.genfromtxt(f)
-    f.close()
+    data = np.genfromtxt(data_file_kin,dtype='f8')
     Rkin = np.sqrt(data[:,0]**2.0 + data[:,1]**2.0)
     vz = data[:,5]
     vzerr = np.zeros(len(vz))+2.0

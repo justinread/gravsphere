@@ -36,7 +36,8 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
         for i in range(ndims):
             minarr[i] = p0in_min[i]
             maxarr[i] = p0in_max[i]
-        if all(minarr < thetau < maxarr for minarr,thetau,maxarr in \
+        if all(minarr < thetau < maxarr for \
+               minarr,thetau,maxarr in \
                zip(minarr,theta,maxarr)):
             return 0.0
         return -np.inf
@@ -64,7 +65,7 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
     
     #Emcee parameters:
     nwalkers = 250
-    nmodels = 1000
+    nmodels = 2500
 
     #Starting guess
     ndims = len(p0in_min)
@@ -76,17 +77,17 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
             p0in_startmax[i],nwalkers)
 
     #Run chains:
-    sampler = emcee.EnsembleSampler(nwalkers, ndims, lnprob_surf, \
+    sampler = emcee.EnsembleSampler(nwalkers, ndims, \
+                lnprob_surf, \
                 args=(Rfit, surfdenfit, surfdenerrfit))
     sampler.run_mcmc(pos, nmodels)
 
     #Extract results + errors:
-    burn = np.int(0.5*nmodels)
-    chisq = -2.0 * sampler.lnprobability[:, burn:].reshape(-1)
-    par_test = np.zeros((len(chisq),ndims), dtype='float')
-    for i in range(ndims):
-        par_test[:,i] = sampler.chain[:, burn:, i].reshape(-1)
-
+    burn = np.int(0.75*nmodels)
+    chisq = -2.0 * \
+            sampler.get_log_prob(discard=burn, flat=True)
+    par_test = sampler.get_chain(discard=burn, flat=True)
+    
     #Store best fit model:
     index = np.argsort(chisq)
     p0best = par_test[index[0],:]
@@ -114,7 +115,8 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
 
     #Solve for confidence intervals:
     for j in range(len(Rplot)):
-        surf_int[0,j], surf_int[1,j], surf_int[2,j], surf_int[3,j], \
+        surf_int[0,j], surf_int[1,j], surf_int[2,j], \
+            surf_int[3,j], \
             surf_int[4,j], surf_int[5,j], surf_int[6,j] = \
             calcmedquartnine(surf_store[j,:])
     Rhalf_int[0], Rhalf_int[1], Rhalf_int[2], Rhalf_int[3], \

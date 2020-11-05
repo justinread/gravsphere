@@ -229,6 +229,10 @@ from binulator_velfuncs import *
 from figures import * 
 import sys
 
+#Suppress warning output:
+import warnings
+warnings.simplefilter("ignore")
+
 #Welcome blurb: 
 print('###### GRAVSPHERE VERSION 1.0 ######\n')
 
@@ -237,23 +241,23 @@ print('###### GRAVSPHERE VERSION 1.0 ######\n')
 #Code parameters:
 datadir = './Data/'
 nwalkers = 250
-nmodels = 10000
+nmodels = 100
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 ###########################################################
 #Input data selection here:
 
 #MW satellites:
 #from gravsphere_initialise_Draco import *
-from gravsphere_initialise_Fornax import *
+#from gravsphere_initialise_Fornax import *
 #from gravsphere_initialise_Fornax_tides import *
 #from gravsphere_initialise_SMC import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
-#from gravsphere_initialise_PlumCuspOm import *
+from gravsphere_initialise_PlumCuspOm import *
 #from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
@@ -309,29 +313,19 @@ elif (propermotion == 'yes'):
 #binulator), then this can be improved. The errors on the 
 #VSPs are rarely Gaussian symmetric and so we use the 
 #correct likelihood function from the binulator in this case.
-f = open(infile+'_p0best.txt','r')
-data = np.genfromtxt(f)
-f.close()
+data = np.genfromtxt(infile+'_p0best.txt',dtype='f8')
 pfits = data
-f = open(infile+'_Rhalf.txt','r')
-data = np.genfromtxt(f)
-f.close()
+data = np.genfromtxt(infile+'_Rhalf.txt',dtype='f8')
 Rhalf = data[0]
-f = open(infile+'_surfden.txt','r')
-data = np.genfromtxt(f)
-f.close()
+data = np.genfromtxt(infile+'_surfden.txt',dtype='f8')
 rbin_phot = data[:,0]
 surfden = data[:,1]
 surfdenerr = data[:,2]
-f = open(infile+'_vel.txt','r')
-data = np.genfromtxt(f)
-f.close()
+data = np.genfromtxt(infile+'_vel.txt',dtype='f8')
 rbin_kin = data[:,0]
 sigpmean = data[:,4]
 sigperr = (data[:,6]-data[:,5])/2.0
-f = open(infile+'_vsps.txt','r')
-data = np.genfromtxt(f)
-f.close()
+data = np.genfromtxt(infile+'_vsps.txt',dtype='f8')
 vs1bin = data[0,0]
 vs1err = (data[0,2]-data[0,1])/2.0
 vs1lo = data[0,1]
@@ -340,13 +334,9 @@ vs2bin = data[1,0]
 vs2err = (data[1,2]-data[1,1])/2.0
 vs2lo = data[1,1]
 vs2hi = data[1,2]
-f = open(infile+'_vsp1full.txt','r')
-data = np.genfromtxt(f)
-f.close()
+data = np.genfromtxt(infile+'_vsp1full.txt',dtype='f8')
 vsp1val, vsp1pdf = vsppdf_calc(data)
-f = open(infile+'_vsp2full.txt','r')
-data = np.genfromtxt(f)
-f.close()
+data = np.genfromtxt(infile+'_vsp2full.txt',dtype='f8')
 vsp2val, vsp2pdf = vsppdf_calc(data)
 
 print('Inner/outer radial bin (phot):', \
@@ -518,10 +508,12 @@ if (codemode == 'run'):
     print('Running chains ... ')
     if (propermotion == 'no'):
         if (virialshape == 'no'):
-            sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, \
+            sampler = \
+                emcee.EnsembleSampler(nwalkers, ndim, lnprob, \
                         args=(x1, x2, y1, y1err, y2, y2err))
         else:
-            sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, \
+            sampler = \
+                emcee.EnsembleSampler(nwalkers, ndim, lnprob, \
                         args=(x1, x2, y1, y1err, y2, y2err, \
                               y3, y3err, y4, y4err))
     elif (propermotion == 'yes'):
@@ -548,7 +540,8 @@ if (codemode == 'run'):
         for i in range(len(rbin_kin)):
             f.write('%f %f %f %f %f %f %f\n' % \
                    (rbin_kin[i],sigpmean[i],sigperr[i],\
-                    sigpmr[i],sigpmrerr[i],sigpmt[i],sigpmterr[i]))
+                    sigpmr[i],sigpmrerr[i],sigpmt[i],\
+                    sigpmterr[i]))
         f.close()
         f = open(outdir+'output_surfden.txt','w')
         for i in range(len(rbin_phot)):
@@ -557,10 +550,9 @@ if (codemode == 'run'):
         f.close()
 
     burn = np.int(0.75*nmodels)
-    chisq = -2.0 * sampler.lnprobability[:, burn:].reshape(-1)
-    par_test = np.zeros((len(chisq),ndim), dtype='float')
-    for i in range(ndim):
-        par_test[:,i] = sampler.chain[:, burn:, i].reshape(-1)
+    chisq = -2.0 * \
+            sampler.get_log_prob(discard=burn, flat=True)
+    par_test = sampler.get_chain(discard=burn, flat=True)
 
     f = open(outdir+'Boutput_chain.txt','w')
     for i in range(len(chisq)):
@@ -580,22 +572,19 @@ elif (codemode == 'plot'):
 
     #Read in the data:
     if (propermotion == 'no'):
-        f = open(outdir+'output_sigp.txt','r')
-        data_in = np.genfromtxt(f)
-        f.close()
+        data_in = \
+            np.genfromtxt(outdir+'output_sigp.txt',dtype='f8')
         rbin_kin = data_in[:,0]
         sigpmean = data_in[:,1]
         sigperr = data_in[:,2]
-        f = open(outdir+'output_surfden.txt','r')
-        data_in = np.genfromtxt(f)
-        f.close()
+        data_in = \
+            np.genfromtxt(outdir+'output_surfden.txt',dtype='f8')
         rbin_phot = data_in[:,0]
         surfden = data_in[:,1]
         surfdenerr = data_in[:,2]
     elif (propermotion == 'yes'):
-        f = open(outdir+'output_sigs.txt','r')
-        data_in = np.genfromtxt(f)
-        f.close()
+        data_in = \
+            np.genfromtxt(outdir+'output_sigs.txt',dtype='f8')
         rbin_kin = data_in[:,0]
         sigpmean = data_in[:,1]
         sigperr = data_in[:,2]
@@ -604,9 +593,8 @@ elif (codemode == 'plot'):
         sigpmt = data_in[:,5]
         sigpmterr = data_in[:,6]
 
-        f = open(outdir+'output_surfden.txt','r')
-        data_in = np.genfromtxt(f)
-        f.close()
+        data_in = \
+            np.genfromtxt(outdir+'output_surfden.txt',dtype='f8')
         rbin_phot = data_in[:,0]
         surfden = data_in[:,1]
         surfdenerr = data_in[:,2]
@@ -628,13 +616,12 @@ elif (codemode == 'plot'):
                        np.int(rplot_pnts))
 
     #Load in the emcee data:
-    f = open(outdir+'Boutput_chain.txt','r')
-    data_in = np.genfromtxt(f)
+    data_in = \
+        np.genfromtxt(outdir+'Boutput_chain.txt',dtype='f8')
     chisq = data_in[:,0]
     par_test = np.zeros((len(chisq),ndim), dtype='float')
     for i in range(1,ndim+1):
         par_test[:,i-1] = data_in[:,i]
-    f.close()
 
     #Make sure no *really* bad models remain in the chains. 
     #In practice, this cut makes no difference to the end result.

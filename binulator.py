@@ -25,6 +25,10 @@ from binulator_velfuncs import *
 from figures import * 
 import sys
 
+#Suppress warning output:
+import warnings
+warnings.simplefilter("ignore")
+
 #Welcome blurb: 
 print('###### BINULATOR VERSION 1.0 ######\n')
 

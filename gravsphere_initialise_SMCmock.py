@@ -35,14 +35,14 @@ virialshape = 'yes'
 #truemass(ranal),trueden(ranal),truedlnrhodlnr(ranal).
 #Pass a zero array if one of these is not available.
 overtrue = 'yes'
-f = open('./Data/SMC_mock/SMCmock_density.dat')
-data = np.genfromtxt(f)
-f.close()
+data = \
+    np.genfromtxt('./Data/SMC_mock/SMCmock_density.dat',\
+                  dtype='f8')
 ranal = data[:,2]
 trueden = data[:,0]
-f = open('./Data/SMC_mock/SMCmock_anisotropy.dat')
-data = np.genfromtxt(f)
-f.close()
+data = \
+    np.genfromtxt('./Data/SMC_mock/SMCmock_anisotropy.dat',\
+                  dtype='f8')
 betatrue = np.interp(ranal,data[:,2],data[:,0])
 betatruestar = betatrue/(2.0-betatrue)
 truemass = np.zeros(len(ranal))
