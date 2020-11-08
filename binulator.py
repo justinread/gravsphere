@@ -86,9 +86,27 @@ if (vfitmax != 0):
 if (quicktestSB == 'yes'):
     print('### Only fitting the surface brightness profile ###')
 print('Fitting the surface density profile:\n')
+
+#Cut back to fit range:
+if (Rfitmin > 0):
+    Rfit_t = R[R > Rfitmin]
+    surfdenfit_t = surfden[R > Rfitmin]
+    surfdenerrfit_t = surfdenerr[R > Rfitmin]
+else:
+    Rfit_t = R
+    surfdenfit_t = surfden
+    surfdenerrfit_t = surfdenerr
+if (Rfitmax > 0):
+    Rfit = Rfit_t[Rfit_t < Rfitmax]
+    surfdenfit = surfdenfit_t[Rfit_t < Rfitmax]
+    surfdenerrfit = surfdenerrfit_t[Rfit_t < Rfitmax]
+else:
+    Rfit = Rfit_t
+    surfdenfit = surfdenfit_t
+    surfdenerrfit = surfdenerrfit_t
+    
 Rplot,surf_int,Rhalf_int,p0best = \
-    tracerfit(R,surfden,surfdenerr,\
-              Rfitmin,Rfitmax,\
+    tracerfit(Rfit,surfdenfit,surfdenerrfit,\
               p0in_min,p0in_max)
 print('Fitted Rhalf: %f -%f +%f' % \
     (Rhalf_int[0],Rhalf_int[0]-Rhalf_int[1],\
@@ -144,9 +162,9 @@ if (quicktestSB == 'no'):
     #Store the surface density, velocity dispersions, VSPs,
     #best fit surfden parameters and Rhalf for GravSphere:
     f = open(outfile+'_surfden.txt','w')
-    for i in range(len(R)):
+    for i in range(len(Rfit)):
         f.write('%f %f %f\n' % \
-            (R[i], surfden[i], surfdenerr[i]))
+            (Rfit[i], surfdenfit[i], surfdenerrfit[i]))
     f.close()
     f = open(outfile+'_p0best.txt','w')
     for i in range(len(p0best)):

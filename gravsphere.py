@@ -240,8 +240,8 @@ print('###### GRAVSPHERE VERSION 1.0 ######\n')
 ###########################################################
 #Code parameters:
 datadir = './Data/'
-nwalkers = 250
-nmodels = 100
+nwalkers = 1000
+nmodels = 5000
 
 #Codemode [run or plot]:
 codemode = 'run'
@@ -253,11 +253,11 @@ codemode = 'run'
 #from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_Fornax import *
 #from gravsphere_initialise_Fornax_tides import *
-#from gravsphere_initialise_SMC import *
+from gravsphere_initialise_SMC import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
-from gravsphere_initialise_PlumCuspOm import *
+#from gravsphere_initialise_PlumCuspOm import *
 #from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:

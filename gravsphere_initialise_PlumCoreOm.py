@@ -6,9 +6,11 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-nstars = 10000
+nstars = 100
 if (nstars == 1000):
     whichgal = 'PlumCoreOm'
+elif (nstars == 100):
+    whichgal = 'PlumCoreOm100'
 else:
     whichgal = 'PlumCoreOm10000'
 infile = output_base+'GCmock/'+whichgal+'/'+whichgal

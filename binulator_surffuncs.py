@@ -6,7 +6,7 @@ from functions import *
 import emcee
 
 #Functions for emcee (surface density):
-def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
+def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
     #Code to fit the surface density profile with
     #a three-Plummer model:
 
@@ -45,24 +45,6 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
     lnprior_surf = lambda theta: \
         lnprior_set_surf(theta,p0in_min,p0in_max)
 
-    #Cut back to fit range:
-    if (Rfitmin > 0):
-        Rfit_t = R[R > Rfitmin]
-        surfdenfit_t = surfden[R > Rfitmin]
-        surfdenerrfit_t = surfdenerr[R > Rfitmin]
-    else:
-        Rfit_t = R
-        surfdenfit_t = surfden
-        surfdenerrfit_t = surfdenerr
-    if (Rfitmax > 0):
-        Rfit = Rfit_t[Rfit_t < Rfitmax]
-        surfdenfit = surfdenfit_t[Rfit_t < Rfitmax]
-        surfdenerrfit = surfdenerrfit_t[Rfit_t < Rfitmax]
-    else:
-        Rfit = Rfit_t
-        surfdenfit = surfdenfit_t
-        surfdenerrfit = surfdenerrfit_t
-    
     #Emcee parameters:
     nwalkers = 250
     nmodels = 2500
@@ -79,7 +61,7 @@ def tracerfit(R,surfden,surfdenerr,Rfitmin,Rfitmax,p0in_min,p0in_max):
     #Run chains:
     sampler = emcee.EnsembleSampler(nwalkers, ndims, \
                 lnprob_surf, \
-                args=(Rfit, surfdenfit, surfdenerrfit))
+                args=(R, surfden, surfdenerr))
     sampler.run_mcmc(pos, nmodels)
 
     #Extract results + errors:

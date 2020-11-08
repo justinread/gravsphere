@@ -3,7 +3,7 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-nstars = 1000
+nstars = 10000
 if (nstars == 1000):
     whichgal = 'PlumCuspOm'
     data_file_kin = \
@@ -24,7 +24,7 @@ else:
         './Data/GC_mock/PlumCuspOm/gs010_bs050_rcrs010_rarc100_cusp_0064mpc3_df_10000_0_err.dat'
     #Number of stars per bin [-1 indicates that
     #binning was already done elsewhere]:
-    Nbinkin = 30
+    Nbinkin = 100
 Nbin = 100
 data_file_phot = \
     './Data/GC_mock/PlumCuspOm/gs010_bs050_rcrs010_rarc100_cusp_0064mpc3_df_10000_0_err.dat'
@@ -53,8 +53,8 @@ Rfitmax = -1
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-0.1,1.0,1.0,1e-5,-300.0,25.0])
-p0vin_max = np.array([0.1,25.0,5.0,1e-4,300.0,300.0])
+p0vin_min = np.array([-0.1,1.0,0.5,1e-5,-300.0,25.0])
+p0vin_max = np.array([0.1,25.0,2.0,1e-4,300.0,300.0])
 vfitmin = 0
 vfitmax = 0
 

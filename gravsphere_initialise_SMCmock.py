@@ -11,16 +11,16 @@ infile = output_base+whichgal+'/'+whichgal
 outdirbase = output_base+whichgal+'/'
 
 #Plot ranges and sample points [-1 means auto-calculate]:
-rplot_inner = 1e-2
-rplot_outer = 20.0
+rplot_inner = 1e-1
+rplot_outer = 10.0
 rplot_pnts = 100
-y_sigLOSmax = 15
-ymin_Sigstar = 1e-6
+y_sigLOSmax = 10
+ymin_Sigstar = 1e-4
 ymax_Sigstar = 1e-1
 yMlow = 1e4
 yMhigh = 1e10
-yrholow = 1e4
-yrhohigh = 1e9
+yrholow = 1e3
+yrhohigh = 1e8
 alp3sig = 0.0
 sigmlow = 1e-3
 sigmhigh = 5.0

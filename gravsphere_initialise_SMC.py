@@ -27,7 +27,7 @@ sigmhigh = 5.0
 
 #Code options:
 propermotion = 'no'
-virialshape = 'yes'
+virialshape = 'no'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -57,7 +57,7 @@ bar_pnts = 250
 
 #For surface density fit tracertol = [0,1] sets the spread 
 #around the best-fit value from the binulator.
-tracertol = 1e-4
+tracertol = 0.1
 
 #Cosmology priors on the coreNFWtides model. mWDM(keV) is
 #the mass of a thermal relic; <0 means CDM; sig_c200 is 
@@ -102,7 +102,7 @@ rthigh = 20.0
 logrtlow = np.log10(rtlow)
 logrthigh = np.log10(rthigh)
 dellow = 3.01
-delhigh = 5.0
+delhigh = 8.0
 
 
 ###########################################################

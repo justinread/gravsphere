@@ -3,7 +3,7 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-nstars = 1000
+nstars = 10000
 if (nstars == 1000):
     whichgal = 'PlumCoreOm'
     data_file_kin = \
@@ -24,7 +24,7 @@ else:
         './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_10000_0_err.dat'
     #Number of stars per bin [-1 indicates that
     #binning was already done elsewhere]:
-    Nbinkin = 30
+    Nbinkin = 100
 Nbin = 100
 data_file_phot = \
     './Data/GC_mock/PlumCoreOm/gs010_bs050_rcrs025_rarc100_core_0400mpc3_df_10000_0_err.dat'
