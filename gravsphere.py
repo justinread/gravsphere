@@ -244,16 +244,16 @@ nwalkers = 1000
 nmodels = 5000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 ###########################################################
 #Input data selection here:
 
 #MW satellites:
 #from gravsphere_initialise_Draco import *
-#from gravsphere_initialise_Fornax import *
+from gravsphere_initialise_Fornax import *
 #from gravsphere_initialise_Fornax_tides import *
-from gravsphere_initialise_SMC import *
+#from gravsphere_initialise_SMC import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *

@@ -6,7 +6,7 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-nstars = 100
+nstars = 10000
 if (nstars == 1000):
     whichgal = 'PlumCoreOm'
 elif (nstars == 100):

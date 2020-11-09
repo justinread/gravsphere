@@ -121,22 +121,22 @@ if (quicktestSB == 'no'):
     
     #Cut back to fit range:
     if (Rfitmin > 0):
-        Rfit_t = Rkin[Rkin > Rfitmin]
+        Rf_t = Rkin[Rkin > Rfitmin]
         vzfit_t = vz[Rkin > Rfitmin]
         vzerrfit_t = vzerr[Rkin > Rfitmin]
         msfit_t = mskin[Rkin > Rfitmin]
     else:
-        Rfit_t = Rkin
+        Rf_t = Rkin
         vzfit_t = vz
         vzerrfit_t = vzerr
         msfit_t = mskin
     if (Rfitmax > 0):
-        Rfit = Rfit_t[Rfit_t < Rfitmax]
-        vzfit = vzfit_t[Rfit_t < Rfitmax]
-        vzerrfit = vzerrfit_t[Rfit_t < Rfitmax]
-        msfit = msfit_t[Rfit_t < Rfitmax]
+        Rf = Rf_t[Rf_t < Rfitmax]
+        vzfit = vzfit_t[Rf_t < Rfitmax]
+        vzerrfit = vzerrfit_t[Rf_t < Rfitmax]
+        msfit = msfit_t[Rf_t < Rfitmax]
     else:
-        Rfit = Rfit_t
+        Rf = Rf_t
         vzfit = vzfit_t
         vzerrfit = vzerrfit_t
         msfit = msfit_t
@@ -150,7 +150,7 @@ if (quicktestSB == 'no'):
         backsigbin,backsigbinlo,backsigbinhi,\
         vsp1,vsp1lo,vsp1hi,vsp2,vsp2lo,vsp2hi,\
         ranal,vzfourstore,vsp1store,vsp2store = \
-            velfit(Rfit,vzfit,vzerrfit,msfit,Nbinkin,\
+            velfit(Rf,vzfit,vzerrfit,msfit,Nbinkin,\
                 vfitmin,vfitmax,\
                 p0vin_min,p0vin_max,p0best,\
                 alpmin,alpmax,nsamples,outfile)
