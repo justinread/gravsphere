@@ -244,16 +244,16 @@ nwalkers = 1000
 nmodels = 5000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 ###########################################################
 #Input data selection here:
 
 #MW satellites:
 #from gravsphere_initialise_Draco import *
-from gravsphere_initialise_Fornax import *
+#from gravsphere_initialise_Fornax import *
 #from gravsphere_initialise_Fornax_tides import *
-#from gravsphere_initialise_SMC import *
+from gravsphere_initialise_SMC import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
@@ -1533,21 +1533,33 @@ elif (codemode == 'plot'):
     #Calculate M200 +/- 68%:
     M200med, M200sixlow, M200sixhi,\
         M200ninelow, M200ninehi, \
-        M200nineninehi, M200nineninelow = calcmedquartnine(M200store)
+        M200nineninelow, M200nineninehi = calcmedquartnine(M200store)
     print('*******************************')
     print('M200 -/+ 68% :: ', M200med, M200sixlow, M200sixhi)
-
+    f = open(outdir+'output_M200vals.txt','w')
+    f.write('%f %f %f %f %f %f %f\n' % \
+            (M200med, M200sixlow, M200sixhi,\
+             M200ninelow, M200ninehi, \
+             M200nineninelow, M200nineninehi))
+    f.close()                                        
+    
     #And same for vmax:
     vmaxmed, vmaxsixlow, vmaxsixhi,\
         vmaxninelow, vmaxninehi, \
-        vmaxnineninehi, vmaxnineninelow = calcmedquartnine(vmaxstore)
+        vmaxnineninelow, vmaxnineninehi = calcmedquartnine(vmaxstore)
     print('*******************************')
     print('vmax -/+ 68% :: ', vmaxmed, vmaxsixlow, vmaxsixhi)           
+    f = open(outdir+'output_vmaxvals.txt','w')
+    f.write('%f %f %f %f %f %f %f\n' % \
+            (vmaxmed, vmaxsixlow, vmaxsixhi,\
+             vmaxninelow, vmaxninehi, \
+             vmaxnineninelow, vmaxnineninehi))
+    f.close()
     
     #And the same for rt: 
     rtmed, rtsixlow, rtsixhi,\
         rtninelow, rtninehi, \
-        rtnineninehi, rtnineninelow = calcmedquartnine(rtstore)
+        rtnineninelow, rtnineninehi = calcmedquartnine(rtstore)
     print('*******************************')
     print('rt -/+ 68% :: ', rtmed, rtsixlow, rtsixhi)
 

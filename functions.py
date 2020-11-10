@@ -485,32 +485,37 @@ def betaf(r,betpars):
 def binthedata(R,ms,Nbin):
     #Nbin is the number of particles / bin:
     index = np.argsort(R)
-    rbin = np.zeros(len(R))
+    right_bin_edge = np.zeros(len(R))
     norm = np.zeros(len(R))
-    surfden = np.zeros(len(R))
     cnt = 0
     jsum = 0
 
     for i in range(len(R)):
         if (jsum < Nbin):
             norm[cnt] = norm[cnt] + ms[index[i]]
-            rbin[cnt] = R[index[i]]
+            right_bin_edge[cnt] = R[index[i]]
             jsum = jsum + ms[index[i]]
         if (jsum >= Nbin):
             jsum = 0.0
             cnt = cnt + 1
     
-    rbin = rbin[:cnt]
+    right_bin_edge = right_bin_edge[:cnt]
     norm = norm[:cnt]
-    surfden = surfden[:cnt]
-
+    surfden = np.zeros(cnt)
+    rbin = np.zeros(cnt)
+    
     for i in range(len(rbin)):
         if (i == 0):
-            surfden[i] = norm[i] / (np.pi * rbin[i]**2.0)
+            surfden[i] = norm[i] / \
+                (np.pi*right_bin_edge[i]**2.0)
+            rbin[i] = right_bin_edge[i]/2.0
         else:
-            surfden[i] = norm[i] / (2.0*np.pi*rbin[i]*(rbin[i]-rbin[i-1]))
+            surfden[i] = norm[i] / \
+                (np.pi*right_bin_edge[i]**2.0-\
+                 np.pi*right_bin_edge[i-1]**2.0)
+            rbin[i] = (right_bin_edge[i]+right_bin_edge[i-1])/2.0
     surfdenerr = surfden / np.sqrt(Nbin)
- 
+    
     #Calculate the projected half light radius &
     #surface density integral:
     Rhalf, Menc_tot = surf_renorm(rbin,surfden)

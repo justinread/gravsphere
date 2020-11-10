@@ -29,6 +29,7 @@ def velfit(R,vz,vzerr,ms,Nbin,\
     #the mean and dispersion of the background
     #model.
     rbin = np.zeros(len(R))
+    right_bin_edge = np.zeros(len(R))
     vzmeanbin = np.zeros(len(R))
     vzmeanbinlo = np.zeros(len(R))    
     vzmeanbinhi = np.zeros(len(R))    
@@ -67,7 +68,7 @@ def velfit(R,vz,vzerr,ms,Nbin,\
             vzstore[js] = vz[index[i]]
             vzerrstore[js] = vzerr[index[i]]
             msstore[js] = ms[index[i]]
-            rbin[cnt] = R[index[i]]
+            right_bin_edge[cnt] = R[index[i]]
             jsum = jsum + ms[index[i]]
             js = js + 1
         if (jsum >= Nbin):
@@ -151,6 +152,11 @@ def velfit(R,vz,vzerr,ms,Nbin,\
                 bbox_inches='tight')
 
             #Move on to the next bin:
+            if (cnt == 0):
+                rbin[cnt] = right_bin_edge[cnt]/2.0
+            else:
+                rbin[cnt] = \
+                    (right_bin_edge[cnt] + right_bin_edge[cnt-1])/2.0
             jsum = 0.0
             js = 0
             cnt = cnt + 1
@@ -184,6 +190,20 @@ def velfit(R,vz,vzerr,ms,Nbin,\
     surfden = threeplumsurf(ranal,p0best[0],p0best[1],p0best[2],\
                             p0best[3],p0best[4],p0best[5])
 
+    #Regularize:
+    regularize = 'no'
+    if (regularize == 'yes'):
+        from scipy.signal import savgol_filter
+        #Set filter size and regularize, if
+        #enough data to warrant it:
+        if (cnt > 4):
+            filt_size = cnt / 5.0
+            if (filt_size % 2 == 0): filt_size += 1
+            if (filt_size < 3):
+                filt_size = 3
+            if (filt_size > 21):
+                filt_size = 21
+            
     #This assumes a flat or linearly falling relation
     #beyond the last data point:
     vsp1 = np.zeros(nsamples)
@@ -194,7 +214,15 @@ def velfit(R,vz,vzerr,ms,Nbin,\
     for i in range(nsamples):
         vzfour_thissample = vzfour_pdf[i,:cnt]
         alp = np.random.random()*(alpmax-alpmin)+alpmin
-        vzfour = vzfourfunc(ranal,rbin,vzfour_thissample,alp)
+
+        #Regularize:
+        vzfour_reg = vzfour_thissample
+        if (regularize == 'yes'):
+            if (cnt > 4):
+                vzfour_reg = \
+                    savgol_filter(vzfour_thissample,np.int(filt_size),2)
+        vzfour = vzfourfunc(ranal,rbin,vzfour_reg,alp)
+
         vzfourstore[i,:] = vzfour
         vsp1[i] = integrator(surfden*vzfour*ranal,ranal)
         vsp2[i] = integrator(surfden*vzfour*ranal**3.0,ranal)

@@ -43,8 +43,8 @@ vzfourpltmax = 1e6
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
 #and scale length. [-1 means use full radial range].
-p0in_min = np.array([1e-4,1e-4,1e-4,0.01,0.2,0.2])
-p0in_max = np.array([1e2,1e2,1e2,1.0,1.0,1.0])
+p0in_min = np.array([1e-4,1e-5,1e-5,0.01,0.2,0.2])
+p0in_max = np.array([1e2,1e-4,1e-4,1.0,1.0,1.0])
 Rfitmin = -1
 Rfitmax = -1
 
@@ -53,7 +53,7 @@ Rfitmax = -1
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-0.1,1.0,0.5,1e-5,-300.0,25.0])
+p0vin_min = np.array([-0.1,1.0,1.0,1e-5,-300.0,25.0])
 p0vin_max = np.array([0.1,25.0,5.0,1e-4,300.0,300.0])
 vfitmin = 0
 vfitmax = 0
