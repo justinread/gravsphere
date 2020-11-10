@@ -197,13 +197,14 @@ def velfit(R,vz,vzerr,ms,Nbin,\
         #Set filter size and regularize, if
         #enough data to warrant it:
         if (cnt > 4):
-            filt_size = cnt / 5.0
+            filt_size = np.int(cnt / 5.0)
             if (filt_size % 2 == 0): filt_size += 1
             if (filt_size < 3):
                 filt_size = 3
             if (filt_size > 21):
                 filt_size = 21
-            
+        print('Applying regularization filter, size:', filt_size)
+    
     #This assumes a flat or linearly falling relation
     #beyond the last data point:
     vsp1 = np.zeros(nsamples)

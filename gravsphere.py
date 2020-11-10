@@ -244,7 +244,7 @@ nwalkers = 1000
 nmodels = 5000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 ###########################################################
 #Input data selection here:

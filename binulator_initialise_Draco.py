@@ -6,6 +6,7 @@ from constants import *
 whichgal = 'Draco'
 infile_kin = './Data/Walker_dwarfs/dra_justin1_spec.dat'
 infile_phot = './Data/Walker_dwarfs/dra_justin1_phot.dat'
+infile_jardel = './Data/Walker_dwarfs/jardel_virus.txt'
 outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
@@ -58,3 +59,29 @@ dgal_kpc = 76.0
 R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
     walker_api(infile_phot,infile_kin,dgal_kpc,Nbin)
 use_dataRhalf = 'no'
+
+#Include the Virus-W inner data from:
+#https://ui.adsabs.harvard.edu/abs/2013ApJ...763...91J/abstract
+include_jardel = 'yes'
+if (include_jardel == 'yes'):
+    print('Including Virus-W data from Jardel et al. 2013')
+    data_jar = np.genfromtxt(infile_jardel,dtype='f8')
+    RA_DRA_deg = 260.0516667  #McConnachie rev.
+    DEC_DRA_deg = 57.9152778  #
+    vsys_DRA_walker = -291.0  #
+
+    rjar = np.sqrt(((data_jar[:,0] - RA_DRA_deg)*\
+                np.cos(DEC_DRA_deg/360.0*2.0*np.pi))**2.0+\
+                (data_jar[:,1] - DEC_DRA_deg)**2.0)/\
+                360.0*2.0*np.pi*dgal_kpc
+    vzjar = data_jar[:,2]
+    vzjarerr = data_jar[:,3]
+    vzjar = vzjar - np.sum(vzjar)/np.float(len(vzjar))
+    msjar = np.zeros(len(vzjar))+1.0
+
+    Rkin = np.concatenate((rjar,Rkin))
+    vz = np.concatenate((vzjar,vz))
+    vzerr = np.concatenate((vzjarerr,vzerr))
+    mskin = np.concatenate((msjar,mskin))
+    print('Updated effective no. of tracers (kinematic):',\
+          np.sum(mskin))

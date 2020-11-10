@@ -41,7 +41,7 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #binulator_initialise_Draco.py for details).
 
 #MW satellites:
-#from binulator_initialise_Draco import *
+from binulator_initialise_Draco import *
 #from binulator_initialise_Fornax import *
 #from binulator_initialise_Fornax_tides import *
 #from binulator_initialise_SMC import *
@@ -49,7 +49,7 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #Mocks:
 #from binulator_initialise_SMCmock import *
 #from binulator_initialise_PlumCoreOm import *
-from binulator_initialise_PlumCuspOm import *
+#from binulator_initialise_PlumCuspOm import *
 
 #M31 satellites:
 #from binulator_initialise_And21 import *
@@ -115,7 +115,7 @@ if (use_dataRhalf == 'yes'):
     Rhalf_int[0] = Rhalf
 
 #Bin the velocity data and calculate the VSPs with uncertainties:
-if (quicktestSB == 'no'):
+if (quicktestSB == 'no' and Nbinkin > 0):
     print('Fitting the velocity data:\n')
     nsamples = 2500
     
