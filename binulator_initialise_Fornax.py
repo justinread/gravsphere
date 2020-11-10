@@ -55,6 +55,7 @@ alpmax = 1.0
 #by the sum over Plummer spheres that binulator/gravsphere
 #assumes.
 dgal_kpc = 138.0
-R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
+R, surfden, surfdenerr, Rhalf, \
+    Rkin, vz, vzerr, mskin, vsys = \
     walker_api(infile_phot,infile_kin,dgal_kpc,Nbin)
 use_dataRhalf = 'no'

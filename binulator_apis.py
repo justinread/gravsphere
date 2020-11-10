@@ -43,10 +43,13 @@ def walker_api(infile_phot,infile_kin,dgal_kpc,Nbin):
     vz = data_kin_vs[gotvz,6]
     vzerr = data_kin_vs[gotvz,7]
     mskin = data_kin_vs[gotvz,15]
-    vz = vz - np.sum(vz*mskin)/np.sum(mskin)
+    vsys = np.sum(vz*mskin)/np.sum(mskin)
+    print('Systemic velocity:',vsys)
+    vz = vz - vsys
     print('Total effective no. of tracers (kinematic):', np.sum(mskin))
 
-    return rbin, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin
+    return rbin, surfden, surfdenerr, \
+        Rhalf, Rkin, vz, vzerr, mskin, vsys
 
 def collins_api(infile_phot,infile_kin,Nbin):    
     #First surface density:

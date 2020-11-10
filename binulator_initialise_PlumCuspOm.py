@@ -3,7 +3,7 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-nstars = 10000
+nstars = 100
 if (nstars == 1000):
     whichgal = 'PlumCuspOm'
     data_file_kin = \
