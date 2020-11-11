@@ -43,7 +43,6 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #MW satellites:
 #from binulator_initialise_Draco import *
 #from binulator_initialise_Fornax import *
-#from binulator_initialise_Fornax_tides import *
 #from binulator_initialise_SMC import *
 
 #Mocks:

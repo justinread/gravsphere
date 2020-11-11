@@ -21,7 +21,7 @@ vzfourpltmax = 1e7
 #Number of stars per bin [-1 indicates that
 #binning was already done elsewhere]:
 Nbin = -1
-Nbinkin = 150
+Nbinkin = 50
 
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass

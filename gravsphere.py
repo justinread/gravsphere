@@ -244,7 +244,7 @@ nwalkers = 1000
 nmodels = 5000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 ###########################################################
 #Input data selection here:
@@ -252,8 +252,7 @@ codemode = 'plot'
 #MW satellites:
 #from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_Fornax import *
-#from gravsphere_initialise_Fornax_tides import *
-from gravsphere_initialise_SMC import *
+#from gravsphere_initialise_SMC import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
@@ -261,7 +260,7 @@ from gravsphere_initialise_SMC import *
 #from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
-#from gravsphere_initialise_And21 import *
+from gravsphere_initialise_And21 import *
 
 #Output some key choices:
 print('Doing galaxy:',whichgal)

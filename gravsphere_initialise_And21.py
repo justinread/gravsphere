@@ -112,10 +112,3 @@ delhigh = 5.0
 get_Juse = get_J
 calc_Jfac = 'no'
 alpha_Jfac_deg = 0.5 
-
-  
-
-
-
-
-

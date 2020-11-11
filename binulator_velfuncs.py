@@ -100,7 +100,7 @@ def velfit(R,vz,vzerr,ms,Nbin,\
                 vzuse = vzuse_t
                 vzerruse = vzerruse_t
                 msuse = msuse_t
-           
+
             vzmeanbin[cnt],vzmeanbinlo[cnt],vzmeanbinhi[cnt],\
             vztwobin[cnt],vztwobinlo[cnt],vztwobinhi[cnt],\
             vzfourbin[cnt],vzfourbinlo[cnt],vzfourbinhi[cnt],\
@@ -112,15 +112,12 @@ def velfit(R,vz,vzerr,ms,Nbin,\
                           p0vin_min,p0vin_max,nsamples)
             vzfour_pdf[:,cnt] = vzfour_store
 
-            #Output the fit values:
-            print('Bin %d | vzmean %f+%f-%f | vztwo %f+%f-%f | vzfour %f+%f-%f | bamp %f+%f-%f | bmean %f+%f-%f | bsig %f+%f-%f\n' \
-                  % (cnt,vzmeanbin[cnt],vzmeanbin[cnt]-vzmeanbinlo[cnt],vzmeanbinhi[cnt]-vzmeanbin[cnt],\
-                     vztwobin[cnt],vztwobinhi[cnt]-vztwobin[cnt],vztwobin[cnt]-vztwobinlo[cnt],\
-                     vzfourbin[cnt],vzfourbinhi[cnt]-vzfourbin[cnt],vzfourbin[cnt]-vzfourbinlo[cnt],\
-                     backampbin[cnt],backampbinhi[cnt]-backampbin[cnt],backampbin[cnt]-backampbinlo[cnt],\
-                     backmeanbin[cnt],backmeanbinhi[cnt]-backmeanbin[cnt],backmeanbin[cnt]-backmeanbinlo[cnt],\
-                     backsigbin[cnt],backsigbinhi[cnt]-backsigbin[cnt],backsigbin[cnt]-backsigbinlo[cnt])
-                 )
+            #Calculate non-para versions for comparison:
+            vztwo_nonpara = \
+                (np.sum(vzuse**2.0*msuse)-np.sum(vzerruse**2.0*msuse))/np.sum(msuse)
+            vztwo_nonpara = np.sqrt(vztwo_nonpara)
+            vzfour_nonpara = \
+                (np.sum(vzuse**4.0*msuse)-np.sum(3.0*vzerruse**4.0*msuse))/np.sum(msuse)
             
             #Make a plot of the fit:
             fig = plt.figure()
@@ -151,16 +148,29 @@ def velfit(R,vz,vzerr,ms,Nbin,\
             plt.savefig(outfile+'vzhist_%d.pdf' % (cnt),\
                 bbox_inches='tight')
 
-            #Move on to the next bin:
+            #Calculate bin radius:
             if (cnt == 0):
                 rbin[cnt] = right_bin_edge[cnt]/2.0
             else:
                 rbin[cnt] = \
                     (right_bin_edge[cnt] + right_bin_edge[cnt-1])/2.0
+        
+            #Output the fit values (with non-para comparison):
+            print('Bin: %d | radius: %f | vztwo %.2f(%.2f)+%.2f-%.2f | vzfour %.2f(%.2f)+%.2f-%.2f' \
+                  % (cnt,rbin[cnt],\
+                     vztwobin[cnt],vztwo_nonpara,\
+                     vztwobinhi[cnt]-vztwobin[cnt],\
+                     vztwobin[cnt]-vztwobinlo[cnt],\
+                     vzfourbin[cnt],vzfour_nonpara,\
+                     vzfourbinhi[cnt]-vzfourbin[cnt],\
+                     vzfourbin[cnt]-vzfourbinlo[cnt]),\
+            )
+
+            #Move on to the next bin:
             jsum = 0.0
             js = 0
-            cnt = cnt + 1
-
+            cnt = cnt + 1                                    
+            
     #Cut back the output arrays:
     rbin = rbin[:cnt]
     vzmeanbin = vzmeanbin[:cnt]
