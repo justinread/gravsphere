@@ -115,12 +115,14 @@ logrthigh = np.log10(rthigh)
 dellow = 3.01
 delhigh = 5.0
 
+if (cosmo_cprior == 'yes'):
+    clow = 1.0
+    chigh = 100.0
 
 ###########################################################
 #Post processing options:
 
 #For calculating J-factors:
-get_Juse = get_J
 calc_Jfac = 'no'
 alpha_Jfac_deg = 0.5 
 

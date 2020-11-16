@@ -57,12 +57,8 @@ p0vin_min = np.array([-0.1,1.0,1.0,1e-5,-300.0,30.0])
 p0vin_max = np.array([0.1,30.0,5.0,1e-4,300.0,300.0])
 vfitmin = 0
 vfitmax = 0
-
-#Priors for VSP calculation. This is the range of
-#powerlaw index for the assumed fall-off of <vlos^4>
-#beyond the outermost data point.
-alpmin = 0.0
-alpmax = 1.0
+Rfitvmin = -1
+Rfitvmax = -1
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.

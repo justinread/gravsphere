@@ -42,10 +42,10 @@ corenfwtides = corenfw_tides_den(ranal,pfits[0],pfits[1],\
 print('Best fit: M200: %f | c %f | rc %f | n %f | rt %f | delta %f\n' \
       % (pfits[0],pfits[1],pfits[2],pfits[3],pfits[4],pfits[5]))
 
+
 ###########################################################
 #Plots:
 
-##### Velpdf #####
 fig = plt.figure(figsize=(figx,figy))
 ax = fig.add_subplot(111)
 for axis in ['top','bottom','left','right']:
@@ -59,14 +59,24 @@ plt.yticks(fontsize=myfontsize)
 plt.loglog()
 
 plt.xlabel(r'$r$\,[kpc]',fontsize=myfontsize)
-plt.ylabel(r'density\,[$M_\odot$\,kpc$^{-3}]$',fontsize=myfontsize)
+plt.ylabel(r'density\,[${\rm M}_\odot$\,kpc$^{-3}]$',fontsize=myfontsize)
 
 plt.plot(ranal,trueden,linewidth=mylinewidth,color='blue',\
     label='True density',alpha=0.5)
 plt.plot(ranal,corenfwtides,linewidth=mylinewidth,color='green',\
     label='coreNFWtides',alpha=0.5)
 
+#Show what happens as we change "n":
+nplot = np.linspace(0,1,5)
+for i in range(len(nplot)):
+    den = corenfw_tides_den(ranal,pfits[0],pfits[1],\
+                pfits[2],nplot[i],\
+                pfits[4],pfits[5])
+    plt.plot(ranal,den,color='black',alpha=0.5,\
+             label=r'$n=%.1f$' % nplot[i])
+
 plt.legend(fontsize=mylegendfontsize)
 plt.xlim([1e-2,5])
+plt.legend(loc='upper right',fontsize=18)
 plt.savefig(output_base+'coreNFWtides_example.pdf',bbox_inches='tight')
 

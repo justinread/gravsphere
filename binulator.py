@@ -46,9 +46,9 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #from binulator_initialise_SMC import *
 
 #Mocks:
-#from binulator_initialise_SMCmock import *
+from binulator_initialise_SMCmock import *
 #from binulator_initialise_PlumCoreOm import *
-from binulator_initialise_PlumCuspOm import *
+#from binulator_initialise_PlumCuspOm import *
 
 #M31 satellites:
 #from binulator_initialise_And21 import *
@@ -73,9 +73,13 @@ else:
 print('Priors allow for kurtosis in the range: %.2f < k < %.2f' % \
       (kurt_calc(p0vin_max),kurt_calc(p0vin_min)))
 if (Rfitmin > 0):
-    print('Fitting R >',Rfitmin)
+    print('Fitting surfden R >',Rfitmin)
 if (Rfitmax > 0):
-    print('Fitting R <',Rfitmax)
+    print('Fitting surfden R <',Rfitmax)
+if (Rfitvmin > 0):
+    print('Fitting vel R >',Rfitvmin)
+if (Rfitvmax > 0):
+    print('Fitting vel R <',Rfitvmax)            
 if (vfitmin != 0):
     print('Fitting v >',vfitmin)
 if (vfitmax != 0):
@@ -119,21 +123,21 @@ if (quicktestSB == 'no' and Nbinkin > 0):
     nsamples = 2500
     
     #Cut back to fit range:
-    if (Rfitmin > 0):
-        Rf_t = Rkin[Rkin > Rfitmin]
-        vzfit_t = vz[Rkin > Rfitmin]
-        vzerrfit_t = vzerr[Rkin > Rfitmin]
-        msfit_t = mskin[Rkin > Rfitmin]
+    if (Rfitvmin > 0):
+        Rf_t = Rkin[Rkin > Rfitvmin]
+        vzfit_t = vz[Rkin > Rfitvmin]
+        vzerrfit_t = vzerr[Rkin > Rfitvmin]
+        msfit_t = mskin[Rkin > Rfitvmin]
     else:
         Rf_t = Rkin
         vzfit_t = vz
         vzerrfit_t = vzerr
         msfit_t = mskin
-    if (Rfitmax > 0):
-        Rf = Rf_t[Rf_t < Rfitmax]
-        vzfit = vzfit_t[Rf_t < Rfitmax]
-        vzerrfit = vzerrfit_t[Rf_t < Rfitmax]
-        msfit = msfit_t[Rf_t < Rfitmax]
+    if (Rfitvmax > 0):
+        Rf = Rf_t[Rf_t < Rfitvmax]
+        vzfit = vzfit_t[Rf_t < Rfitvmax]
+        vzerrfit = vzerrfit_t[Rf_t < Rfitvmax]
+        msfit = msfit_t[Rf_t < Rfitvmax]
     else:
         Rf = Rf_t
         vzfit = vzfit_t
@@ -152,7 +156,7 @@ if (quicktestSB == 'no' and Nbinkin > 0):
             velfit(Rf,vzfit,vzerrfit,msfit,Nbinkin,\
                 vfitmin,vfitmax,\
                 p0vin_min,p0vin_max,p0best,\
-                alpmin,alpmax,nsamples,outfile)
+                nsamples,outfile)
     print('Fitted VSP1: %f+%f-%f' % (vsp1,vsp1hi-vsp1,vsp1-vsp1lo))
     print('Fitted VSP2: %f+%f-%f' % (vsp2,vsp2hi-vsp2,vsp2-vsp2lo))
     

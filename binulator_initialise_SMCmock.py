@@ -21,7 +21,7 @@ vzfourpltmax = 1e6
 #Number of stars per bin [-1 indicates that
 #binning was already done elsewhere]:
 Nbin = -1
-Nbinkin = 50
+Nbinkin = 100
 
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
@@ -29,7 +29,7 @@ Nbinkin = 50
 p0in_min = np.array([1e-4,1e-4,1e-4,0.01,0.01,0.01])
 p0in_max = np.array([1e2,1e2,1e2,2.0,2.0,5.0])
 Rfitmin = -1
-Rfitmax = 1.0
+Rfitmax = -1
 
 #Priors for binulator velocity dispersion calculation. 
 #Array values are: [vzmean,alp,bet,backamp,backmean,backsig], 
@@ -40,12 +40,8 @@ p0vin_min = np.array([-50,1.0,1.0,1e-4,-50,8.0])
 p0vin_max = np.array([50,8.0,5.0,1.0,50.0,50.0])
 vfitmin = 0
 vfitmax = 0
-
-#Priors for VSP calculation. This is the range of
-#powerlaw index for the assumed fall-off of <vlos^4>
-#beyond the outermost data point.
-alpmin = 0.0
-alpmax = 1.0
+Rfitvmin = -1
+Rfitvmax = 1.0
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.
@@ -57,4 +53,3 @@ alpmax = 1.0
 R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
     smc_api(infile_phot,infile_kin)
 use_dataRhalf = 'yes'
-

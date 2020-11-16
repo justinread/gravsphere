@@ -2,7 +2,7 @@ import numpy as np
 from scipy.integrate.quadrature import simps as integrator
 from scipy.misc.common import derivative
 from scipy.special import gamma
-from scipy.integrate import quad
+from scipy.integrate import quad, dblquad
 from constants import *
 multimode = 'normal'
 
@@ -83,9 +83,9 @@ def get_J(Mpars, distance, r_max):
     #Computation J_max:
     Rmax_arr = Rmaximum
     Acc_arr = 1.0e-8
-    J_max = si.dblquad(integrand,b_min,b_max,s_min_bound,\
-                       s_max_bound,args=(distance,Mpars),\
-                       epsabs=Acc_arr,epsrel=Acc_arr)
+    J_max = dblquad(integrand,b_min,b_max,s_min_bound,\
+                    s_max_bound,args=(distance,Mpars),\
+                    epsabs=Acc_arr,epsrel=Acc_arr)
     J_max = J_max[0]*kpccm*2.*np.pi*Msunkpc3toGeVcm3**2.0
 
     #Error checking:
@@ -795,14 +795,9 @@ def kurt_calc(theta):
     kurt = gamma(5.0/bet)*gamma(1.0/bet)/(gamma(3.0/bet))**2.0
     return kurt
 
-def vzfourfunc(ranal,rbin,vzfourbin,alp):
+def vzfourfunc(ranal,rbin,vzfourbin):
     #Interpolate and extrapolate
     #vzfour(R) over and beyond the data:
-#    vzfourmean = np.sum(vzfourbin)/np.float(len(vzfourbin))
-#    vzfour = np.interp(ranal,rbin,vzfourbin)
-#    sel = ranal >= np.max(rbin)
-#    vzfour[sel] = \
-#        vzfourmean*(ranal[sel]/np.max(rbin))**(-alp)        
     vzfour = np.interp(ranal,rbin,vzfourbin)
     return vzfour
     

@@ -27,7 +27,7 @@ sigmhigh = 5.0
 
 #Code options:
 propermotion = 'no'
-virialshape = 'no'
+virialshape = 'yes'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -113,17 +113,16 @@ logrthigh = np.log10(rthigh)
 dellow = 3.01
 delhigh = 8.0
 
+if (cosmo_cprior == 'yes'):
+    clow = 1.0
+    chigh = 100.0
 
 ###########################################################
 #Post processing options:
 
 #For calculating J-factors:
-get_Juse = get_J
 calc_Jfac = 'no'
 alpha_Jfac_deg = 0.5 
-
-  
-
 
 
 

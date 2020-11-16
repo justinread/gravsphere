@@ -16,7 +16,7 @@ velpdfuse = velpdffast
 def velfit(R,vz,vzerr,ms,Nbin,\
            vfitmin,vfitmax,\
            p0vin_min,p0vin_max,p0best,\
-           alpmin,alpmax,nsamples,outfile):
+           nsamples,outfile):
     #Code to fit the velocity data with
     #the velpdf model.
     
@@ -200,21 +200,6 @@ def velfit(R,vz,vzerr,ms,Nbin,\
     surfden = threeplumsurf(ranal,p0best[0],p0best[1],p0best[2],\
                             p0best[3],p0best[4],p0best[5])
 
-    #Regularize:
-    regularize = 'no'
-    if (regularize == 'yes'):
-        from scipy.signal import savgol_filter
-        #Set filter size and regularize, if
-        #enough data to warrant it:
-        if (cnt > 4):
-            filt_size = np.int(cnt / 5.0)
-            if (filt_size % 2 == 0): filt_size += 1
-            if (filt_size < 3):
-                filt_size = 3
-            if (filt_size > 21):
-                filt_size = 21
-        print('Applying regularization filter, size:', filt_size)
-    
     #This assumes a flat or linearly falling relation
     #beyond the last data point:
     vsp1 = np.zeros(nsamples)
@@ -224,16 +209,7 @@ def velfit(R,vz,vzerr,ms,Nbin,\
     vzfourstore = np.zeros((nsamples,len(ranal)))
     for i in range(nsamples):
         vzfour_thissample = vzfour_pdf[i,:cnt]
-        alp = np.random.random()*(alpmax-alpmin)+alpmin
-
-        #Regularize:
-        vzfour_reg = vzfour_thissample
-        if (regularize == 'yes'):
-            if (cnt > 4):
-                vzfour_reg = \
-                    savgol_filter(vzfour_thissample,np.int(filt_size),2)
-        vzfour = vzfourfunc(ranal,rbin,vzfour_reg,alp)
-
+        vzfour = vzfourfunc(ranal,rbin,vzfour_thissample)
         vzfourstore[i,:] = vzfour
         vsp1[i] = integrator(surfden*vzfour*ranal,ranal)
         vsp2[i] = integrator(surfden*vzfour*ranal**3.0,ranal)

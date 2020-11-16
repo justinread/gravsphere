@@ -257,10 +257,10 @@ codemode = 'run'
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
 #from gravsphere_initialise_PlumCuspOm import *
-#from gravsphere_initialise_SMCmock import *
+from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
-from gravsphere_initialise_And21 import *
+#from gravsphere_initialise_And21 import *
 
 #Output some key choices:
 print('Doing galaxy:',whichgal)
@@ -736,8 +736,8 @@ elif (codemode == 'plot'):
         delstore[i] = Mparsu[5]
 
         if (calc_Jfac == 'yes'):
-            alpha_rmax = dgal*alpha_Jfac_deg/deg
-            Jstore[i] = get_Juse(Mparsu,dgal,alpha_rmax)
+            alpha_rmax = dgal_kpc*alpha_Jfac_deg/deg
+            Jstore[i] = get_J(Mparsu,dgal_kpc,alpha_rmax)
         if (virialshape == 'yes'):
             vs1store[i] = vs1/1.0e12
             vs2store[i] = vs2/1.0e12
