@@ -99,7 +99,7 @@ def smc_api(infile_phot,infile_kin):
 
     return rbin, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin
     
-def gc_api(data_file_phot,data_file_kin,Nbin): 
+def gc_api(data_file_phot,data_file_kin,Nbin):
     #Read in the data:
     data = np.genfromtxt(data_file_phot,dtype='f8')
 
@@ -121,3 +121,18 @@ def gc_api(data_file_phot,data_file_kin,Nbin):
     print('Total effective no. of tracers (kinematic):', np.sum(mskin))
 
     return rbin, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin
+
+def gc_prop_api(data_file_kin):
+    #Propermotion data:
+    data = np.genfromtxt(data_file_kin,dtype='f8')
+    x = data[:,0]
+    y = data[:,1]
+    vx = data[:,3]
+    vxerr = np.zeros(len(vx))+2.0
+    vy = data[:,4]
+    vyerr = np.zeros(len(vy))+2.0
+    mskin = np.zeros(len(x)) + 1.0
+    vx = vx - np.sum(vx*mskin)/np.sum(mskin)
+    vy = vy - np.sum(vy*mskin)/np.sum(mskin)
+    
+    return x, y, vx, vxerr, vy, vyerr, mskin

@@ -29,7 +29,7 @@ Nbinkin = 100
 p0in_min = np.array([1e-4,1e-4,1e-4,0.01,0.01,0.01])
 p0in_max = np.array([1e2,1e2,1e2,2.0,2.0,5.0])
 Rfitmin = -1
-Rfitmax = -1
+Rfitmax = 2.8
 
 #Priors for binulator velocity dispersion calculation. 
 #Array values are: [vzmean,alp,bet,backamp,backmean,backsig], 
@@ -41,7 +41,7 @@ p0vin_max = np.array([50,8.0,5.0,1.0,50.0,50.0])
 vfitmin = 0
 vfitmax = 0
 Rfitvmin = -1
-Rfitvmax = 1.0
+Rfitvmax = 2.8
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.
@@ -53,3 +53,6 @@ Rfitvmax = 1.0
 R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
     smc_api(infile_phot,infile_kin)
 use_dataRhalf = 'yes'
+
+#Propermotions:
+propermotion = 'no'

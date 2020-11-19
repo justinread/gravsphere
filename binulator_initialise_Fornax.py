@@ -55,3 +55,6 @@ R, surfden, surfdenerr, Rhalf, \
     Rkin, vz, vzerr, mskin, vsys = \
     walker_api(infile_phot,infile_kin,dgal_kpc,Nbin)
 use_dataRhalf = 'no'
+
+#Propermotions:
+propermotion = 'no'

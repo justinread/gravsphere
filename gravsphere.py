@@ -66,29 +66,41 @@ def lnprior_set_single(theta,n_betpars,bet0min,bet0max,\
         return 0.0
     return -np.inf
 
-def lnprob_single(theta, x1, x2, y1, y1err, y2, y2err):
+def lnprob_single(theta,x1,x2,y1,y1err,y2,y2err):
     lp = lnprior(theta)
     if not np.isfinite(lp):
         return -np.inf
-    return lp + lnlike(theta, x1, x2, y1, y1err, y2, y2err)
+    return lp + lnlike(theta,x1,x2,y1,y1err,y2,y2err)
 
-def lnprob_single_vs(theta, x1, x2, y1, y1err, \
-                     y2, y2err, y3, y3err, y4, y4err):
+def lnprob_single_vs(theta,x1,x2,y1,y1err,\
+                     y2,y2err,\
+                     vsp1val,vsp1pdf,vsp2val,vsp2pdf):
     lp = lnprior(theta)
     if not np.isfinite(lp):
         return -np.inf
-    return lp + lnlike(theta, x1, x2, y1, y1err, \
-                       y2, y2err, y3, y3err, y4, y4err)
+    return lp + lnlike(theta,x1,x2,y1,y1err,\
+                       y2,y2err,\
+                       vsp1val,vsp1pdf,vsp2val,vsp2pdf)
 
-def lnprob_single_prop(theta, x1, x2, y1, y1err, \
-                       y2, y2err, y3, y3err, y4, y4err):
+def lnprob_single_prop(theta,x1,x2,x3,y1,y1err,\
+                       y2,y2err,y3,y3err,y4,y4err):
     lp = lnprior(theta)
     if not np.isfinite(lp):
         return -np.inf
-    return lp + lnlike(theta, x1, x2, y1, y1err, \
-                       y2, y2err, y3, y3err, y4, y4err)
+    return lp + lnlike(theta,x1,x2,x3,y1,y1err,\
+                       y2,y2err,y3,y3err,y4,y4err)
 
-def lnlike_single(theta, x1, x2, y1, y1err, y2, y2err):
+def lnprob_single_prop_vs(theta,x1,x2,x3,y1,y1err,\
+                          y2,y2err,y3,y3err,y4,y4err,\
+                          vsp1val,vsp1pdf,vsp2val,vsp2pdf):
+    lp = lnprior(theta)
+    if not np.isfinite(lp):
+        return -np.inf
+    return lp + lnlike(theta,x1,x2,x3,y1,y1err,\
+                       y2,y2err,y3,y3err,y4,y4err,\
+                       vsp1val,vsp1pdf,vsp2val,vsp2pdf)
+
+def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     betpars = theta[0:n_betpars]
     nupars = theta[n_betpars:n_betpars+nu_components*2]
     Mpars = theta[n_betpars+nu_components*2:\
@@ -126,8 +138,8 @@ def lnlike_single(theta, x1, x2, y1, y1err, y2, y2err):
 
     return lnlike_out
 
-def lnlike_single_vs(theta, x1, x2, y1, y1err, y2, y2err, \
-                     y3, y3err, y4, y4err):
+def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
+                     vsp1val,vsp1pdf,vsp2val,vsp2pdf):
     betpars = theta[0:n_betpars]
     nupars = theta[n_betpars:n_betpars+nu_components*2]
     Mpars = theta[n_betpars+nu_components*2:\
@@ -169,8 +181,8 @@ def lnlike_single_vs(theta, x1, x2, y1, y1err, y2, y2err, \
 
     return lnlike_out
 
-def lnlike_single_prop(theta, x1, x2, y1, y1err, y2, y2err, \
-                       y3, y3err, y4, y4err):
+def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
+                       y3,y3err,y4,y4err):
     betpars = theta[0:n_betpars]
     nupars = theta[n_betpars:n_betpars+nu_components*2]
     Mpars = theta[n_betpars+nu_components*2:\
@@ -181,7 +193,7 @@ def lnlike_single_prop(theta, x1, x2, y1, y1err, y2, y2err, \
     Mparsu[0] = 10.**Mpars[0]
 
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2 = \
-        sigp_fit_prop(x1,x2,nuparsu,Mparsu,betpars,Mstar)
+        sigp_fit_prop(x1,x2,x3,nuparsu,Mparsu,betpars,Mstar)
 
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
@@ -205,11 +217,59 @@ def lnlike_single_prop(theta, x1, x2, y1, y1err, y2, y2err, \
         log_conc = np.log10(Mparsu[1])
         log_cmean = np.log10(cosmo_cfunc(M200,h))
         lnlike_out = lnlike_out - \
-                     (log_conc-log_cmean)**2.0/(2.0*sig_c200**2.0)
+            (log_conc-log_cmean)**2.0/(2.0*sig_c200**2.0)
         
     if (lnlike_out != lnlike_out):
         lnlike_out = -np.inf            
     
+    return lnlike_out
+
+def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
+                          y3,y3err,y4,y4err,\
+                          vsp1val,vsp1pdf,vsp2val,vsp2pdf):
+    betpars = theta[0:n_betpars]
+    nupars = theta[n_betpars:n_betpars+nu_components*2]
+    Mpars = theta[n_betpars+nu_components*2:\
+                  n_betpars+nu_components*2+n_mpars]
+    Mstar = theta[n_betpars+nu_components*2+n_mpars]
+    nuparsu = np.array(nupars)
+    Mparsu = np.array(Mpars)
+    Mparsu[0] = 10.**Mpars[0]
+
+    sigr2, Sig, sigLOS2, sigpmr2, sigpmt2, vs1, vs2 = \
+        sigp_fit_prop_vs(x1,x2,x3,nuparsu,Mparsu,betpars,Mstar)
+    
+    model1 = Sig
+    model2 = np.sqrt(sigLOS2)/1000.
+    model3 = np.sqrt(sigpmr2)/1000.
+    model4 = np.sqrt(sigpmt2)/1000.
+    model5 = vs1/1.0e12
+    model6 = vs2/1.0e12
+    
+    inv_sigma2_1 = 1.0/y1err**2
+    inv_sigma2_2 = 1.0/y2err**2
+    inv_sigma2_3 = 1.0/y3err**2
+    inv_sigma2_4 = 1.0/y4err**2
+    
+    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
+                       np.sum((y2-model2)**2*inv_sigma2_2)+\
+                       np.sum((y3-model3)**2*inv_sigma2_3)+\
+                       np.sum((y4-model4)**2*inv_sigma2_4))+\
+                       np.log(vsp_pdf(model5,vsp1val,vsp1pdf))+\
+                       np.log(vsp_pdf(model6,vsp2val,vsp2pdf))
+
+    if (cosmo_cprior == 'yes'):
+        #Add the conc. to the likelihood function
+        #as a Gaussian in logspace:
+        M200 = Mparsu[0]
+        log_conc = np.log10(Mparsu[1])
+        log_cmean = np.log10(cosmo_cfunc(M200,h))
+        lnlike_out = lnlike_out - \
+            (log_conc-log_cmean)**2.0/(2.0*sig_c200**2.0)
+        
+    if (lnlike_out != lnlike_out):
+        lnlike_out = -np.inf
+        
     return lnlike_out
 
 
@@ -256,8 +316,8 @@ codemode = 'run'
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
-#from gravsphere_initialise_PlumCuspOm import *
-from gravsphere_initialise_SMCmock import *
+from gravsphere_initialise_PlumCuspOm import *
+#from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
 #from gravsphere_initialise_And21 import *
@@ -300,10 +360,15 @@ if (propermotion == 'no'):
         lnprob = lnprob_single_vs
         lnprior_set = lnprior_set_single
 elif (propermotion == 'yes'):
-    lnlike = lnlike_single_prop
-    lnprob = lnprob_single_prop
-    lnprior_set = lnprior_set_single
-
+    if (virialshape == 'no'):
+        lnlike = lnlike_single_prop
+        lnprob = lnprob_single_prop
+        lnprior_set = lnprior_set_single
+    else:
+        lnlike = lnlike_single_prop_vs
+        lnprob = lnprob_single_prop_vs
+        lnprior_set = lnprior_set_single
+        
 
 ###########################################################
 #Read in the the data. We assume here that the errors
@@ -338,6 +403,22 @@ vsp1val, vsp1pdf = vsppdf_calc(data)
 data = np.genfromtxt(infile+'_vsp2full.txt',dtype='f8')
 vsp2val, vsp2pdf = vsppdf_calc(data)
 
+if (propermotion == 'yes'):
+    data = np.genfromtxt(infile+'_velproptan.txt',dtype='f8')
+    rbin_kinp = data[:,0]
+    sigpmt = data[:,4]
+    sigpmterr = (data[:,6]-data[:,5])/2.0
+
+    data = np.genfromtxt(infile+'_velpropR.txt',dtype='f8')
+    rbin_kinp2 = data[:,0]
+    sigpmr = data[:,4]
+    sigpmrerr = (data[:,6]-data[:,5])/2.0
+
+    #Check data:
+    if (np.sum(rbin_kinp-rbin_kinp2) != 0):
+        print('Need same radial binning for tangential and radial propermotions. Oops! Bye bye.')
+        sys.exit(0)
+    
 print('Inner/outer radial bin (phot):', \
     np.min(rbin_phot),np.max(rbin_phot))
 print('Inner/outer radial bin (kin):', \
@@ -389,17 +470,23 @@ Mstar_max = Mstar + Mstar_err
 ndim = n_betpars + n_nupars + n_mpars + 1
 if (propermotion == 'no'):
     if (virialshape == 'no'):
-        sigp_fit = lambda r1, r2, nupars, Mpars, betpars, Mstar: \
+        sigp_fit = lambda r1,r2,nupars,Mpars,betpars,Mstar: \
             sigp(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
                  Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
     else:
-        sigp_fit_vs = lambda r1, r2, nupars, Mpars, betpars, Mstar: \
+        sigp_fit_vs = lambda r1,r2,nupars,Mpars,betpars,Mstar: \
             sigp_vs(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
                     Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
 elif (propermotion == 'yes'):
-    sigp_fit_prop = lambda r1, r2, nupars, Mpars, betpars, Mstar: \
-        sigp_prop(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-                  Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
+    if (virialshape == 'no'):
+        sigp_fit_prop = lambda r1,r2,r3,nupars,Mpars,betpars,Mstar: \
+            sigp_prop(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
+                      Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
+    else:
+        sigp_fit_prop_vs = lambda r1,r2,r3,nupars,Mpars,betpars,Mstar: \
+            sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
+                         Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
+
 
 #Set the priors and starting blob for the tracer density profile.
 #Code is a bit more involved here just to cope with potentially
@@ -463,27 +550,16 @@ if (codemode == 'run'):
 
     #Set up fitting function and priors: 
     if (propermotion == 'no'):
-        if (virialshape == 'no'):
-            x1 = rbin_phot
-            x2 = rbin_kin
-            y1 = surfden
-            y1err = surfdenerr
-            y2 = sigpmean
-            y2err = sigperr
-        else:
-            x1 = rbin_phot
-            x2 = rbin_kin
-            y1 = surfden
-            y1err = surfdenerr
-            y2 = sigpmean
-            y2err = sigperr
-            y3 = vs1bin
-            y3err = vs1err
-            y4 = vs2bin
-            y4err = vs2err
+        x1 = rbin_phot
+        x2 = rbin_kin
+        y1 = surfden
+        y1err = surfdenerr
+        y2 = sigpmean
+        y2err = sigperr
     elif (propermotion == 'yes'):
         x1 = rbin_phot
         x2 = rbin_kin
+        x3 = rbin_kinp
         y1 = surfden
         y1err = surfdenerr
         y2 = sigpmean
@@ -492,7 +568,7 @@ if (codemode == 'run'):
         y3err = sigpmrerr
         y4 = sigpmt
         y4err = sigpmterr
-
+            
     lnprior = lambda theta: \
         lnprior_set(theta,n_betpars,bet0min,bet0max,\
                     betinfmin,betinfmax,\
@@ -508,44 +584,44 @@ if (codemode == 'run'):
     if (propermotion == 'no'):
         if (virialshape == 'no'):
             sampler = \
-                emcee.EnsembleSampler(nwalkers, ndim, lnprob, \
-                        args=(x1, x2, y1, y1err, y2, y2err))
+                emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
+                        args=(x1,x2,y1,y1err,y2,y2err))
         else:
             sampler = \
-                emcee.EnsembleSampler(nwalkers, ndim, lnprob, \
-                        args=(x1, x2, y1, y1err, y2, y2err, \
-                              y3, y3err, y4, y4err))
+                emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
+                        args=(x1,x2,y1,y1err,y2,y2err,\
+                              vsp1val,vsp1pdf,vsp2val,vsp2pdf))
     elif (propermotion == 'yes'):
-        sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, \
-                        args=(x1, x2, y1, y1err, y2, y2err, \
-                              y3, y3err, y4, y4err)) 
+        if (virialshape == 'no'):
+            sampler = emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
+                            args=(x1,x2,x3,y1,y1err,y2,y2err,\
+                                  y3,y3err,y4,y4err))
+        else:
+            sampler = emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
+                            args=(x1,x2,x3,y1,y1err,y2,y2err,\
+                                  y3,y3err,y4,y4err,\
+                                  vsp1val,vsp1pdf,vsp2val,vsp2pdf))
     sampler.run_mcmc(pos, nmodels)
 
     #Store the output (including the data):
     print('Writing data to file ... ')
-    if (propermotion == 'no'):
-        f = open(outdir+'output_sigp.txt','w')
-        for i in range(len(rbin_kin)):
-            f.write('%f %f %f\n' % \
-                   (rbin_kin[i], sigpmean[i], sigperr[i]))
-        f.close()
-        f = open(outdir+'output_surfden.txt','w')
-        for i in range(len(rbin_phot)):
-            f.write('%f %f %f\n' % \
-                   (rbin_phot[i], surfden[i], surfdenerr[i]))
-        f.close()
-    elif (propermotion == 'yes'):
-        f = open(outdir+'output_sigs.txt','w')
-        for i in range(len(rbin_kin)):
-            f.write('%f %f %f %f %f %f %f\n' % \
-                   (rbin_kin[i],sigpmean[i],sigperr[i],\
+    f = open(outdir+'output_sigp.txt','w')
+    for i in range(len(rbin_kin)):
+        f.write('%f %f %f\n' % \
+                (rbin_kin[i], sigpmean[i], sigperr[i]))
+    f.close()
+    f = open(outdir+'output_surfden.txt','w')
+    for i in range(len(rbin_phot)):
+        f.write('%f %f %f\n' % \
+                (rbin_phot[i], surfden[i], surfdenerr[i]))
+    f.close()
+    if (propermotion == 'yes'):
+        f = open(outdir+'output_prop.txt','w')
+        for i in range(len(rbin_kinp)):
+            f.write('%f %f %f %f %f\n' % \
+                   (rbin_kinp[i],\
                     sigpmr[i],sigpmrerr[i],sigpmt[i],\
                     sigpmterr[i]))
-        f.close()
-        f = open(outdir+'output_surfden.txt','w')
-        for i in range(len(rbin_phot)):
-            f.write('%f %f %f\n' % \
-                   (rbin_phot[i], surfden[i], surfdenerr[i]))
         f.close()
 
     burn = np.int(0.75*nmodels)
@@ -570,33 +646,25 @@ elif (codemode == 'plot'):
     print('Loading data from:', outdir)
 
     #Read in the data:
-    if (propermotion == 'no'):
+    data_in = \
+        np.genfromtxt(outdir+'output_surfden.txt',dtype='f8')
+    rbin_phot = data_in[:,0]
+    surfden = data_in[:,1]
+    surfdenerr = data_in[:,2]
+    data_in = \
+        np.genfromtxt(outdir+'output_sigp.txt',dtype='f8')
+    rbin_kin = data_in[:,0]
+    sigpmean = data_in[:,1]
+    sigperr = data_in[:,2]
+    
+    if (propermotion == 'yes'):
         data_in = \
-            np.genfromtxt(outdir+'output_sigp.txt',dtype='f8')
-        rbin_kin = data_in[:,0]
-        sigpmean = data_in[:,1]
-        sigperr = data_in[:,2]
-        data_in = \
-            np.genfromtxt(outdir+'output_surfden.txt',dtype='f8')
-        rbin_phot = data_in[:,0]
-        surfden = data_in[:,1]
-        surfdenerr = data_in[:,2]
-    elif (propermotion == 'yes'):
-        data_in = \
-            np.genfromtxt(outdir+'output_sigs.txt',dtype='f8')
-        rbin_kin = data_in[:,0]
-        sigpmean = data_in[:,1]
-        sigperr = data_in[:,2]
-        sigpmr = data_in[:,3]
-        sigpmrerr = data_in[:,4]
-        sigpmt = data_in[:,5]
-        sigpmterr = data_in[:,6]
-
-        data_in = \
-            np.genfromtxt(outdir+'output_surfden.txt',dtype='f8')
-        rbin_phot = data_in[:,0]
-        surfden = data_in[:,1]
-        surfdenerr = data_in[:,2]
+            np.genfromtxt(outdir+'output_prop.txt',dtype='f8')
+        rbin_kinp = data_in[:,0]
+        sigpmr = data_in[:,1]
+        sigpmrerr = data_in[:,2]
+        sigpmt = data_in[:,3]
+        sigpmterr = data_in[:,4]
 
     #Set radius array to use for plotting mass profiles
     #etc:
@@ -698,17 +766,23 @@ elif (codemode == 'plot'):
         #Calculate all profiles we want to plot:
         if (propermotion == 'no'):
             if (virialshape == 'no'):
-                sigr2, Sig, sigLOS2 = \
+                sigr2,Sig,sigLOS2 = \
                     sigp_fit(rbin,rbin,nuparsu,\
                              Mparsu,betpars,Mstar)
             else:
-                sigr2, Sig, sigLOS2, vs1, vs2 = \
+                sigr2,Sig,sigLOS2,vs1,vs2 = \
                     sigp_fit_vs(rbin,rbin,nuparsu,\
                                 Mparsu,betpars,Mstar)
         elif (propermotion == 'yes'):
-            sigr2, Sig, sigLOS2, sigpmr2, sigpmt2 = \
-                sigp_fit_prop(rbin,rbin,nuparsu,Mparsu,betpars,\
-                              Mstar)
+            if (virialshape == 'no'):
+                sigr2,Sig,sigLOS2,sigpmr2,sigpmt2 = \
+                    sigp_fit_prop(rbin,rbin,nuparsu,Mparsu,betpars,\
+                                  Mstar)
+            else:
+                sigr2,Sig,sigLOS2,sigpmr2,sigpmt2,vs1,vs2 = \
+                    sigp_fit_prop_vs(rbin,rbin,nuparsu,Mparsu,betpars,\
+                                     Mstar)
+                
         Mr = M(rbin,Mparsu)
         betar = beta(rbin,betpars)
         rhor = rho(rbin,Mparsu)
@@ -737,7 +811,7 @@ elif (codemode == 'plot'):
 
         if (calc_Jfac == 'yes'):
             alpha_rmax = dgal_kpc*alpha_Jfac_deg/deg
-            Jstore[i] = get_J(Mparsu,dgal_kpc,alpha_rmax)
+            Jstore[i] = get_J(rho,Mparsu,dgal_kpc,alpha_rmax)
         if (virialshape == 'yes'):
             vs1store[i] = vs1/1.0e12
             vs2store[i] = vs2/1.0e12

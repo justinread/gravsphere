@@ -9,8 +9,32 @@ from figures import *
 import emcee
 import sys
 
-#Select velocity distribution functin:
+#Select velocity distribution function:
 velpdfuse = velpdffast
+
+#Functions for slicing the data:
+def Rcutback(Rkin,vz,vzerr,mskin,Rfitvmin,Rfitvmax):
+    if (Rfitvmin > 0):
+        Rf_t = Rkin[Rkin > Rfitvmin]
+        vzfit_t = vz[Rkin > Rfitvmin]
+        vzerrfit_t = vzerr[Rkin > Rfitvmin]
+        msfit_t = mskin[Rkin > Rfitvmin]
+    else:
+        Rf_t = Rkin
+        vzfit_t = vz
+        vzerrfit_t = vzerr
+        msfit_t = mskin
+    if (Rfitvmax > 0):
+        Rf = Rf_t[Rf_t < Rfitvmax]
+        vzfit = vzfit_t[Rf_t < Rfitvmax]
+        vzerrfit = vzerrfit_t[Rf_t < Rfitvmax]
+        msfit = msfit_t[Rf_t < Rfitvmax]
+    else:
+        Rf = Rf_t
+        vzfit = vzfit_t
+        vzerrfit = vzerrfit_t
+        msfit = msfit_t
+    return Rf, vzfit, vzerrfit, msfit
 
 #Functions for emcee (velocity data):
 def velfit(R,vz,vzerr,ms,Nbin,\

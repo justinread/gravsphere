@@ -84,3 +84,6 @@ if (include_jardel == 'yes'):
     mskin = np.concatenate((msjar,mskin))
     print('Updated effective no. of tracers (kinematic):',\
           np.sum(mskin))
+
+#Propermotions:
+propermotion = 'no'

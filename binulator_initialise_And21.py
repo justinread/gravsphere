@@ -53,3 +53,6 @@ Rfitvmax = -1
 R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
     collins_api(infile_phot,infile_kin,Nbin)
 use_dataRhalf = 'yes'
+
+#Propermotions:
+propermotion = 'no'

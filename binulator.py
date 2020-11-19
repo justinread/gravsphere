@@ -123,26 +123,8 @@ if (quicktestSB == 'no' and Nbinkin > 0):
     nsamples = 2500
     
     #Cut back to fit range:
-    if (Rfitvmin > 0):
-        Rf_t = Rkin[Rkin > Rfitvmin]
-        vzfit_t = vz[Rkin > Rfitvmin]
-        vzerrfit_t = vzerr[Rkin > Rfitvmin]
-        msfit_t = mskin[Rkin > Rfitvmin]
-    else:
-        Rf_t = Rkin
-        vzfit_t = vz
-        vzerrfit_t = vzerr
-        msfit_t = mskin
-    if (Rfitvmax > 0):
-        Rf = Rf_t[Rf_t < Rfitvmax]
-        vzfit = vzfit_t[Rf_t < Rfitvmax]
-        vzerrfit = vzerrfit_t[Rf_t < Rfitvmax]
-        msfit = msfit_t[Rf_t < Rfitvmax]
-    else:
-        Rf = Rf_t
-        vzfit = vzfit_t
-        vzerrfit = vzerrfit_t
-        msfit = msfit_t
+    Rf, vzfit, vzerrfit, msfit = \
+        Rcutback(Rkin,vz,vzerr,mskin,Rfitvmin,Rfitvmax)
     
     #Do the fit:
     rbin,vzmeanbin,vzmeanbinlo,vzmeanbinhi,\
@@ -160,7 +142,70 @@ if (quicktestSB == 'no' and Nbinkin > 0):
     print('Fitted VSP1: %f+%f-%f' % (vsp1,vsp1hi-vsp1,vsp1-vsp1lo))
     print('Fitted VSP2: %f+%f-%f' % (vsp2,vsp2hi-vsp2,vsp2-vsp2lo))
     
+    #Bin the propermotion data:
+    if (propermotion == 'yes'):
+        print('Doing propermotions:')
+        #Calculate the dipsersions in the radial
+        #and tangential directions on the sky.
+        #This assumes we have data:
+        #x(kpc), y(kpc), vx(km/s), vy(km/s), and
+        #errors vxerr(km/s), vyerr(km/s) with
+        #weights msprop. Errors are assumed
+        #to be Gaussian. Points per bin are given
+        #by Nbinkin_prop.
 
+        #Calculate R, vR and vphi and errors:
+        Rp = np.sqrt(x**2. + y**2.)
+        vR = (vx*x+vy*y)/Rp
+        vphi = (vx*y-vy*x)/Rp
+        vRerr = np.sqrt(vxerr**2.0 + vyerr**2.0)
+        vphierr = np.sqrt(vxerr**2.0 + vyerr**2.0)
+        
+        #First tangential direction:
+        #Cut back to fit range:
+        Rpf, vphifit, vphierrfit, mspropfit = \
+                Rcutback(Rp,vphi,vphierr,msprop,Rfitvmin,Rfitvmax)
+                 
+        rbinpt,vphimeanbin,vphimeanbinlo,vphimeanbinhi,\
+            vphitwobin,vphitwobinlo,vphitwobinhi,\
+            vphifourbin,vphifourbinlo,vphifourbinhi,\
+            backptampbin,backptampbinlo,backptampbinhi,\
+            backptmeanbin,backptmeanbinlo,backptmeanbinhi,\
+            backptsigbin,backptsigbinlo,backptsigbinhi,\
+            vsppt1,vsppt1lo,vsppt1hi,vsppt2,vsppt2lo,vsppt2hi,\
+            ranal,vphifourstore,vsp1store,vsp2store = \
+                velfit(Rpf,vphifit,vphierrfit,mspropfit,Nbinkin_prop,\
+                       vfitmin,vfitmax,\
+                       p0vin_min,p0vin_max,p0best,\
+                       nsamples,outfile+'_vphi')
+        print('Fitted VSP1prop tan: %f+%f-%f' % \
+              (vsppt1,vsppt1hi-vsppt1,vsppt1-vsppt1lo))
+        print('Fitted VSP2prop tan: %f+%f-%f' % \
+              (vsppt2,vsppt2hi-vsppt2,vsppt2-vsppt2lo))
+        
+        #Now radial direction:
+        #Cut back to fit range:
+        Rpf, vRfit, vRerrfit, mspropfit = \
+                Rcutback(Rp,vR,vRerr,msprop,Rfitvmin,Rfitvmax)
+        
+        rbinpR,vRmeanbin,vRmeanbinlo,vRmeanbinhi,\
+            vRtwobin,vRtwobinlo,vRtwobinhi,\
+            vRfourbin,vRfourbinlo,vRfourbinhi,\
+            backpRampbin,backpRampbinlo,backpRampbinhi,\
+            backpRmeanbin,backpRmeanbinlo,backpRmeanbinhi,\
+            backpRsigbin,backpRsigbinlo,backpRsigbinhi,\
+            vsppR1,vsppR1lo,vsppR1hi,vsppR2,vsppR2lo,vsppR2hi,\
+            ranal,vRfourstore,vsp1store,vsp2store = \
+                velfit(Rpf,vRfit,vRerrfit,mspropfit,Nbinkin_prop,\
+                       vfitmin,vfitmax,\
+                       p0vin_min,p0vin_max,p0best,\
+                       nsamples,outfile+'_vR')
+        print('Fitted VSP1prop rad: %f+%f-%f' % \
+              (vsppR1,vsppR1hi-vsppR1,vsppR1-vsppR1lo))
+        print('Fitted VSP2prop rad: %f+%f-%f' % \
+              (vsppR2,vsppR2hi-vsppR2,vsppR2-vsppR2lo))
+
+    
     ###########################################################
     #Store the surface density, velocity dispersions, VSPs,
     #best fit surfden parameters and Rhalf for GravSphere:
@@ -200,6 +245,28 @@ if (quicktestSB == 'no' and Nbinkin > 0):
     for i in range(len(vsp2store)):
         f.write('%f\n' % (vsp2store[i]))
     f.close()
+
+    if (propermotion == 'yes'):
+        f = open(outfile+'_velproptan.txt','w')
+        for i in range(len(rbinpt)):
+            f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
+                    (rbinpt[i],vphimeanbin[i],vphimeanbinlo[i],vphimeanbinhi[i],\
+                     vphitwobin[i],vphitwobinlo[i],vphitwobinhi[i],\
+                     vphifourbin[i],vphifourbinlo[i],vphifourbinhi[i],\
+                     backptampbin[i],backptampbinlo[i],backptampbinhi[i],\
+                     backptmeanbin[i],backptmeanbinlo[i],backptmeanbinhi[i],\
+                     backptsigbin[i],backptsigbinlo[i],backptsigbinhi[i]))
+        f.close()
+        f = open(outfile+'_velpropR.txt','w')
+        for i in range(len(rbinpR)):
+            f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
+                    (rbinpR[i],vRmeanbin[i],vRmeanbinlo[i],vRmeanbinhi[i],\
+                     vRtwobin[i],vRtwobinlo[i],vRtwobinhi[i],\
+                     vRfourbin[i],vRfourbinlo[i],vRfourbinhi[i],\
+                     backpRampbin[i],backpRampbinlo[i],backpRampbinhi[i],\
+                     backpRmeanbin[i],backpRmeanbinlo[i],backpRmeanbinhi[i],\
+                     backpRsigbin[i],backpRsigbinlo[i],backpRsigbinhi[i]))
+        f.close()
 
 
 ###########################################################
@@ -327,9 +394,25 @@ if (quicktestSB == 'no'):
              yerr=[vztwobin-vztwobinlo,\
                    vztwobinhi-vztwobin],\
              color='black',ecolor='black',\
-             fmt='o',\
+             fmt='o',label=r'$\sigma_z$',\
              linewidth=mylinewidth,marker='o',\
              markersize=5,alpha=0.5)
+
+    if (propermotion == 'yes'):
+        plt.errorbar(rbinpt,vphitwobin,\
+                     yerr=[vphitwobin-vphitwobinlo,\
+                           vphitwobinhi-vphitwobin],\
+                     color='blue',ecolor='blue',\
+                     fmt='o',label=r'$\sigma_\phi$',\
+                     linewidth=mylinewidth,marker='o',\
+                     markersize=5,alpha=0.5)
+        plt.errorbar(rbinpR,vRtwobin,\
+                     yerr=[vRtwobin-vRtwobinlo,\
+                           vRtwobinhi-vRtwobin],\
+                     color='red',ecolor='red',\
+                     fmt='o',label=r'$\sigma_R$',\
+                     linewidth=mylinewidth,marker='o',\
+                     markersize=5,alpha=0.5)
 
     plt.axvline(x=Rhalf_int[0],color='blue',alpha=0.5,\
             linewidth=mylinewidth)
@@ -337,6 +420,7 @@ if (quicktestSB == 'no'):
     plt.xlim([xpltmin,xpltmax])
     plt.ylim([vztwopltmin,vztwopltmax])
 
+    plt.legend(fontsize=18,loc='upper right')
     plt.savefig(outfile+'_vztwo.pdf',bbox_inches='tight')
 
     ##### Fourth velocity moment ##### 

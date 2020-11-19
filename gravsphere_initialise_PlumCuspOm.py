@@ -32,7 +32,7 @@ sigmlow = 1e-3
 sigmhigh = 5.0
 
 #Code options:
-propermotion = 'no'
+propermotion = 'yes'
 virialshape = 'yes'
 
 #Overplot true solution (for mock data). If 

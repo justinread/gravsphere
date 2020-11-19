@@ -3,7 +3,7 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-nstars = 10000
+nstars = 1000
 if (nstars == 1000):
     whichgal = 'PlumCuspOm'
     data_file_kin = \
@@ -70,6 +70,13 @@ Rfitvmax = -1
 R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
     gc_api(data_file_phot,data_file_kin,Nbin)
 use_dataRhalf = 'no'
+
+#Propermotions:
+propermotion = 'yes'
+if (propermotion == 'yes'):
+    Nbinkin_prop = Nbinkin
+    x, y, vx, vxerr, vy, vyerr, msprop = \
+        gc_prop_api(data_file_kin)
 
 #Calculate true VSPs and output for comparison:
 rho0s,r0s,alps,bets,gams = np.array([1.0,0.1,2,5,0.1])

@@ -63,11 +63,11 @@ def sidm_novel(rc,M200,c,oden,rhocrit,GammaX):
 def radius_dsph(s, b, distance):
     return np.sqrt((distance * np.sin(b))**2. + s*s)
 
-def integrand(s, b, distance, Mpars):
+def integrand(s, b, distance, rho, Mpars):
     value = np.sin(b) * rho(np.array([radius_dsph(s, b, distance)]), Mpars)**2
     return value
                 
-def get_J(Mpars, distance, r_max):
+def get_J(rho, Mpars, distance, r_max):
     #Min/max integration angles in radians:
     b_min = 0.0
     b_max = np.arcsin(r_max/distance)
@@ -84,7 +84,7 @@ def get_J(Mpars, distance, r_max):
     Rmax_arr = Rmaximum
     Acc_arr = 1.0e-8
     J_max = dblquad(integrand,b_min,b_max,s_min_bound,\
-                    s_max_bound,args=(distance,Mpars),\
+                    s_max_bound,args=(distance,rho,Mpars),\
                     epsabs=Acc_arr,epsrel=Acc_arr)
     J_max = J_max[0]*kpccm*2.*np.pi*Msunkpc3toGeVcm3**2.0
 
@@ -309,7 +309,7 @@ def sigp(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
     sigLOS2out = np.interp(r2,rint,sigLOS2,left=0,right=0)
     Sigout = np.interp(r1,rint,Sig,left=0,right=0)
 
-    return sigr2out, Sigout, sigLOS2out
+    return sigr2out,Sigout,sigLOS2out
 
 def sigp_vs(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
             Mstar_rad,Mstar_prof,Mstar,G,rmin,rmax):
@@ -376,9 +376,9 @@ def sigp_vs(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
     sigLOS2out = np.interp(r2,rint,sigLOS2,left=0,right=0)
     Sigout = np.interp(r1,rint,Sig,left=0,right=0)
 
-    return sigr2out, Sigout, sigLOS2out, vs1, vs2
+    return sigr2out,Sigout,sigLOS2out,vs1,vs2
 
-def sigp_prop(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
+def sigp_prop(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
               Mstar_rad,Mstar_prof,Mstar,G,rmin,rmax):
     #Calculate projected velocity dispersion profiles
     #given input *functions* nu(r); M(r); beta(r); betaf(r).
@@ -430,11 +430,79 @@ def sigp_prop(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
 
     sigr2out = np.interp(r2,rint,sigr2,left=0,right=0)
     sigLOS2out = np.interp(r2,rint,sigLOS2,left=0,right=0)
-    sigpmr2out = np.interp(r2,rint,sigpmr2,left=0,right=0)
-    sigpmt2out = np.interp(r2,rint,sigpmt2,left=0,right=0)
+    sigpmr2out = np.interp(r3,rint,sigpmr2,left=0,right=0)
+    sigpmt2out = np.interp(r3,rint,sigpmt2,left=0,right=0)
     Sigout = np.interp(r1,rint,Sig,left=0,right=0)
     
-    return sigr2out, Sigout, sigLOS2out, sigpmr2out, sigpmt2out
+    return sigr2out,Sigout,sigLOS2out,sigpmr2out,sigpmt2out
+
+def sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
+                 Mstar_rad,Mstar_prof,Mstar,G,rmin,rmax):
+    #Calculate projected velocity dispersion profiles
+    #given input *functions* nu(r); M(r); beta(r); betaf(r).
+    #Also input is an array Mstar_prof(Mstar_rad) describing the 3D
+    #cumulative stellar mass profile. This should be normalised
+    #so that it peaks at 1.0. The total stellar mass is passed in Mstar.
+    
+    #Set up theta integration array:
+    intpnts = 100
+    thmin = 0.
+    bit = 1.e-5
+    thmax = np.pi/2.-bit
+    th = np.linspace(thmin,thmax,intpnts)
+    sth = np.sin(th)
+    cth = np.cos(th)
+    cth2 = cth**2.
+
+    rint = np.logspace(np.log10(rmin),np.log10(rmax),intpnts)
+    
+    sigr2 = np.zeros(len(rint))
+    nur = nu(rint,nupars)
+    betafunc = betaf(rint,betpars)
+    for i in range(len(rint)):
+        rq = rint[i]/cth
+        if (Mstar > 0):
+            Mq = M(rq,Mpars)+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
+        else:
+            Mq = M(rq,Mpars)
+        nuq = nu(rq,nupars)
+        betafuncq = betaf(rq,betpars)
+        sigr2[i] = 1./nur[i]/rint[i]/betafunc[i] * \
+            integrator(G*Mq*nuq*betafuncq*sth,th)
+
+    Sig = Sigfunc(rint,nupars)
+    sigLOS2 = np.zeros(len(rint))
+    sigpmr2 = np.zeros(len(rint))
+    sigpmt2 = np.zeros(len(rint))
+    for i in range(len(rint)):
+        rq = rint[i]/cth
+        nuq = nu(rq,nupars)
+        sigr2q = np.interp(rq,rint,sigr2,left=0,right=0)
+        betaq = beta(rq,betpars)
+        sigLOS2[i] = 2.0*rint[i]/Sig[i]*\
+                     integrator((1.0-betaq*cth2)*nuq*sigr2q/cth2,th)
+        sigpmr2[i] = 2.0*rint[i]/Sig[i]*\
+                     integrator((1.0-betaq+betaq*cth2)*nuq*sigr2q/cth2,th)
+        sigpmt2[i] = 2.0*rint[i]/Sig[i]*\
+                     integrator((1.0-betaq)*nuq*sigr2q/cth2,th)
+        
+    sigr2out = np.interp(r2,rint,sigr2,left=0,right=0)
+    sigLOS2out = np.interp(r2,rint,sigLOS2,left=0,right=0)
+    sigpmr2out = np.interp(r3,rint,sigpmr2,left=0,right=0)
+    sigpmt2out = np.interp(r3,rint,sigpmt2,left=0,right=0)
+    Sigout = np.interp(r1,rint,Sig,left=0,right=0)
+
+    #And now the dimensional fourth order "virial shape"
+    #parameters:
+    betar = beta(rint,betpars)
+    Mr = M(rint,Mpars)+Mstar*np.interp(rint,Mstar_rad,Mstar_prof)
+    vs1 = 2.0/5.0*integrator(nur*(5.0-2.0*betar)*sigr2*\
+                             G*Mr*rint,rint)
+    vs2 = 4.0/35.0*integrator(nur*(7.0-6.0*betar)*sigr2*\
+                              G*Mr*rint**3.0,rint)
+    
+    return sigr2out,Sigout,sigLOS2out,sigpmr2out,sigpmt2out,\
+        vs1,vs2
 
 def beta(r,betpars):
     bet0star = betpars[0]
