@@ -3,7 +3,7 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-nstars = 10000
+nstars = 1000
 if (nstars == 1000):
     whichgal = 'PlumCoreOm'
     data_file_kin = \
@@ -91,5 +91,3 @@ print('True VSPs:',vsp1,vsp2)
 #Richardson / Fairbairn VSPs:
 vsp1_RF, vsp2_RF = richfair_vsp(vz,Rkin,mskin)
 print('Richardson/Fairbairn VSPs:',vsp1_RF,vsp2_RF)
-
-

@@ -301,7 +301,7 @@ print('###### GRAVSPHERE VERSION 1.0 ######\n')
 #Code parameters:
 datadir = './Data/'
 nwalkers = 1000
-nmodels = 5000
+nmodels = 15000
 
 #Codemode [run or plot]:
 codemode = 'run'
@@ -316,8 +316,8 @@ codemode = 'run'
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
-from gravsphere_initialise_PlumCuspOm import *
-#from gravsphere_initialise_SMCmock import *
+#from gravsphere_initialise_PlumCuspOm import *
+from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
 #from gravsphere_initialise_And21 import *

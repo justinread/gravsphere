@@ -6,7 +6,7 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-nstars = 10000
+nstars = 1000
 if (nstars == 1000):
     whichgal = 'PlumCoreOm'
 elif (nstars == 100):
@@ -32,7 +32,7 @@ sigmlow = 1e-3
 sigmhigh = 5.0
 
 #Code options:
-propermotion = 'no'
+propermotion = 'yes'
 virialshape = 'yes'
 
 #Overplot true solution (for mock data). If 

@@ -122,8 +122,4 @@ if (cosmo_cprior == 'yes'):
 
 #For calculating J-factors:
 calc_Jfac = 'no'
-alpha_Jfac_deg = 0.5 
-
-
-
-
+alpha_Jfac_deg = 0.5

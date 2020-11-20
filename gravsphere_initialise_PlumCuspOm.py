@@ -33,7 +33,7 @@ sigmhigh = 5.0
 
 #Code options:
 propermotion = 'yes'
-virialshape = 'yes'
+virialshape = 'no'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
