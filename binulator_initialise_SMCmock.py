@@ -15,14 +15,14 @@ xpltmax = 10.0
 surfpltmin = 1e-6
 surfpltmax = 100
 vztwopltmin = 0
-vztwopltmax = 15
+vztwopltmax = 25
 vzfourpltmin = 1e2
 vzfourpltmax = 1e6
 
 #Number of stars per bin [-1 indicates that
 #binning was already done elsewhere]:
 Nbin = -1
-Nbinkin = 100
+Nbinkin = 250
 
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
@@ -37,8 +37,8 @@ Rfitmax = 2.8
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-50,1.0,1.0,1e-4,-50,8.0])
-p0vin_max = np.array([50,8.0,5.0,1.0,50.0,50.0])
+p0vin_min = np.array([-300,1.0,1.0,1e-4,-300,8.0])
+p0vin_max = np.array([300,8.0,5.0,1.0,300.0,150.0])
 vfitmin = 0
 vfitmax = 0
 Rfitvmin = -1

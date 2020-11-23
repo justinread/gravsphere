@@ -14,7 +14,7 @@ outdirbase = output_base+whichgal+'/'
 rplot_inner = 1e-1
 rplot_outer = 10.0
 rplot_pnts = 100
-y_sigLOSmax = 10
+y_sigLOSmax = 25
 ymin_Sigstar = 1e-4
 ymax_Sigstar = 1e-1
 yMlow = 1e4
@@ -26,8 +26,8 @@ sigmlow = 1e-3
 sigmhigh = 5.0
 
 #Code options:
-propermotion = 'no'
-virialshape = 'yes'
+propermotion = 'yes'
+virialshape = 'no'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed

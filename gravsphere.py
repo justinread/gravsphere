@@ -315,9 +315,9 @@ codemode = 'run'
 #from gravsphere_initialise_SMC import *
 
 #Mocks:
-#from gravsphere_initialise_PlumCoreOm import *
+from gravsphere_initialise_PlumCoreOm import *
 #from gravsphere_initialise_PlumCuspOm import *
-from gravsphere_initialise_SMCmock import *
+#from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
 #from gravsphere_initialise_And21 import *
@@ -776,11 +776,11 @@ elif (codemode == 'plot'):
         elif (propermotion == 'yes'):
             if (virialshape == 'no'):
                 sigr2,Sig,sigLOS2,sigpmr2,sigpmt2 = \
-                    sigp_fit_prop(rbin,rbin,nuparsu,Mparsu,betpars,\
+                    sigp_fit_prop(rbin,rbin,rbin,nuparsu,Mparsu,betpars,\
                                   Mstar)
             else:
                 sigr2,Sig,sigLOS2,sigpmr2,sigpmt2,vs1,vs2 = \
-                    sigp_fit_prop_vs(rbin,rbin,nuparsu,Mparsu,betpars,\
+                    sigp_fit_prop_vs(rbin,rbin,rbin,nuparsu,Mparsu,betpars,\
                                      Mstar)
                 
         Mr = M(rbin,Mparsu)

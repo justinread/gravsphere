@@ -6,6 +6,7 @@ from constants import *
 whichgal = 'SMC'
 infile_kin = './Data/SMC/Obs_Radial_Vel_raw.dat'
 infile_phot = './Data/SMC/Zaritsky_counts.dat'
+infile_prop = './Data/SMC/Obs_Prop_Mot_raw.dat'
 outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
@@ -55,4 +56,9 @@ R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
 use_dataRhalf = 'yes'
 
 #Propermotions:
-propermotion = 'no'
+propermotion = 'yes'
+dgal_kpc = 60.0
+if (propermotion == 'yes'):
+    Nbinkin_prop = Nbinkin
+    x, y, vx, vxerr, vy, vyerr, msprop = \
+        smc_prop_api(infile_prop,dgal_kpc)

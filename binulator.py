@@ -43,10 +43,10 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #MW satellites:
 #from binulator_initialise_Draco import *
 #from binulator_initialise_Fornax import *
-#from binulator_initialise_SMC import *
+from binulator_initialise_SMC import *
 
 #Mocks:
-from binulator_initialise_SMCmock import *
+#from binulator_initialise_SMCmock import *
 #from binulator_initialise_PlumCoreOm import *
 #from binulator_initialise_PlumCuspOm import *
 
@@ -138,7 +138,7 @@ if (quicktestSB == 'no' and Nbinkin > 0):
             velfit(Rf,vzfit,vzerrfit,msfit,Nbinkin,\
                 vfitmin,vfitmax,\
                 p0vin_min,p0vin_max,p0best,\
-                nsamples,outfile)
+                   nsamples,outfile+'_vz')
     print('Fitted VSP1: %f+%f-%f' % (vsp1,vsp1hi-vsp1,vsp1-vsp1lo))
     print('Fitted VSP2: %f+%f-%f' % (vsp2,vsp2hi-vsp2,vsp2-vsp2lo))
     

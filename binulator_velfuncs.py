@@ -155,21 +155,21 @@ def velfit(R,vz,vzerr,ms,Nbin,\
             plt.xticks(fontsize=myfontsize)
             plt.yticks(fontsize=myfontsize)
 
-            plt.xlabel(r'v$_z$ [km/s]',fontsize=myfontsize)
+            plt.xlabel(r'v\,[km/s]',fontsize=myfontsize)
             plt.ylabel(r'frequency',\
                 fontsize=myfontsize)
             
             n, bins, patches = plt.hist(vzuse,10,weights=msuse,\
                                         facecolor='g',\
                                         alpha=0.75)
-            vplot = np.linspace(-150,150,np.int(500))
+            vplot = np.linspace(-350,350,np.int(500))
             vperr = np.zeros(len(vplot))+\
                 np.sum(vzerruse*msuse)/np.sum(msuse)
             pdf = velpdfuse(vplot,vperr,p0vbest)
             plt.plot(vplot,pdf/np.max(pdf)*np.max(n),\
                      linewidth=mylinewidth)
-            plt.xlim([-150,150])
-            plt.savefig(outfile+'vzhist_%d.pdf' % (cnt),\
+            plt.xlim([-350,350])
+            plt.savefig(outfile+'hist_%d.pdf' % (cnt),\
                 bbox_inches='tight')
 
             #Calculate bin radius:
