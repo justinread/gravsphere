@@ -191,7 +191,9 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
     Mparsu[0] = 10.**Mpars[0]
-
+    Mparsu[2] = 10.**Mpars[2]
+    Mparsu[4] = 10.**Mpars[4]
+    
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2 = \
         sigp_fit_prop(x1,x2,x3,nuparsu,Mparsu,betpars,Mstar)
 
@@ -235,7 +237,9 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
     Mparsu[0] = 10.**Mpars[0]
-
+    Mparsu[2] = 10.**Mpars[2]
+    Mparsu[4] = 10.**Mpars[4]
+    
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2, vs1, vs2 = \
         sigp_fit_prop_vs(x1,x2,x3,nuparsu,Mparsu,betpars,Mstar)
     
@@ -300,11 +304,11 @@ print('###### GRAVSPHERE VERSION 1.0 ######\n')
 ###########################################################
 #Code parameters:
 datadir = './Data/'
-nwalkers = 1000
-nmodels = 15000
+nwalkers = 250
+nmodels = 25000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 ###########################################################
 #Input data selection here:
@@ -315,8 +319,8 @@ codemode = 'run'
 #from gravsphere_initialise_SMC import *
 
 #Mocks:
-from gravsphere_initialise_PlumCoreOm import *
-#from gravsphere_initialise_PlumCuspOm import *
+#from gravsphere_initialise_PlumCoreOm import *
+from gravsphere_initialise_PlumCuspOm import *
 #from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:

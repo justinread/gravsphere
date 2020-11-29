@@ -162,13 +162,13 @@ def velfit(R,vz,vzerr,ms,Nbin,\
             n, bins, patches = plt.hist(vzuse,10,weights=msuse,\
                                         facecolor='g',\
                                         alpha=0.75)
-            vplot = np.linspace(-350,350,np.int(500))
+            vplot = np.linspace(-500,500,np.int(500))
             vperr = np.zeros(len(vplot))+\
                 np.sum(vzerruse*msuse)/np.sum(msuse)
             pdf = velpdfuse(vplot,vperr,p0vbest)
             plt.plot(vplot,pdf/np.max(pdf)*np.max(n),\
                      linewidth=mylinewidth)
-            plt.xlim([-350,350])
+            plt.xlim([-500,500])
             plt.savefig(outfile+'hist_%d.pdf' % (cnt),\
                 bbox_inches='tight')
 

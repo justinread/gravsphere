@@ -61,4 +61,4 @@ dgal_kpc = 60.0
 if (propermotion == 'yes'):
     Nbinkin_prop = Nbinkin
     x, y, vx, vxerr, vy, vyerr, msprop = \
-        smc_prop_api(infile_prop,dgal_kpc)
+        smcmock_prop_api(infile_prop,dgal_kpc)

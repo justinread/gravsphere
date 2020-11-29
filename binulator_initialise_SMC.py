@@ -37,8 +37,8 @@ Rfitmax = 2.0
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-20,1.0,1.0,1e-4,-20,40.0])
-p0vin_max = np.array([20,40.0,5.0,1.0,20.0,150.0])
+p0vin_min = np.array([-500,1.0,1.0,1e-4,0.0,40.0])
+p0vin_max = np.array([0.0,40.0,5.0,1.0,500.0,150.0])
 vfitmin = 0
 vfitmax = 0
 Rfitvmin = -1
@@ -59,6 +59,6 @@ use_dataRhalf = 'yes'
 propermotion = 'yes'
 dgal_kpc = 60.0
 if (propermotion == 'yes'):
-    Nbinkin_prop = Nbinkin
+    Nbinkin_prop = 150
     x, y, vx, vxerr, vy, vyerr, msprop = \
         smc_prop_api(infile_prop,dgal_kpc)

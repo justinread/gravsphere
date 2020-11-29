@@ -26,8 +26,8 @@ sigmlow = 1e-3
 sigmhigh = 5.0
 
 #Code options:
-propermotion = 'yes'
-virialshape = 'no'
+propermotion = 'no'
+virialshape = 'yes'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed

@@ -137,7 +137,7 @@ def gc_prop_api(data_file_kin):
     
     return x, y, vx, vxerr, vy, vyerr, mskin
 
-def smc_prop_api(data_file_kin,dgal_kpc):
+def smcmock_prop_api(data_file_kin,dgal_kpc):
     #Propermotion data:
     data = np.genfromtxt(data_file_kin,dtype='f8')
     pmRA = data[:,0]
@@ -148,6 +148,29 @@ def smc_prop_api(data_file_kin,dgal_kpc):
     angle = data[:,5]
     mskin = np.zeros(len(pmRA))+1.0
 
+    #Calc x-y in kpc:
+    y = R*np.cos(angle*np.pi/180.0)
+    x = R*np.sin(angle*np.pi/180.0)
+    
+    #Convert to km/s:
+    vx = pmRA*4.74*dgal_kpc
+    vxerr = errpmRA*4.74*dgal_kpc
+    vy = pmDEC*4.74*dgal_kpc
+    vyerr = errpmDEC*4.74*dgal_kpc
+    
+    return x, y, vx, vxerr, vy, vyerr, mskin
+
+def smc_prop_api(data_file_kin,dgal_kpc):
+    #Propermotion data:
+    data = np.genfromtxt(data_file_kin,dtype='f8')
+    pmRA = data[:,0]
+    pmDEC = data[:,1]
+    errpmRA = data[:,2]
+    errpmDEC = data[:,3]
+    R = data[:,5]
+    angle = data[:,6]
+    mskin = np.zeros(len(pmRA))+1.0
+    
     #Calc x-y in kpc:
     y = R*np.cos(angle*np.pi/180.0)
     x = R*np.sin(angle*np.pi/180.0)
