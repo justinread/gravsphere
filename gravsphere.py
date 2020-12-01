@@ -320,8 +320,8 @@ codemode = 'plot'
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
-from gravsphere_initialise_PlumCuspOm import *
-#from gravsphere_initialise_SMCmock import *
+#from gravsphere_initialise_PlumCuspOm import *
+from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
 #from gravsphere_initialise_And21 import *

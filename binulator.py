@@ -43,10 +43,10 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #MW satellites:
 #from binulator_initialise_Draco import *
 #from binulator_initialise_Fornax import *
-from binulator_initialise_SMC import *
+#from binulator_initialise_SMC import *
 
 #Mocks:
-#from binulator_initialise_SMCmock import *
+from binulator_initialise_SMCmock import *
 #from binulator_initialise_PlumCoreOm import *
 #from binulator_initialise_PlumCuspOm import *
 
@@ -173,7 +173,7 @@ if (quicktestSB == 'no' and Nbinkin > 0):
             backptmeanbin,backptmeanbinlo,backptmeanbinhi,\
             backptsigbin,backptsigbinlo,backptsigbinhi,\
             vsppt1,vsppt1lo,vsppt1hi,vsppt2,vsppt2lo,vsppt2hi,\
-            ranal,vphifourstore,vsp1store,vsp2store = \
+            ranalvphi,vphifourstore,vsppt1store,vsppt2store = \
                 velfit(Rpf,vphifit,vphierrfit,mspropfit,Nbinkin_prop,\
                        vfitmin,vfitmax,\
                        p0vin_min,p0vin_max,p0best,\
@@ -195,7 +195,7 @@ if (quicktestSB == 'no' and Nbinkin > 0):
             backpRmeanbin,backpRmeanbinlo,backpRmeanbinhi,\
             backpRsigbin,backpRsigbinlo,backpRsigbinhi,\
             vsppR1,vsppR1lo,vsppR1hi,vsppR2,vsppR2lo,vsppR2hi,\
-            ranal,vRfourstore,vsp1store,vsp2store = \
+            ranalvR,vRfourstore,vsppR1store,vsppR2store = \
                 velfit(Rpf,vRfit,vRerrfit,mspropfit,Nbinkin_prop,\
                        vfitmin,vfitmax,\
                        p0vin_min,p0vin_max,p0best,\

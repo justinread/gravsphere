@@ -90,9 +90,13 @@ betr0min = -2
 betr0max = 1.0
 betnmin = 1.0
 betnmax = 3.0
-bet0min = -0.2
-bet0max = 0.2
-betinfmin = -0.2
+#bet0min = -0.2
+#bet0max = 0.2
+#betinfmin = -0.2
+#betinfmax = 1.0
+bet0min = -0.01
+bet0max = 0.01
+betinfmin = -0.1
 betinfmax = 1.0
 
 #CoreNFWtides priors:
