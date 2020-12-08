@@ -51,6 +51,52 @@ def walker_api(infile_phot,infile_kin,dgal_kpc,Nbin):
     return rbin, surfden, surfdenerr, \
         Rhalf, Rkin, vz, vzerr, mskin, vsys
 
+def SegI_api(infile_phot,infile_kin,dgal_kpc):
+    #First surface density:
+    data_phot = np.genfromtxt(infile_phot,dtype='f8')
+    rbin = data_phot[:,0]*dgal_kpc/arcmin
+    surfden = data_phot[:,1]
+    surfdenerr = (-data_phot[:,2]+data_phot[:,3])/2.0
+
+    #Normalise the surface density and calc.
+    #the half light radius from the data:
+    Rhalf, Menc_tot = surf_renorm(rbin,surfden)
+    surfden = surfden / Menc_tot
+    surfdenerr = surfdenerr / Menc_tot
+    print('Data Rhalf:', Rhalf)
+    
+    #Now velocity data:
+    data_kin_vs = np.genfromtxt(infile_kin,dtype='f8')
+    Rkin = data_kin_vs[:,3]*dgal_kpc/arcmin
+    vz = data_kin_vs[:,1]
+    vzerr = data_kin_vs[:,2]
+    mskin = data_kin_vs[:,6]
+
+    #Remove stars with very large uncertainty:
+    ecut = 10.0
+    print('Cutting velocity error on %f km/s' % (ecut))
+    print('As compared to min/max error: %f, %f km/s' % \
+          (np.min(vzerr),np.max(vzerr)))
+    Ruset = Rkin[vzerr < ecut]
+    vzuset = vz[vzerr < ecut]
+    vzerruset = vzerr[vzerr < ecut]
+    msuset = mskin[vzerr < ecut]
+    
+    #Remove non-members:
+    pcut = 0.9
+    Ruse = Ruset[msuset > pcut]
+    vzuse = vzuset[msuset > pcut]
+    vzerruse = vzerruset[msuset > pcut]
+    msuse = msuset[msuset > pcut]
+    
+    vsys = np.sum(vzuse*msuse)/np.sum(msuse)
+    print('Systemic velocity:',vsys)
+    vzuse = vzuse - vsys
+    print('Total effective no. of tracers (kinematic):', np.sum(msuse))
+    
+    return rbin, surfden, surfdenerr, \
+        Rhalf, Ruse, vzuse, vzerruse, msuse, vsys
+
 def collins_api(infile_phot,infile_kin,Nbin):    
     #First surface density:
     data_phot = np.genfromtxt(infile_phot,dtype='f8')
@@ -157,7 +203,9 @@ def smcmock_prop_api(data_file_kin,dgal_kpc):
     vxerr = errpmRA*4.74*dgal_kpc
     vy = pmDEC*4.74*dgal_kpc
     vyerr = errpmDEC*4.74*dgal_kpc
-    
+    vx = vx - np.sum(vx*mskin)/np.sum(mskin)
+    vy = vy - np.sum(vy*mskin)/np.sum(mskin)
+   
     return x, y, vx, vxerr, vy, vyerr, mskin
 
 def smc_prop_api(data_file_kin,dgal_kpc):
@@ -180,5 +228,7 @@ def smc_prop_api(data_file_kin,dgal_kpc):
     vxerr = errpmRA*4.74*dgal_kpc
     vy = pmDEC*4.74*dgal_kpc
     vyerr = errpmDEC*4.74*dgal_kpc
-    
+    vx = vx - np.sum(vx*mskin)/np.sum(mskin)
+    vy = vy - np.sum(vy*mskin)/np.sum(mskin)
+
     return x, y, vx, vxerr, vy, vyerr, mskin

@@ -6,7 +6,7 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-whichgal = 'Fornax'
+whichgal = 'Sextans'
 infile = output_base+whichgal+'/'+whichgal
 outdirbase = output_base+whichgal+'/'
 
@@ -14,7 +14,7 @@ outdirbase = output_base+whichgal+'/'
 rplot_inner = 1e-2
 rplot_outer = 5.0
 rplot_pnts = 50
-y_sigLOSmax = 25
+y_sigLOSmax = 15
 ymin_Sigstar = 1e-4
 ymax_Sigstar = 100
 yMlow = 1e4
@@ -44,7 +44,7 @@ rmax = -1.0
 #is not the case, you should set Mstar_rad and Mstar_prof 
 #here. The variables barrad_min, barrad_max and bar_pnts 
 #set the radial range and sampling of the baryonic mass model.
-Mstar = 4.3e7
+Mstar = 0.44e6
 Mstar_err = Mstar * 0.25
 baryonmass_follows_tracer = 'yes'
 barrad_min = 0.0
@@ -114,11 +114,6 @@ if (cosmo_cprior == 'yes'):
 #Post processing options:
 
 #For calculating J-factors:
+get_Juse = get_J
 calc_Jfac = 'no'
 alpha_Jfac_deg = 0.5 
-
-
-
-
-
-

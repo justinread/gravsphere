@@ -308,20 +308,28 @@ nwalkers = 250
 nmodels = 25000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 ###########################################################
 #Input data selection here:
 
 #MW satellites:
 #from gravsphere_initialise_Draco import *
+#from gravsphere_initialise_UMi import *
+#from gravsphere_initialise_Carina import *
+#from gravsphere_initialise_LeoI import *
+#from gravsphere_initialise_LeoII import *
+#from gravsphere_initialise_Sextans import *
+#from gravsphere_initialise_Sculptor import *
 #from gravsphere_initialise_Fornax import *
+#from gravsphere_initialise_CVnI import *
+from gravsphere_initialise_SegI import *
 #from gravsphere_initialise_SMC import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
 #from gravsphere_initialise_PlumCuspOm import *
-from gravsphere_initialise_SMCmock import *
+#from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
 #from gravsphere_initialise_And21 import *

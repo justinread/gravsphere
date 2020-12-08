@@ -42,11 +42,19 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 
 #MW satellites:
 #from binulator_initialise_Draco import *
+#from binulator_initialise_UMi import *
+#from binulator_initialise_Carina import *
+#from binulator_initialise_CVnI import *
+#from binulator_initialise_LeoI import *
+#from binulator_initialise_LeoII import *
+#from binulator_initialise_Sculptor import *
+#from binulator_initialise_Sextans import *
 #from binulator_initialise_Fornax import *
+from binulator_initialise_SegI import *
 #from binulator_initialise_SMC import *
 
 #Mocks:
-from binulator_initialise_SMCmock import *
+#from binulator_initialise_SMCmock import *
 #from binulator_initialise_PlumCoreOm import *
 #from binulator_initialise_PlumCuspOm import *
 

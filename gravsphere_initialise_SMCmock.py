@@ -6,6 +6,7 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
+#whichgal = 'SMCmock_3kpc'
 whichgal = 'SMCmock'
 infile = output_base+whichgal+'/'+whichgal
 outdirbase = output_base+whichgal+'/'
@@ -27,7 +28,7 @@ sigmhigh = 5.0
 
 #Code options:
 propermotion = 'no'
-virialshape = 'yes'
+virialshape = 'no'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -90,9 +91,9 @@ betr0min = -2
 betr0max = 1.0
 betnmin = 1.0
 betnmax = 3.0
-#bet0min = -0.2
-#bet0max = 0.2
-#betinfmin = -0.2
+#bet0min = -0.3
+#bet0max = 0.3
+#betinfmin = -0.3
 #betinfmax = 1.0
 bet0min = -0.01
 bet0max = 0.01

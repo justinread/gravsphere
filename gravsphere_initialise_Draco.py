@@ -65,7 +65,7 @@ tracertol = 0.1
 #is set, then we include a Gaussian spread in M200-c200 in
 #the likelihood. Without this, M200-c200 enters only if 
 #used to set the priors, below.
-cosmo_cprior = 'yes'
+cosmo_cprior = 'no'
 sig_c200 = 0.1
 mWDM = -1
 if (mWDM > 0):
@@ -85,12 +85,14 @@ betinfmax = 1.0
 #CoreNFWtides priors:
 logM200low = 7.5
 logM200high = 11.5
-clow = cosmo_cfunc(10.0**logM200high,h)
-logclow = np.log10(clow)-sig_c200
-clow = 10.0**logclow
-chigh = cosmo_cfunc(10.0**logM200low,h)*1.4
-logchigh = np.log10(chigh)+sig_c200*2.0
-chigh = 10.0**logchigh
+#clow = cosmo_cfunc(10.0**logM200high,h)
+#logclow = np.log10(clow)-sig_c200
+#clow = 10.0**logclow
+#chigh = cosmo_cfunc(10.0**logM200low,h)*1.4
+#logchigh = np.log10(chigh)+sig_c200*2.0
+#chigh = 10.0**logchigh
+clow = 1.0
+chigh = 50.0
 rclow = 1e-2
 rchigh = 10.0
 logrclow = np.log10(rclow)
