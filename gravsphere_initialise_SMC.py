@@ -65,7 +65,7 @@ tracertol = 0.1
 #is set, then we include a Gaussian spread in M200-c200 in
 #the likelihood. Without this, M200-c200 enters only if 
 #used to set the priors, below.
-cosmo_cprior = 'yes'
+cosmo_cprior = 'no'
 sig_c200 = 0.1
 mWDM = -1
 if (mWDM > 0):
@@ -113,5 +113,5 @@ if (cosmo_cprior == 'yes'):
 
 #For calculating J-factors:
 dgal_kpc = 61.7
-calc_Jfac = 'no'
+calc_Jfac = 'yes'
 alpha_Jfac_deg = 0.5

@@ -297,6 +297,11 @@ import sys
 import warnings
 warnings.simplefilter("ignore")
 
+#Forbid plots to screen so GravSphere can run
+#remotely:
+import matplotlib as mpl
+mpl.use('Agg')
+
 #Welcome blurb: 
 print('###### GRAVSPHERE VERSION 1.0 ######\n')
 
@@ -308,7 +313,7 @@ nwalkers = 250
 nmodels = 25000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 ###########################################################
 #Input data selection here:
