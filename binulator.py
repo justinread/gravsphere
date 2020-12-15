@@ -50,8 +50,8 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #from binulator_initialise_Sculptor import *
 #from binulator_initialise_Sextans import *
 #from binulator_initialise_Fornax import *
-from binulator_initialise_SegI import *
-#from binulator_initialise_SMC import *
+#from binulator_initialise_SegI import *
+from binulator_initialise_SMC import *
 
 #Mocks:
 #from binulator_initialise_SMCmock import *

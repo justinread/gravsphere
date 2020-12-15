@@ -112,6 +112,6 @@ if (cosmo_cprior == 'yes'):
 #Post processing options:
 
 #For calculating J-factors:
-dgal_kpc = 61.7
+dgal_kpc = 60.0
 calc_Jfac = 'yes'
 alpha_Jfac_deg = 0.5

@@ -183,17 +183,32 @@ def gc_prop_api(data_file_kin):
     
     return x, y, vx, vxerr, vy, vyerr, mskin
 
-def smcmock_prop_api(data_file_kin,dgal_kpc):
+def smc_prop_api(data_file_kin,dgal_kpc):
     #Propermotion data:
     data = np.genfromtxt(data_file_kin,dtype='f8')
-    pmRA = data[:,0]
-    pmDEC = data[:,1]
-    errpmRA = data[:,2]
-    errpmDEC = data[:,3]
-    R = data[:,4]
-    angle = data[:,5]
-    mskin = np.zeros(len(pmRA))+1.0
 
+    #Cut out stars with large uncertainty:
+    ecut = 0.1
+    errpmRA = data[:,2]
+    esel = errpmRA < ecut
+    pmRAt = data[esel,0]
+    pmDECt = data[esel,1]
+    errpmRAt = data[esel,2]
+    errpmDECt = data[esel,3]
+    Rt = data[esel,4]
+    anglet = data[esel,5]
+    esel = errpmDECt < ecut
+    pmRA = pmRAt[esel]
+    pmDEC = pmDECt[esel]
+    errpmRA = errpmRAt[esel]
+    errpmDEC = errpmDECt[esel]
+    R = Rt[esel]
+    angle = anglet[esel]
+    mskin = np.zeros(len(pmRA))+1.0
+    print('Min/max proper motion error:',\
+          np.min(errpmRA),np.max(errpmRA),\
+          np.min(errpmDEC),np.max(errpmDEC))
+    
     #Calc x-y in kpc:
     y = R*np.cos(angle*np.pi/180.0)
     x = R*np.sin(angle*np.pi/180.0)
@@ -206,29 +221,4 @@ def smcmock_prop_api(data_file_kin,dgal_kpc):
     vx = vx - np.sum(vx*mskin)/np.sum(mskin)
     vy = vy - np.sum(vy*mskin)/np.sum(mskin)
    
-    return x, y, vx, vxerr, vy, vyerr, mskin
-
-def smc_prop_api(data_file_kin,dgal_kpc):
-    #Propermotion data:
-    data = np.genfromtxt(data_file_kin,dtype='f8')
-    pmRA = data[:,0]
-    pmDEC = data[:,1]
-    errpmRA = data[:,2]
-    errpmDEC = data[:,3]
-    R = data[:,5]
-    angle = data[:,6]
-    mskin = np.zeros(len(pmRA))+1.0
-    
-    #Calc x-y in kpc:
-    y = R*np.cos(angle*np.pi/180.0)
-    x = R*np.sin(angle*np.pi/180.0)
-    
-    #Convert to km/s:
-    vx = pmRA*4.74*dgal_kpc
-    vxerr = errpmRA*4.74*dgal_kpc
-    vy = pmDEC*4.74*dgal_kpc
-    vyerr = errpmDEC*4.74*dgal_kpc
-    vx = vx - np.sum(vx*mskin)/np.sum(mskin)
-    vy = vy - np.sum(vy*mskin)/np.sum(mskin)
-
     return x, y, vx, vxerr, vy, vyerr, mskin

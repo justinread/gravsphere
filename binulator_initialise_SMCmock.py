@@ -3,15 +3,15 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-whichgal = 'SMCmock'
+whichgal = 'SMCmock_3kpc'
 if (whichgal == 'SMCmock_3kpc'):
-    infile_kin = './Data/SMC_mock/Cut_3kpc/Sims_Radial_Vel_raw_3kpc_new.dat'
+    infile_kin = './Data/SMC_mock/Cut_3kpc/Sims_Radial_Vel_raw_3kpc_EDR3.dat'
     infile_phot = './Data/SMC_mock/Cut_3kpc/Sims_Star_counts_3kpc.dat'
-    infile_prop = './Data/SMC_mock/Cut_3kpc/Sims_Prop_Mot_raw_3kpc_new.dat'
+    infile_prop = './Data/SMC_mock/Cut_3kpc/Sims_Prop_Mot_raw_3kpc_EDR3.dat'
 else:
-    infile_kin = './Data/SMC_mock/Sims_Radial_Vel_raw.dat'
+    infile_kin = './Data/SMC_mock/Sims_Radial_Vel_raw_EDR3.dat'
     infile_phot = './Data/SMC_mock/Sims_Star_counts_full.dat'
-    infile_prop = './Data/SMC_mock/Sims_Prop_Mot_raw.dat'
+    infile_prop = './Data/SMC_mock/Sims_Prop_Mot_raw_EDR3.dat'
 outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
@@ -27,7 +27,7 @@ vzfourpltmax = 1e6
 #Number of stars per bin [-1 indicates that
 #binning was already done elsewhere]:
 Nbin = -1
-Nbinkin = 250
+Nbinkin = 50
 
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
@@ -42,12 +42,8 @@ Rfitmax = 2.8
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-if (whichgal == 'SMCmock_3kpc'):
-    p0vin_min = np.array([-50,1.0,1.0,1e-4,-50,8.0])
-    p0vin_max = np.array([50,8.0,5.0,1.0,50.0,150.0])
-else:
-    p0vin_min = np.array([-25,1.0,1.0,1e-4,-150,8.0])
-    p0vin_max = np.array([25,8.0,5.0,1.0,150.0,75.0])
+p0vin_min = np.array([-25,1.0,1.0,1e-4,-150,8.0])
+p0vin_max = np.array([25,8.0,5.0,1.0,150.0,75.0])
 vfitmin = 0
 vfitmax = 0
 Rfitvmin = -1
@@ -68,6 +64,6 @@ use_dataRhalf = 'yes'
 propermotion = 'yes'
 dgal_kpc = 60.0
 if (propermotion == 'yes'):
-    Nbinkin_prop = Nbinkin
+    Nbinkin_prop = 150
     x, y, vx, vxerr, vy, vyerr, msprop = \
-        smcmock_prop_api(infile_prop,dgal_kpc)
+        smc_prop_api(infile_prop,dgal_kpc)

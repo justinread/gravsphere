@@ -4,9 +4,9 @@ from constants import *
 
 #Data files and output base filename:
 whichgal = 'SMC'
-infile_kin = './Data/SMC/Obs_Radial_Vel_raw.dat'
+infile_kin = './Data/SMC/Obs_Radial_Vel_raw_EDR3_new.dat'
 infile_phot = './Data/SMC/Zaritsky_counts.dat'
-infile_prop = './Data/SMC/Obs_Prop_Mot_raw.dat'
+infile_prop = './Data/SMC/Obs_Prop_Mot_raw_EDR3_new.dat'
 outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
@@ -15,7 +15,7 @@ xpltmax = 10.0
 surfpltmin = 1e-6
 surfpltmax = 100
 vztwopltmin = 0
-vztwopltmax = 35
+vztwopltmax = 50
 vzfourpltmin = 1e5
 vzfourpltmax = 1e7
 
