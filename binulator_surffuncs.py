@@ -47,7 +47,7 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
 
     #Emcee parameters:
     nwalkers = 250
-    nmodels = 2500
+    nmodels = 20000
 
     #Starting guess
     ndims = len(p0in_min)

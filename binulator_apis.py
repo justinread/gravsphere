@@ -220,5 +220,8 @@ def smc_prop_api(data_file_kin,dgal_kpc):
     vyerr = errpmDEC*4.74*dgal_kpc
     vx = vx - np.sum(vx*mskin)/np.sum(mskin)
     vy = vy - np.sum(vy*mskin)/np.sum(mskin)
-   
+    print('Min/max tangential velocity error:',\
+          np.min(vxerr),np.max(vxerr),\
+          np.min(vyerr),np.max(vyerr))
+    
     return x, y, vx, vxerr, vy, vyerr, mskin

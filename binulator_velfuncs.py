@@ -291,7 +291,7 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
 
     #Emcee parameters:
     nwalkers = 250
-    nmodels = 10000
+    nmodels = 20000
 
     #Starting guess
     ndims = len(p0vin_min)

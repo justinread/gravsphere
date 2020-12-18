@@ -7,11 +7,11 @@ whichgal = 'SMCmock_3kpc'
 if (whichgal == 'SMCmock_3kpc'):
     infile_kin = './Data/SMC_mock/Cut_3kpc/Sims_Radial_Vel_raw_3kpc_EDR3.dat'
     infile_phot = './Data/SMC_mock/Cut_3kpc/Sims_Star_counts_3kpc.dat'
-    infile_prop = './Data/SMC_mock/Cut_3kpc/Sims_Prop_Mot_raw_3kpc_EDR3.dat'
+    infile_prop = './Data/SMC_mock/Cut_3kpc/Sims_Prop_Mot_raw_3kpc_EDR3_new.dat'
 else:
     infile_kin = './Data/SMC_mock/Sims_Radial_Vel_raw_EDR3.dat'
     infile_phot = './Data/SMC_mock/Sims_Star_counts_full.dat'
-    infile_prop = './Data/SMC_mock/Sims_Prop_Mot_raw_EDR3.dat'
+    infile_prop = './Data/SMC_mock/Sims_Prop_Mot_raw_EDR3_new.dat'
 outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:
@@ -42,8 +42,8 @@ Rfitmax = 2.8
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-25,1.0,1.0,1e-4,-150,8.0])
-p0vin_max = np.array([25,8.0,5.0,1.0,150.0,75.0])
+p0vin_min = np.array([-25,1.0,1.0,1e-4,-50,8.0])
+p0vin_max = np.array([25,8.0,5.0,1.0,50.0,150.0])
 vfitmin = 0
 vfitmax = 0
 Rfitvmin = -1
