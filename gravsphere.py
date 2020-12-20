@@ -313,7 +313,7 @@ nwalkers = 250
 nmodels = 25000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 ###########################################################
 #Input data selection here:
@@ -328,8 +328,8 @@ codemode = 'plot'
 #from gravsphere_initialise_Sculptor import *
 #from gravsphere_initialise_Fornax import *
 #from gravsphere_initialise_CVnI import *
-from gravsphere_initialise_SegI import *
-#from gravsphere_initialise_SMC import *
+#from gravsphere_initialise_SegI import *
+from gravsphere_initialise_SMC import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *

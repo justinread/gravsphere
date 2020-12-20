@@ -29,6 +29,11 @@ import sys
 import warnings
 warnings.simplefilter("ignore")
 
+#Forbid plots to screen so binulator can run
+#remotely:
+import matplotlib as mpl
+mpl.use('Agg')
+
 #Welcome blurb: 
 print('###### BINULATOR VERSION 1.0 ######\n')
 
@@ -51,10 +56,10 @@ print('###### BINULATOR VERSION 1.0 ######\n')
 #from binulator_initialise_Sextans import *
 #from binulator_initialise_Fornax import *
 #from binulator_initialise_SegI import *
-from binulator_initialise_SMC import *
+#from binulator_initialise_SMC import *
 
 #Mocks:
-#from binulator_initialise_SMCmock import *
+from binulator_initialise_SMCmock import *
 #from binulator_initialise_PlumCoreOm import *
 #from binulator_initialise_PlumCuspOm import *
 
