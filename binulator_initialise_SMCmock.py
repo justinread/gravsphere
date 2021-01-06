@@ -42,12 +42,12 @@ Rfitmax = 2.8
 #where alp is ~the dispersion, bet=[0.1,10] is a shape parameter,
 #and "back" is a Gaussian of amplitude "backamp", describing 
 #some background. [0 means use full radial range].
-p0vin_min = np.array([-25,4.0,1.0,1e-4,10.0,10.0])
-p0vin_max = np.array([25,15.0,5.0,1.0,50.0,150.0])
+p0vin_min = np.array([-50,4.0,1.0,1e-4,-150.0,15.0])
+p0vin_max = np.array([50,15.0,5.0,1.0,150.0,150.0])
 vfitmin = 0
 vfitmax = 0
 Rfitvmin = -1
-Rfitvmax = 2.8
+Rfitvmax = -1
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.

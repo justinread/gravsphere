@@ -27,8 +27,8 @@ sigmlow = 1e-3
 sigmhigh = 5.0
 
 #Code options:
-propermotion = 'no'
-virialshape = 'no'
+propermotion = 'yes'
+virialshape = 'yes'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -91,14 +91,14 @@ betr0min = -2
 betr0max = 1.0
 betnmin = 1.0
 betnmax = 3.0
-#bet0min = -0.3
-#bet0max = 0.3
-#betinfmin = -0.3
-#betinfmax = 1.0
-bet0min = -0.01
-bet0max = 0.01
-betinfmin = -0.1
+bet0min = -0.3
+bet0max = 0.3
+betinfmin = -0.3
 betinfmax = 1.0
+#bet0min = -0.01
+#bet0max = 0.01
+#betinfmin = -0.1
+#betinfmax = 1.0
 
 #CoreNFWtides priors:
 logM200low = 7.5

@@ -313,7 +313,7 @@ nwalkers = 250
 nmodels = 25000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 ###########################################################
 #Input data selection here:
@@ -1018,7 +1018,7 @@ elif (codemode == 'plot'):
         plt.yticks(fontsize=myfontsize)
 
         psel = sigpmr > 0
-        plt.errorbar(np.log10(rbin_kin[psel]),sigpmr[psel],sigpmrerr[psel],\
+        plt.errorbar(np.log10(rbin_kinp[psel]),sigpmr[psel],sigpmrerr[psel],\
                      linewidth=2,color='b',alpha=0.75,\
                      fmt='o')
             
@@ -1059,7 +1059,7 @@ elif (codemode == 'plot'):
         plt.yticks(fontsize=myfontsize)
  
         psel = sigpmt > 0
-        plt.errorbar(np.log10(rbin_kin[psel]),sigpmt[psel],sigpmterr[psel],\
+        plt.errorbar(np.log10(rbin_kinp[psel]),sigpmt[psel],sigpmterr[psel],\
                      linewidth=2,color='b',alpha=0.75,\
                      fmt='o')
             
