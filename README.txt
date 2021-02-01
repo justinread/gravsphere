@@ -13,6 +13,12 @@ python source files.
 To run these codes, you will need to install:
 python3.x, numpy, scipy, matplotlib and emcee
 
+The code has been verified to work with:
+python 3.6.3
+scipy version 0.19.1
+numpy version 1.13.3
+matplotlib version 2.1.0
+emcee version 3.0rc2
 
 :::: CITATIONS ::::
 If using this code, please cite the following code papers:
@@ -83,8 +89,10 @@ To run an example:
    <out_base>/GCmock/PlumCuspOm/VirialShape/
    Propermotion output requires similarly:
    <out_base>/GCmock/PlumCuspOm/Propermotion/
+   If using Propermotions *and* VirialShapes, then you will need:
+   <out_base>/GCmock/PlumCuspOm/Propermotion/VirialShape/
    If using the "cosmo_cprior = 'yes'" option, this will be stored
-   in a further subfolder:
+   in a further subfolder, e.g.:
    <out_base>/GCmock/PlumCuspOm/VirialShape/CosmoC/
 
 6. Next, select the same galaxy in gravsphere.py to run. For
@@ -103,5 +111,5 @@ To run an example:
 
 
 
-Justin Read | 04/11/20 
+Justin Read | 01/02/21 
 

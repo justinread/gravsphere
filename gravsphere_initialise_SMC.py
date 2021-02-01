@@ -26,8 +26,8 @@ sigmlow = 1e-3
 sigmhigh = 5.0
 
 #Code options:
-propermotion = 'no'
-virialshape = 'yes'
+propermotion = 'yes'
+virialshape = 'no'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -117,5 +117,5 @@ if (cosmo_cprior == 'yes'):
 
 #For calculating J-factors:
 dgal_kpc = 60.0
-calc_Jfac = 'no'
+calc_Jfac = 'yes'
 alpha_Jfac_deg = 0.5
