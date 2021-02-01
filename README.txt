@@ -20,6 +20,7 @@ numpy version 1.13.3
 matplotlib version 2.1.0
 emcee version 3.0rc2
 
+
 :::: CITATIONS ::::
 If using this code, please cite the following code papers:
 
