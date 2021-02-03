@@ -111,6 +111,31 @@ To run an example:
    while gravsphere will need to run overnight.
 
 
+:::: Setting up your own model ::::
+
+To input your own data, you will first need to set up an "api" to
+load the data into binulator. Example apis and a full description
+of the data format binulator needs can be found in:
+
+binulator_apis.py
+
+There, you will also find several example api routines.
+
+Once you've written your "api" routine to load in your data, you
+will then need to make a new binulator_initialise_XXX.py file.
+Please see the examples for this. You will need to call your
+api routine at the end of this initialisation script.
+
+Then, you can run binulator, selecting your new
+binulator_initialise_XXX.py script inside the binulator.py code.
+
+Once you've run binulator, you should then set up an initialisation
+script for gravsphere. Here, you can also copy the examples:
+gravsphere_initialise_XXX.py. As with binulator, you'll have
+to select your gravsphere_initialise_XXX.py script from within
+gravsphere.py. Then you're good to go to run the code as for
+the built in examples, above.
+
 
 Justin Read | 01/02/21 
 
