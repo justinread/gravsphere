@@ -23,6 +23,20 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
 
         inv_sigma2 = 1.0/(yerr)**2.0
         lnlike_out = -0.5*(np.sum((y-model)**2*inv_sigma2))
+
+        #Check for negative density and penalise
+        #any such models:
+#        if hasattr(x, '__len__'):
+#            xmin = np.log10(np.min(x)/10.0)
+#            xmax = np.log10(np.max(x)*10.0)
+#        else:
+#            xmin = np.log10(x/10.0)
+#            xmax = np.log10(x*10.0)
+#        testx = np.logspace(xmin,xmax,250)
+#        testmodel = threeplumsurf(testx,theta[0],theta[1],theta[2],\
+#                                  theta[3],theta[4],theta[5])
+#        if (np.min(testmodel) < 0):
+#            lnlike_out = -np.inf
         
         if (lnlike_out != lnlike_out):
             lnlike_out = -np.inf
@@ -49,11 +63,20 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
     nwalkers = 250
     nmodels = 20000
 
-    #Starting guess
+    #Starting guess:
     ndims = len(p0in_min)
     pos = np.zeros((nwalkers, ndims), dtype='float')
     p0in_startmin = p0in_min
-    p0in_startmax = p0in_max 
+    p0in_startmax = p0in_max
+    
+    #Don't allow initial guess to have
+    #negative Plummer mass even if the prior
+    #allows it since overall negative density
+    #models will return -np.inf likelihood:
+#    for i in range(len(p0in_startmin)):
+#        if (p0in_startmin[i] < 0):
+#            p0in_startmin[i] = p0in_startmax[i]/1.0e3
+        
     for i in range(ndims):
         pos[:,i] = np.random.uniform(p0in_startmin[i],\
             p0in_startmax[i],nwalkers)

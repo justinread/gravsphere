@@ -652,7 +652,10 @@ def multiplumden(r,pars):
         multplum = multplum + \
             3.0*Mpars[i]/(4.*np.pi*aparsu**3.)*\
             (1.0+r**2./aparsu**2.)**(-5./2.)
-    return multplum
+
+    #Clip may be necessary if using negative Plummer
+    #mass components:            
+    return np.clip(multplum,1e-20,None)
 
 def multiplumsurf(r,pars):
     Mpars = pars[0:np.int(len(pars)/2.0)]
@@ -670,7 +673,10 @@ def multiplumsurf(r,pars):
         multplum = multplum + \
             Mpars[i]*aparsu**2.0 / \
             (np.pi*(aparsu**2.0+r**2.0)**2.0)
-    return multplum
+
+    #Clip may be necessary if using negative Plummer
+    #mass components:
+    return np.clip(multplum,1e-20,None)
 
 def multiplumdlnrhodlnr(r,pars):
     Mpars = pars[0:np.int(len(pars)/2.0)]
@@ -709,6 +715,13 @@ def multiplummass(r,pars):
             aparsu = apars[i]
         multplum = multplum + \
             Mpars[i]*r**3./(r**2.+aparsu**2.)**(3./2.)
+
+    #Ensure monotonically rising (may be necessary
+    #if using negative Plummer mass components):
+    for i in range(1,len(multplum)):
+        if (multplum[i] < multplum[i-1]):
+            multplum[i] = multplum[i-1]
+
     return multplum
 
 def threeplumsurf(r,M1,M2,M3,a1,a2,a3):
