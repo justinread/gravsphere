@@ -55,10 +55,7 @@ Note that this public release of the code is distinct from
 the "FreeForm" version used in most of the above publications. 
 In particular, it bins the data in an entirely new way that is
 more robust for smaller datasets and "ultra-faints", where 
-the velocity errors approach the velocity dispersion. This 
-yields slightly larger uncertainties, however, than the method
-presented in the original GravSphere code paper:
-https://ui.adsabs.harvard.edu/abs/2017MNRAS.471.4541R/abstract
+the velocity errors approach the velocity dispersion.
 
 If you would like to use the fully free form version, with
 the original binning methodology, please see Anna Genina's 
