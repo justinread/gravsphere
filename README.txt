@@ -35,6 +35,16 @@ Please acknowledge use of the gravsphere code and/or
 binulator, and link to its github page:
 https://github.com/justinread/gravsphere
 
+If using any of the data for Milky Way dwarfs included
+in this repository, please cite the following papers:
+
+Carina, Fornax, Sculptor, Sextans:
+https://ui.adsabs.harvard.edu/abs/2009AJ....137.3100W/abstract
+Draco: https://ui.adsabs.harvard.edu/abs/2015MNRAS.448.2717W/abstract
+Leo I: https://ui.adsabs.harvard.edu/abs/2008ApJ...675..201M/abstract
+Leo II: https://ui.adsabs.harvard.edu/abs/2017AJ....153..254S/abstract
+Ursa Minor: https://ui.adsabs.harvard.edu/abs/2018AJ....156..257S/abstract
+
 
 :::: BUGS ::::
 If you spot any bugs, please let me know!

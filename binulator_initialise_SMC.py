@@ -30,7 +30,7 @@ Nbinkin = 50
 p0in_min = np.array([-5,-5,-5,0.1,0.1,0.1])
 p0in_max = np.array([5,5,5,2.5,2.5,2.5])
 Rfitmin = -1
-Rfitmax = 2.75
+Rfitmax = 2.5
 
 #Priors for binulator velocity dispersion calculation. 
 #Array values are: [vzmean,alp,bet,backamp,backmean,backsig], 
@@ -56,7 +56,7 @@ R, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin = \
 use_dataRhalf = 'yes'
 
 #Propermotions:
-propermotion = 'yes'
+propermotion = 'no'
 dgal_kpc = 60.0
 if (propermotion == 'yes'):
     Nbinkin_prop = 150

@@ -636,6 +636,33 @@ def calcmedquartnine(array):
 
 ###########################################################
 #For fitting the surface brightness:
+def Sig_addpnts(x,y,yerr):
+    #If using neg. Plummer component, add some more
+    #"data points" at large & small radii bounded on
+    #zero and the outermost data point. This
+    #will disfavour models with globally
+    #negative tracer density.
+    addpnts = len(x)
+    xouter = np.max(x)
+    youter = np.min(y)
+    xinner = np.min(x)
+    yinner = np.max(y)
+    xadd_right = np.logspace(np.log10(xouter),\
+                             np.log10(xouter*1000),addpnts)
+    yadd_right = np.zeros(addpnts) + youter/2.0
+    yerradd_right = yadd_right
+    xadd_left = np.logspace(np.log10(xinner),\
+                            np.log10(xinner/1000),addpnts)
+    yadd_left = np.zeros(addpnts) + yinner
+    yerradd_left = yadd_left/2.0
+    x = np.concatenate((x,xadd_right))
+    y = np.concatenate((y,yadd_right))
+    yerr = np.concatenate((yerr,yerradd_right))
+    x = np.concatenate((xadd_left,x))
+    y = np.concatenate((yadd_left,y))
+    yerr = np.concatenate((yerradd_left,yerr))
+    return x,y,yerr
+
 def multiplumden(r,pars):
     Mpars = pars[0:np.int(len(pars)/2.0)]
     apars = pars[np.int(len(pars)/2.0):len(pars)]
@@ -652,10 +679,7 @@ def multiplumden(r,pars):
         multplum = multplum + \
             3.0*Mpars[i]/(4.*np.pi*aparsu**3.)*\
             (1.0+r**2./aparsu**2.)**(-5./2.)
-
-    #Clip may be necessary if using negative Plummer
-    #mass components:            
-    return np.clip(multplum,1e-20,None)
+    return multplum
 
 def multiplumsurf(r,pars):
     Mpars = pars[0:np.int(len(pars)/2.0)]
@@ -673,10 +697,7 @@ def multiplumsurf(r,pars):
         multplum = multplum + \
             Mpars[i]*aparsu**2.0 / \
             (np.pi*(aparsu**2.0+r**2.0)**2.0)
-
-    #Clip may be necessary if using negative Plummer
-    #mass components:
-    return np.clip(multplum,1e-20,None)
+    return multplum
 
 def multiplumdlnrhodlnr(r,pars):
     Mpars = pars[0:np.int(len(pars)/2.0)]
@@ -715,13 +736,6 @@ def multiplummass(r,pars):
             aparsu = apars[i]
         multplum = multplum + \
             Mpars[i]*r**3./(r**2.+aparsu**2.)**(3./2.)
-
-    #Ensure monotonically rising (may be necessary
-    #if using negative Plummer mass components):
-    for i in range(1,len(multplum)):
-        if (multplum[i] < multplum[i-1]):
-            multplum[i] = multplum[i-1]
-
     return multplum
 
 def threeplumsurf(r,M1,M2,M3,a1,a2,a3):

@@ -18,12 +18,33 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
         return lp + lnlike_surf(theta, x, y, yerr)
 
     def lnlike_surf(theta, x, y, yerr):
+        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
+            #If using neg. Plummer component, add some more
+            #"data points" at large & small radii bounded on
+            #zero and the outermost data point. This
+            #will disfavour models with globally
+            #negative tracer density.
+            x,y,yerr = Sig_addpnts(x,y,yerr)
+            
         model = threeplumsurf(x,theta[0],theta[1],theta[2],\
-            theta[3],theta[4],theta[5])
+                              theta[3],theta[4],theta[5])
 
+        #If using negative Plummer components,
+        #shrink the error to disfavour globally
+        #negative models. The shrinkage amount
+        #is designed to ensure the likelihood is
+        #penalised so we pick the smallest error
+        #on any point, divide it by the total
+        #number of points and then divide that
+        #by 1e3 for good measure.
+        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
+            if (np.min(model) < 0):
+                yerr[np.where(model < 0)] = \
+                     np.min(yerr)/np.float(len(x))/1.0e3
+        
         inv_sigma2 = 1.0/(yerr)**2.0
-        lnlike_out = -0.5*(np.sum((y-model)**2*inv_sigma2))
-
+        lnlike_out = -0.5*(np.sum((y-model)**2*inv_sigma2))    
+        
         if (lnlike_out != lnlike_out):
             lnlike_out = -np.inf
     

@@ -112,8 +112,23 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     Mparsu[2] = 10.**Mpars[2]
     Mparsu[4] = 10.**Mpars[4]
 
+    #Add dummy data points for low and high x1
+    #to ensure +ve definite surface density
+    #if using negative Plummer components:
+    if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
+        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+    
     sigr2, Sig, sigLOS2 = \
            sigp_fit(x1,x2,nuparsu,Mparsu,betpars,Mstar)
+
+    #And now, shrink the error wherever the
+    #total density is negative to disfavour
+    #those models (see binulator_surffuncs.py
+    #for details):
+    if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
+        if (np.min(Sig) < 0):
+            y1err[np.where(Sig < 0)] = \
+                np.min(y1err)/np.float(len(x1))/1.0e3
     
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
@@ -151,9 +166,24 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
     Mparsu[2] = 10.**Mpars[2]
     Mparsu[4] = 10.**Mpars[4]
 
+    #Add dummy data points for low and high x1
+    #to ensure +ve definite surface density
+    #if using negative Plummer components:
+    if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
+        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+    
     sigr2, Sig, sigLOS2, vs1, vs2 = \
         sigp_fit_vs(x1,x2,nuparsu,Mparsu,betpars,Mstar)
 
+    #And now, shrink the error wherever the
+    #total density is negative to disfavour
+    #those models (see binulator_surffuncs.py
+    #for details):
+    if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
+        if (np.min(Sig) < 0):
+            y1err[np.where(Sig < 0)] = \
+                  np.min(y1err)/np.float(len(x1))/1.0e3
+    
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
     model3 = vs1/1.0e12
@@ -193,9 +223,24 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     Mparsu[0] = 10.**Mpars[0]
     Mparsu[2] = 10.**Mpars[2]
     Mparsu[4] = 10.**Mpars[4]
+
+    #Add dummy data points for low and high x1
+    #to ensure +ve definite surface density
+    #if using negative Plummer components:
+    if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
+        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
     
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2 = \
         sigp_fit_prop(x1,x2,x3,nuparsu,Mparsu,betpars,Mstar)
+
+    #And now, shrink the error wherever the
+    #total density is negative to disfavour
+    #those models (see binulator_surffuncs.py
+    #for details):
+    if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
+        if (np.min(Sig) < 0):
+            y1err[np.where(Sig < 0)] = \
+                  np.min(y1err)/np.float(len(x1))/1.0e3
 
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
@@ -239,9 +284,24 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     Mparsu[0] = 10.**Mpars[0]
     Mparsu[2] = 10.**Mpars[2]
     Mparsu[4] = 10.**Mpars[4]
+
+    #Add dummy data points for low and high x1
+    #to ensure +ve definite surface density
+    #if using negative Plummer components:
+    if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
+        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
     
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2, vs1, vs2 = \
         sigp_fit_prop_vs(x1,x2,x3,nuparsu,Mparsu,betpars,Mstar)
+
+    #And now, shrink the error wherever the
+    #total density is negative to disfavour
+    #those models (see binulator_surffuncs.py
+    #for details):
+    if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
+        if (np.min(Sig) < 0):
+            y1err[np.where(Sig < 0)] = \
+                  np.min(y1err)/np.float(len(x1))/1.0e3
     
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
@@ -313,7 +373,7 @@ nwalkers = 250
 nmodels = 25000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 ###########################################################
 #Input data selection here:
@@ -329,7 +389,7 @@ codemode = 'plot'
 #from gravsphere_initialise_Fornax import *
 #from gravsphere_initialise_CVnI import *
 #from gravsphere_initialise_SegI import *
-#from gravsphere_initialise_SMC import *
+from gravsphere_initialise_SMC import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
@@ -337,7 +397,7 @@ codemode = 'plot'
 #from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
-from gravsphere_initialise_And21 import *
+#from gravsphere_initialise_And21 import *
 
 #Output some key choices:
 print('Doing galaxy:',whichgal)

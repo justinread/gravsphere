@@ -317,6 +317,12 @@ surfbest = threeplumsurf(Rplot,p0best[0],p0best[1],p0best[2],\
                          p0best[3],p0best[4],p0best[5])
 plt.plot(Rplot,surfbest,color='red',linewidth=2,label='Best fit')
 
+#Check for negative density:
+index = np.argsort(surfbest)
+if (surfbest[index[0]] < 0):
+    print('Warning! negative surface density at:',\
+          Rplot[index[0]],surfbest[index[0]])
+
 #Numerical projection (test):
 intpnts = 250
 theta = np.linspace(0,np.pi/2.0-1e-6,num=intpnts)
