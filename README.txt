@@ -44,6 +44,8 @@ Draco: https://ui.adsabs.harvard.edu/abs/2015MNRAS.448.2717W/abstract
 Leo I: https://ui.adsabs.harvard.edu/abs/2008ApJ...675..201M/abstract
 Leo II: https://ui.adsabs.harvard.edu/abs/2017AJ....153..254S/abstract
 Ursa Minor: https://ui.adsabs.harvard.edu/abs/2018AJ....156..257S/abstract
+CVnI: https://ui.adsabs.harvard.edu/abs/2007ApJ...670..313S/abstract
+https://ui.adsabs.harvard.edu/abs/2007MNRAS.380..281M/abstract
 
 
 :::: BUGS ::::
