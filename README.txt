@@ -47,6 +47,9 @@ Ursa Minor: https://ui.adsabs.harvard.edu/abs/2018AJ....156..257S/abstract
 CVnI: https://ui.adsabs.harvard.edu/abs/2007ApJ...670..313S/abstract
 https://ui.adsabs.harvard.edu/abs/2007MNRAS.380..281M/abstract
 
+And for CVnI, see also the data repository and instructions here:
+https://users.obs.carnegiescience.edu/jsimon/data.html
+
 
 :::: BUGS ::::
 If you spot any bugs, please let me know!

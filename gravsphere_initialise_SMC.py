@@ -57,7 +57,7 @@ bar_pnts = 250
 
 #For surface density fit tracertol = [0,1] sets the spread 
 #around the best-fit value from the binulator.
-tracertol = 0.1
+tracertol = 1.0e-4
 
 #Cosmology priors on the coreNFWtides model. mWDM(keV) is
 #the mass of a thermal relic; <0 means CDM; sig_c200 is 

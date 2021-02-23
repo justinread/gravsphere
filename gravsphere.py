@@ -365,7 +365,6 @@ mpl.use('Agg')
 #Welcome blurb: 
 print('###### GRAVSPHERE VERSION 1.0 ######\n')
 
-
 ###########################################################
 #Code parameters:
 datadir = './Data/'
