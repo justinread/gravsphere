@@ -71,7 +71,7 @@ from binulator_initialise_SMCmock import *
 #SB alone. This is worthwhile to make sure you have a 
 #good fit before running the fit to the velocity data
 #that takes longer to complete.
-quicktestSB = 'yes'
+quicktestSB = 'no'
 
 #Some output about parameter choices:
 print('Doing galaxy:',whichgal)
