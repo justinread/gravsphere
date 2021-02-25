@@ -4,9 +4,9 @@ from constants import *
 
 #Data files and output base filename:
 whichgal = 'SMC'
-infile_kin = './Data/SMC/Obs_Radial_Vel_raw_EDR3_new.dat'
-infile_phot = './Data/SMC/Zaritsky_counts.dat'
-infile_prop = './Data/SMC/Obs_Prop_Mot_raw_EDR3_new.dat'
+infile_kin = '../Data/SMC/Obs_Radial_Vel_raw_EDR3_new.dat'
+infile_phot = '../Data/SMC/Zaritsky_counts.dat'
+infile_prop = '../Data/SMC/Obs_Prop_Mot_raw_EDR3_new.dat'
 outfile = output_base+whichgal+'/'+whichgal
 
 #Plot ranges:

@@ -27,6 +27,7 @@ If using this code, please cite the following code papers:
 https://ui.adsabs.harvard.edu/abs/2017MNRAS.471.4541R/abstract
 https://ui.adsabs.harvard.edu/abs/2018MNRAS.481..860R/abstract
 https://ui.adsabs.harvard.edu/abs/2020MNRAS.498..144G/abstract
+https://ui.adsabs.harvard.edu/abs/2021arXiv210211890C/abstract
 
 If using the J-factor integral calculation, please cite also:
 https://ui.adsabs.harvard.edu/abs/2020JCAP...09..004A/abstract
@@ -49,6 +50,16 @@ https://ui.adsabs.harvard.edu/abs/2007MNRAS.380..281M/abstract
 
 And for CVnI, see also the data repository and instructions here:
 https://users.obs.carnegiescience.edu/jsimon/data.html
+
+If using the And21 data, please cite:
+https://ui.adsabs.harvard.edu/abs/2021arXiv210211890C/abstract
+
+If using the Segue I data, please cite:
+https://ui.adsabs.harvard.edu/abs/2011ApJ...733...46S/abstract
+
+If using the Gaia Challenge mock data, please cite:
+https://ui.adsabs.harvard.edu/abs/2021MNRAS.501..978R/abstract
+http://astrowiki.ph.surrey.ac.uk/dokuwiki/doku.php?id=start
 
 
 :::: BUGS ::::
