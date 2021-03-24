@@ -15,7 +15,7 @@ python3.x, numpy, scipy, matplotlib and emcee
 
 The code has been verified to work with:
 python 3.6.3
-scipy version 0.19.1
+scipy version 1.5.4
 numpy version 1.13.3
 matplotlib version 2.1.0
 emcee version 3.0rc2

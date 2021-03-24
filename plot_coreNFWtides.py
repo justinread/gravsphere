@@ -12,6 +12,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+import matplotlib.colors as colors
+import matplotlib.cm as cmx
 from scipy.optimize import curve_fit
 from functions import *
 from constants import *
@@ -58,8 +60,8 @@ plt.yticks(fontsize=myfontsize)
 
 plt.loglog()
 
-plt.xlabel(r'$r$\,[kpc]',fontsize=myfontsize)
-plt.ylabel(r'density\,[${\rm M}_\odot$\,kpc$^{-3}]$',fontsize=myfontsize)
+plt.xlabel(r'Radius\,[kpc]',fontsize=myfontsize)
+plt.ylabel(r'Density\,[${\rm M}_\odot$\,kpc$^{-3}$]',fontsize=myfontsize)
 
 plt.plot(ranal,trueden,linewidth=mylinewidth,color='blue',\
     label='True density',alpha=0.5)
@@ -67,16 +69,20 @@ plt.plot(ranal,corenfwtides,linewidth=mylinewidth,color='green',\
     label='coreNFWtides',alpha=0.5)
 
 #Show what happens as we change "n":
-nplot = np.linspace(0,1,5)
+npnts = 9
+nplot = np.linspace(-1.0,2.0,npnts)
+jet = plt.get_cmap('jet')
+cNorm  = colors.Normalize(vmin=np.min(nplot), vmax=np.max(nplot))
+scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=jet)
 for i in range(len(nplot)):
+    colorVal = scalarMap.to_rgba(nplot[i])
     den = corenfw_tides_den(ranal,pfits[0],pfits[1],\
                 pfits[2],nplot[i],\
                 pfits[4],pfits[5])
-    plt.plot(ranal,den,color='black',alpha=0.5,\
+    plt.plot(ranal,den,color=colorVal,alpha=0.5,\
              label=r'$n=%.1f$' % nplot[i])
 
 plt.legend(fontsize=mylegendfontsize)
 plt.xlim([1e-2,5])
 plt.legend(loc='upper right',fontsize=18)
 plt.savefig(output_base+'coreNFWtides_example.pdf',bbox_inches='tight')
-

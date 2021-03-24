@@ -17,7 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import emcee
-from scipy.integrate.quadrature import simps as integrator
+from scipy.integrate import simps as integrator
 from functions import *
 from constants import *
 from binulator_surffuncs import * 

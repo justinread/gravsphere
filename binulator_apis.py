@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.integrate.quadrature import simps as integrator
+from scipy.integrate import simps as integrator
 from constants import *
 from functions import * 
 

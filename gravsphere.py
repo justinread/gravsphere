@@ -345,7 +345,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import emcee
-from scipy.integrate.quadrature import simps as integrator
+from scipy.integrate import simps as integrator
 from functions import *
 from constants import *
 from binulator_surffuncs import * 
@@ -1607,7 +1607,7 @@ elif (codemode == 'plot'):
     sigmstore = np.zeros(len(rcstore))
     for i in range(len(rcstore)):
         sigmstore[i] = sidm_novel(rcstore[i],M200store[i],cstore[i],\
-                                  oden,rhocrit,rtstore[i])
+                                  oden,rhocrit)
                                   
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)

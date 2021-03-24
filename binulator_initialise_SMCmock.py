@@ -3,7 +3,7 @@ from binulator_apis import *
 from constants import * 
 
 #Data files and output base filename:
-whichgal = 'SMCmock_3kpc'
+whichgal = 'SMCmock'
 if (whichgal == 'SMCmock_3kpc'):
     infile_kin = '../Data/SMC_mock/Cut_3kpc/Sims_Radial_Vel_raw_3kpc_EDR3_err.dat'
     infile_phot = '../Data/SMC_mock/Cut_3kpc/Sims_Star_counts_3kpc.dat'
@@ -47,7 +47,7 @@ p0vin_max = np.array([50,15.0,5.0,1.0,150.0,150.0])
 vfitmin = 0
 vfitmax = 0
 Rfitvmin = -1
-Rfitvmax = -1
+Rfitvmax = 1.0
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.
@@ -67,3 +67,19 @@ if (propermotion == 'yes'):
     Nbinkin_prop = 150
     x, y, vx, vxerr, vy, vyerr, msprop = \
         smc_prop_api(infile_prop,dgal_kpc)
+
+#Downsample number of stars to match real SMC data:
+nsamples = 6000
+sample_choose = np.random.randint(len(Rkin),size=nsamples)
+Rkin = Rkin[sample_choose]
+vz = vz[sample_choose]
+vzerr = vzerr[sample_choose]
+mskin = mskin[sample_choose]
+if (propermotion == 'yes'):
+    x = x[sample_choose]
+    y = y[sample_choose]
+    vx = vx[sample_choose]
+    vxerr = vxerr[sample_choose]
+    vy = vy[sample_choose]
+    vyerr = vyerr[sample_choose]
+    msprop = msprop[sample_choose]

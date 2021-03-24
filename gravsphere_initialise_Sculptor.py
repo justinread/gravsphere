@@ -65,7 +65,7 @@ tracertol = 0.1
 #is set, then we include a Gaussian spread in M200-c200 in
 #the likelihood. Without this, M200-c200 enters only if 
 #used to set the priors, below.
-cosmo_cprior = 'yes'
+cosmo_cprior = 'no'
 sig_c200 = 0.1
 mWDM = -1
 if (mWDM > 0):
@@ -97,7 +97,7 @@ rclow = 1e-2
 rchigh = 10.0
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
-nlow = 0.0
+nlow = -1.0
 nhigh = 1.0
 rtlow = 1.0
 rthigh = 20.0

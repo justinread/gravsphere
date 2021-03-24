@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.integrate.quadrature import simps as integrator
+from scipy.integrate import simps as integrator
 from scipy.misc.common import derivative
 from scipy.special import gamma
 from scipy.integrate import quad, dblquad
@@ -34,7 +34,7 @@ def cosmo_cfunc_WDM(M200,h,OmegaM,rhocrit,mWDM):
 def rhoNFW(r,rhos,rs):
     return rhos/((r/rs)*(1.+(r/rs))**2.)
 
-def sidm_novel(rc,M200,c,oden,rhocrit,GammaX):
+def sidm_novel(rc,M200,c,oden,rhocrit):
     #Calculate SIDM model parameters from the coreNFWtides
     #model fit. For this to be valid, the coreNFWtides fit
     #should assume a pure-core model, with n=1. See

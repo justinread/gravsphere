@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
-from scipy.integrate.quadrature import simps as integrator
+from scipy.integrate import simps as integrator
 from scipy.special import gamma
 from constants import *
 from functions import * 

@@ -6,8 +6,8 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Data files and output base filename:
-#whichgal = 'SMCmock_3kpc'
-whichgal = 'SMCmock'
+whichgal = 'SMCmock_3kpc'
+#whichgal = 'SMCmock'
 infile = output_base+whichgal+'/'+whichgal
 outdirbase = output_base+whichgal+'/'
 
@@ -27,7 +27,7 @@ sigmlow = 1e-3
 sigmhigh = 5.0
 
 #Code options:
-propermotion = 'yes'
+propermotion = 'no'
 virialshape = 'yes'
 
 #Overplot true solution (for mock data). If 
@@ -37,12 +37,12 @@ virialshape = 'yes'
 #Pass a zero array if one of these is not available.
 overtrue = 'yes'
 data = \
-    np.genfromtxt('./Data/SMC_mock/SMC_den.txt',\
+    np.genfromtxt('../Data/SMC_mock/SMC_den.txt',\
                   dtype='f8')
 ranal = data[:,0]
 trueden = data[:,1]
 data = \
-    np.genfromtxt('./Data/SMC_mock/SMC_betastar.txt',\
+    np.genfromtxt('../Data/SMC_mock/SMC_betastar.txt',\
                   dtype='f8')
 betatruestar = np.interp(ranal,data[:,0],data[:,1])
 betatrue = 2.0*betatruestar/(1.0+betatruestar)
@@ -71,7 +71,7 @@ bar_pnts = 250
 
 #For surface density fit tracertol = [0,1] sets the spread 
 #around the best-fit value from the binulator.
-tracertol = 0.1
+tracertol = 1.0e-3
 
 #Cosmology priors on the coreNFWtides model. mWDM(keV) is
 #the mass of a thermal relic; <0 means CDM; sig_c200 is 
@@ -91,27 +91,27 @@ betr0min = -2
 betr0max = 1.0
 betnmin = 1.0
 betnmax = 3.0
-#bet0min = -0.3
-#bet0max = 0.3
-#betinfmin = -0.3
-#betinfmax = 1.0
-bet0min = -0.01
-bet0max = 0.01
+bet0min = -0.1
+bet0max = 0.1
 betinfmin = -0.1
 betinfmax = 1.0
+#bet0min = -0.01
+#bet0max = 0.01
+#betinfmin = -0.1
+#betinfmax = 1.0
 
 #CoreNFWtides priors:
-logM200low = 7.5
+logM200low = 5.5
 logM200high = 11.5
 clow = 1.0
 chigh = 100.0
 rclow = 1e-2
-rchigh = 5.0
+rchigh = 1e2
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
-nlow = 0.0
+nlow = -1.0
 nhigh = 1.0
-rtlow = 1.0
+rtlow = 0.1
 rthigh = 10.0
 logrtlow = np.log10(rtlow)
 logrthigh = np.log10(rthigh)
