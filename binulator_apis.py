@@ -225,3 +225,124 @@ def smc_prop_api(data_file_kin,dgal_kpc):
           np.min(vyerr),np.max(vyerr))
     
     return x, y, vx, vxerr, vy, vyerr, mskin
+
+def ocen_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
+    #Surface density:
+    data_phot = np.genfromtxt(infile_phot,dtype='f8')
+    rbin_phot = data_phot[:,0]*dgal_kpc/arcsec
+    surfden = data_phot[:,1]
+    surfdenerr = (data_phot[:,2]+data_phot[:,3])/2.0
+
+    #Normalise the surface density and calc.
+    #the half light radius from the data:
+    Rhalf, Menc_tot = surf_renorm(rbin_phot,surfden)
+    surfden = surfden / Menc_tot
+    surfdenerr = surfdenerr / Menc_tot
+    print('Data Rhalf:', Rhalf)
+    
+    #Now the kinematic data:
+    print('Reading RV data ... ',infile_kin)
+    data_kin = np.genfromtxt(infile_kin,dtype='f8')
+    print('Reading proper motion data ... ',infile_prop)
+    data_pm = np.genfromtxt(infile_prop,dtype='f8')
+
+    rbin_kin = data_kin[:,0]*dgal_kpc/arcsec
+    sigpmean = data_kin[:,1]
+    sigperr = data_kin[:,2]
+
+    rbin_kinp = data_pm[:,0]*dgal_kpc/arcsec
+    sigpmr = data_pm[:,1]*dgal_kpc/arcsec*1.0e-3/year*kpc/kms
+    sigpmrerr = data_pm[:,2]*dgal_kpc/arcsec*1.0e-3/year*kpc/kms
+    sigpmt = data_pm[:,3]*dgal_kpc/arcsec*1.0e-3/year*kpc/kms
+    sigpmterr = data_pm[:,4]*dgal_kpc/arcsec*1.0e-3/year*kpc/kms
+
+    #Set up dummy data:
+    vzmeanbin = np.zeros(len(rbin_kin))
+    vzmeanbinlo = np.zeros(len(rbin_kin))
+    vzmeanbinhi = np.zeros(len(rbin_kin))
+    vztwobin = sigpmean
+    vztwobinlo = sigpmean - sigperr
+    vztwobinhi = sigpmean + sigperr
+    vzfourbin = np.zeros(len(rbin_kin))
+    vzfourbinlo = np.zeros(len(rbin_kin))
+    vzfourbinhi = np.zeros(len(rbin_kin))
+    backampbin = np.zeros(len(rbin_kin))
+    backampbinlo = np.zeros(len(rbin_kin))
+    backampbinhi = np.zeros(len(rbin_kin))
+    backmeanbin = np.zeros(len(rbin_kin))
+    backmeanbinlo = np.zeros(len(rbin_kin))
+    backmeanbinhi = np.zeros(len(rbin_kin))
+    backsigbin = np.zeros(len(rbin_kin))
+    backsigbinlo = np.zeros(len(rbin_kin))
+    backsigbinhi = np.zeros(len(rbin_kin))
+
+    vsp1 = 0.0
+    vsp1lo = 0.0
+    vsp1hi = 0.0
+    vsp2 = 0.0
+    vsp2lo = 0.0
+    vsp2hi = 0.0
+    vsp1store = np.zeros(10)
+    vsp2store = np.zeros(10)
+
+    vphimeanbin = np.zeros(len(rbin_kinp))
+    vphimeanbinlo = np.zeros(len(rbin_kinp))
+    vphimeanbinhi = np.zeros(len(rbin_kinp))
+    vphitwobin = sigpmt
+    vphitwobinlo = sigpmt - sigpmterr
+    vphitwobinhi = sigpmt + sigpmterr
+    vphifourbin = np.zeros(len(rbin_kinp))
+    vphifourbinlo = np.zeros(len(rbin_kinp))
+    vphifourbinhi = np.zeros(len(rbin_kinp))
+    backptampbin = np.zeros(len(rbin_kinp))
+    backptampbinlo = np.zeros(len(rbin_kinp))
+    backptampbinhi = np.zeros(len(rbin_kinp))
+    backptmeanbin = np.zeros(len(rbin_kinp))
+    backptmeanbinlo = np.zeros(len(rbin_kinp))
+    backptmeanbinhi = np.zeros(len(rbin_kinp))
+    backptsigbin = np.zeros(len(rbin_kinp))
+    backptsigbinlo = np.zeros(len(rbin_kinp))
+    backptsigbinhi = np.zeros(len(rbin_kinp))
+    
+    vRmeanbin = np.zeros(len(rbin_kinp))
+    vRmeanbinlo = np.zeros(len(rbin_kinp))
+    vRmeanbinhi = np.zeros(len(rbin_kinp))
+    vRtwobin = sigpmr
+    vRtwobinlo = sigpmr - sigpmrerr
+    vRtwobinhi = sigpmr + sigpmrerr
+    vRfourbin = np.zeros(len(rbin_kinp))
+    vRfourbinlo = np.zeros(len(rbin_kinp))
+    vRfourbinhi = np.zeros(len(rbin_kinp))
+    backpRampbin = np.zeros(len(rbin_kinp))
+    backpRampbinlo = np.zeros(len(rbin_kinp))
+    backpRampbinhi = np.zeros(len(rbin_kinp))
+    backpRmeanbin = np.zeros(len(rbin_kinp))
+    backpRmeanbinlo = np.zeros(len(rbin_kinp))
+    backpRmeanbinhi = np.zeros(len(rbin_kinp))
+    backpRsigbin = np.zeros(len(rbin_kinp))
+    backpRsigbinlo = np.zeros(len(rbin_kinp))
+    backpRsigbinhi = np.zeros(len(rbin_kinp))
+
+    return rbin_phot, surfden, surfdenerr, Rhalf,\
+        rbin_kin,vzmeanbin,vzmeanbinlo,vzmeanbinhi,\
+        vztwobin,vztwobinlo,vztwobinhi,\
+        vzfourbin,vzfourbinlo,vzfourbinhi,\
+        backampbin,backampbinlo,backampbinhi,\
+        backmeanbin,backmeanbinlo,backmeanbinhi,\
+        backsigbin,backsigbinlo,backsigbinhi,\
+        vsp1,vsp1lo,vsp1hi,\
+        vsp2,vsp2lo,vsp2hi,\
+        vsp1store,\
+        vsp2store,\
+        rbin_kinp,vphimeanbin,vphimeanbinlo,vphimeanbinhi,\
+        vphitwobin,vphitwobinlo,vphitwobinhi,\
+        vphifourbin,vphifourbinlo,vphifourbinhi,\
+        backptampbin,backptampbinlo,backptampbinhi,\
+        backptmeanbin,backptmeanbinlo,backptmeanbinhi,\
+        backptsigbin,backptsigbinlo,backptsigbinhi,\
+        rbin_kinp,vRmeanbin,vRmeanbinlo,vRmeanbinhi,\
+        vRtwobin,vRtwobinlo,vRtwobinhi,\
+        vRfourbin,vRfourbinlo,vRfourbinhi,\
+        backpRampbin,backpRampbinlo,backpRampbinhi,\
+        backpRmeanbin,backpRmeanbinlo,backpRmeanbinhi,\
+        backpRsigbin,backpRsigbinlo,backpRsigbinhi

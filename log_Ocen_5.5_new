@@ -1,0 +1,18 @@
+nohup: ignoring input
+###### GRAVSPHERE VERSION 1.0 ######
+
+Using Omega cen distance: 5.5 kpc
+Doing galaxy: Ocen
+Model parameters:
+M200low, M200high [1e9 Msun]: 0.03162277660168379 31.622776601683793
+clow, chigh: 1.0 50.0
+Inner/outer radial bin (phot): 4.5e-05 0.068952
+Inner/outer radial bin (kin): 0.000855 0.060102
+Inner/outer radial Jeans grid: 8.2e-05 0.41000000000000003
+Running in fitting mode ... 
+Will write output to: /vol/ph/astro_temp/jread/gravsphere/Output/Ocen/dgal_5.5/Propermotion/
+Running chains ... 
+Writing data to file ... 
+
+Thank you for using GravSphere! Have a nice day.
+

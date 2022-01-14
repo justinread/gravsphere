@@ -101,7 +101,9 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
                         size=nsamples)
 
     #Set up arrays to store med,68%,95%,99% confidence intervals:
-    Rplot = np.logspace(-3,3,1000)
+    Rpmin = np.min(R)/50.0
+    Rpmax = np.max(R)*50.0
+    Rplot = np.logspace(np.log10(Rpmin),np.log10(Rpmax),1000)
     surf_int = np.zeros((7,len(Rplot)))
     surf_store = np.zeros((len(Rplot),nsamples))
     Rhalf_int = np.zeros(7)

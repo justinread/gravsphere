@@ -389,11 +389,12 @@ codemode = 'plot'
 #from gravsphere_initialise_CVnI import *
 #from gravsphere_initialise_SegI import *
 #from gravsphere_initialise_SMC import *
+from gravsphere_initialise_Ocen import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
 #from gravsphere_initialise_PlumCuspOm import *
-from gravsphere_initialise_SMCmock import *
+#from gravsphere_initialise_SMCmock import *
 
 #M31 satellites:
 #from gravsphere_initialise_And21 import *
@@ -508,8 +509,10 @@ print('Inner/outer radial bin (kin):', \
 #when multiplied by Mstar, it yields the total
 #stellar mass.
 if (baryonmass_follows_tracer == 'yes'):
-    Mstar_rad = np.linspace(barrad_min,\
-        barrad_max,np.int(bar_pnts))
+    if (barrad_min == 0):
+        barrad_min = 1.0e-3
+    Mstar_rad = np.logspace(np.log10(barrad_min),\
+        np.log10(barrad_max),np.int(bar_pnts))
     norm = pfits[0] + pfits[1] + pfits[2]
     Mstar_prof = \
         threeplummass(Mstar_rad,pfits[0]/norm,\
