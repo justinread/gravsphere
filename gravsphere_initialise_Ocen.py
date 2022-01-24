@@ -7,7 +7,7 @@ from functions import *
 
 #Data files and output base filename:
 whichgal = 'Ocen'
-dgal_kpc = 5.5
+dgal_kpc = 5.0
 infile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)+whichgal
 outdirbase = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)
 print('Using Omega cen distance: %.1f kpc' % (dgal_kpc))
@@ -67,7 +67,7 @@ tracertol = 0.75
 #is set, then we include a Gaussian spread in M200-c200 in
 #the likelihood. Without this, M200-c200 enters only if 
 #used to set the priors, below.
-cosmo_cprior = 'no'
+cosmo_cprior = 'yes'
 sig_c200 = 0.1
 mWDM = -1
 if (mWDM > 0):
@@ -85,7 +85,7 @@ betinfmin = -0.4
 betinfmax = 1.0
 
 #CoreNFWtides priors:
-logM200low = 7.5
+logM200low = 8.5
 logM200high = 10.5
 clow = 1.0
 chigh = 50.0
@@ -93,7 +93,7 @@ rclow = 1e-3
 rchigh = 2.0
 logrclow = np.log10(rclow)
 logrchigh = np.log10(rchigh)
-nlow = -1.0
+nlow = 0.0
 nhigh = 1.0
 rtlow = 1e-2
 rthigh = 10.0
@@ -106,6 +106,33 @@ if (cosmo_cprior == 'yes'):
     clow = 1.0
     chigh = 100.0
 
+#Priors on central dark mass [set logMcenlow/high very negative
+#to switch this off. Mcen is the mass in Msun; acen is the
+#scale length in kpc, usually assumed smaller than Rhalf
+#to avoid degeneracies with the stellar mass]:
+logMcenlow = 1.0
+logMcenhigh = 6.0
+acenlow = 1.0e-6
+acenhigh = 1.0e-3
+
+#Priors on rotation [set Arotlow = Arothigh = 0 to switch off.
+#Arot defined s.t. vphimean^2 / (2 sigr^2) = Arot(r/Rhalf)
+#which yields linear rotation with radius. Arot = 0.5 means
+#an equal balance of rotation and pressure support at Rhalf].
+#Note that:
+#https://ui.adsabs.harvard.edu/abs/2019MNRAS.485.1460S/abstract
+#find a mean rotation amplitude of 4.27+/-0.52 km/s. At Rhalf,
+#the dispersion of Ocen is 12-14km/s. This yields Arot in the
+#range: 0.035 < Arot < 0.08:
+Arotlow = 0.035
+Arothigh = 0.08
+
+#Priors on distance [set drangelow = drangehigh = 1.0 to switch
+#off. True distance follows as dgal_kpc * drange s.t. we
+#usually want drangelow < 1.0 and drangehigh > 1.0]:
+drangelow = 0.85
+drangehigh = 1.15
+    
 ###########################################################
 #Post processing options:
 

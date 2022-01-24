@@ -97,7 +97,7 @@ def get_J(rho, Mpars, distance, r_max):
         print('Argh! Negative J_max!! Bye bye...')
         sys.exit(0)
 
-    return J_max  # in GeV2.cm-5
+    return J_max  # in GeV^2 c^-4 cm^-5
 
 
 ###########################################################
@@ -256,10 +256,22 @@ def richfair_vsp(vz,Rkin,mskin):
         np.sum(vz**4.0*mskin*Rkin**2.0)/np.sum(mskin*Rkin**2.0)
     return vsp1_RF, vsp2_RF
 
+
+###########################################################
+#For optional central dark mass (e.g. remnants, black hole):
+def plumden(r,pars):
+    return 3.0*pars[0]/(4.*np.pi*pars[1]**3.)*\
+        (1.0+r**2./pars[1]**2.)**(-5./2.)
+
+def plummass(r,pars):
+    return pars[0]*r**3./(r**2.+pars[1]**2.)**(3./2.)
+
+
 ###########################################################
 #For Jeans modelling:
-def sigp(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-         Mstar_rad,Mstar_prof,Mstar,G,rmin,rmax):
+def sigp(r1,r2,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
+         betpars,\
+         Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,G,rmin,rmax):
     #Calculate projected velocity dispersion profiles
     #given input *functions* nu(r); M(r); beta(r); betaf(r).
     #Also input is an array Mstar_prof(Mstar_rad) describing the 3D 
@@ -282,15 +294,14 @@ def sigp(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
     #First calc sigr2(rint):
     sigr2 = np.zeros(len(rint))
     nur = nu(rint,nupars)
-    betafunc = betaf(rint,betpars)
+    betafunc = betaf(rint,betpars,Rhalf,Arot)
     for i in range(len(rint)):
         rq = rint[i]/cth
+        Mq = M(rq,Mpars)+Mcentral(rq,Mpars)
         if (Mstar > 0):
-            Mq = M(rq,Mpars)+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
-        else:
-            Mq = M(rq,Mpars)
+            Mq = Mq+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
         nuq = nu(rq,nupars)
-        betafuncq = betaf(rq,betpars)
+        betafuncq = betaf(rq,betpars,Rhalf,Arot)
         sigr2[i] = 1./nur[i]/rint[i]/betafunc[i] * \
             integrator(G*Mq*nuq*betafuncq*sth,th)
     
@@ -311,8 +322,9 @@ def sigp(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
 
     return sigr2out,Sigout,sigLOS2out
 
-def sigp_vs(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-            Mstar_rad,Mstar_prof,Mstar,G,rmin,rmax):
+def sigp_vs(r1,r2,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
+            betpars,\
+            Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,G,rmin,rmax):
     #Calculate projected velocity dispersion profiles
     #given input *functions* nu(r); M(r); beta(r); betaf(r).
     #Also input is an array Mstar_prof(Mstar_rad) describing the 3D
@@ -340,15 +352,14 @@ def sigp_vs(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
     #First calc sigr2(rint):
     sigr2 = np.zeros(len(rint))
     nur = nu(rint,nupars)
-    betafunc = betaf(rint,betpars)
+    betafunc = betaf(rint,betpars,Rhalf,Arot)
     for i in range(len(rint)):
         rq = rint[i]/cth
+        Mq = M(rq,Mpars)+Mcentral(rq,Mpars)
         if (Mstar > 0):
-            Mq = M(rq,Mpars)+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
-        else:
-            Mq = M(rq,Mpars)
+            Mq = Mq+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
         nuq = nu(rq,nupars)
-        betafuncq = betaf(rq,betpars)
+        betafuncq = betaf(rq,betpars,Rhalf,Arot)
         sigr2[i] = 1./nur[i]/rint[i]/betafunc[i] * \
             integrator(G*Mq*nuq*betafuncq*sth,th)
 
@@ -378,8 +389,9 @@ def sigp_vs(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
 
     return sigr2out,Sigout,sigLOS2out,vs1,vs2
 
-def sigp_prop(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-              Mstar_rad,Mstar_prof,Mstar,G,rmin,rmax):
+def sigp_prop(r1,r2,r3,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
+              betpars,\
+              Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,G,rmin,rmax):
     #Calculate projected velocity dispersion profiles
     #given input *functions* nu(r); M(r); beta(r); betaf(r).
     #Also input is an array Mstar_prof(Mstar_rad) describing the 3D
@@ -400,15 +412,14 @@ def sigp_prop(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
 
     sigr2 = np.zeros(len(rint))
     nur = nu(rint,nupars)
-    betafunc = betaf(rint,betpars)
+    betafunc = betaf(rint,betpars,Rhalf,Arot)
     for i in range(len(rint)):
         rq = rint[i]/cth
+        Mq = M(rq,Mpars)+Mcentral(rq,Mpars)
         if (Mstar > 0):
-            Mq = M(rq,Mpars)+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
-        else:
-            Mq = M(rq,Mpars)
+            Mq = Mq+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
         nuq = nu(rq,nupars)
-        betafuncq = betaf(rq,betpars)
+        betafuncq = betaf(rq,betpars,Rhalf,Arot)
         sigr2[i] = 1./nur[i]/rint[i]/betafunc[i] * \
             integrator(G*Mq*nuq*betafuncq*sth,th)
  
@@ -436,8 +447,9 @@ def sigp_prop(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
     
     return sigr2out,Sigout,sigLOS2out,sigpmr2out,sigpmt2out
 
-def sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-                 Mstar_rad,Mstar_prof,Mstar,G,rmin,rmax):
+def sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
+                 betpars,\
+                 Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,G,rmin,rmax):
     #Calculate projected velocity dispersion profiles
     #given input *functions* nu(r); M(r); beta(r); betaf(r).
     #Also input is an array Mstar_prof(Mstar_rad) describing the 3D
@@ -458,15 +470,14 @@ def sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
     
     sigr2 = np.zeros(len(rint))
     nur = nu(rint,nupars)
-    betafunc = betaf(rint,betpars)
+    betafunc = betaf(rint,betpars,Rhalf,Arot)
     for i in range(len(rint)):
         rq = rint[i]/cth
+        Mq = M(rq,Mpars)+Mcentral(rq,Mpars)
         if (Mstar > 0):
-            Mq = M(rq,Mpars)+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
-        else:
-            Mq = M(rq,Mpars)
+            Mq = Mq+Mstar*np.interp(rq,Mstar_rad,Mstar_prof)
         nuq = nu(rq,nupars)
-        betafuncq = betaf(rq,betpars)
+        betafuncq = betaf(rq,betpars,Rhalf,Arot)
         sigr2[i] = 1./nur[i]/rint[i]/betafunc[i] * \
             integrator(G*Mq*nuq*betafuncq*sth,th)
 
@@ -525,7 +536,7 @@ def beta(r,betpars):
     beta = bet0 + (betinf-bet0)*(1.0/(1.0 + (r0/r)**n))
     return beta
 
-def betaf(r,betpars):
+def betaf(r,betpars,Rhalf,Arot):
     bet0star = betpars[0]
     betinfstar = betpars[1]
     r0 = 10.**betpars[2]
@@ -543,7 +554,8 @@ def betaf(r,betpars):
     bet0 = 2.0*bet0star / (1.0 + bet0star)
     betinf = 2.0*betinfstar / (1.0 + betinfstar)
 
-    betafn = r**(2.0*betinf)*((r0/r)**n+1.0)**(2.0/n*(betinf-bet0))
+    betafn = r**(2.0*betinf)*((r0/r)**n+1.0)**(2.0/n*(betinf-bet0))*\
+             np.exp(-2.0*Arot*r/Rhalf)
     
     return betafn
 
@@ -663,6 +675,7 @@ def Sig_addpnts(x,y,yerr):
     yerr = np.concatenate((yerradd_left,yerr))
     return x,y,yerr
 
+#For stellar and tracer profiles:
 def multiplumden(r,pars):
     Mpars = pars[0:np.int(len(pars)/2.0)]
     apars = pars[np.int(len(pars)/2.0):len(pars)]

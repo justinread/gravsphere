@@ -110,6 +110,29 @@ if (cosmo_cprior == 'yes'):
     clow = 1.0
     chigh = 100.0
 
+#Priors on central dark mass [set logMcenlow/high very negative
+#to switch this off. Mcen is the mass in Msun; acen is the
+#scale length in kpc, usually assumed smaller than Rhalf
+#to avoid degeneracies with the stellar mass]:
+logMcenlow = 1
+logMcenhigh = 5
+acenlow = 1e-5
+acenhigh = 1e-2
+
+#Priors on rotation [Arot defined as:
+#vphimean^2 / (2 sigr^2) = Arot(r/Rhalf) which yields linear
+#rotation with radius. (Arot = 0.5 means an equal balance of
+#rotation and pressure support at Rhalf.)]:
+Arotlow = 0.0
+Arothigh = 1.0
+
+#Priors on distance [True distance follows as:
+#dgal_kpc * drange s.t. we usually want drangelow < 1.0 and
+#drangehigh > 1.0]:
+dgal_kpc = 105.0
+drangelow = 0.99999
+drangehigh = 1.00001
+
 ###########################################################
 #Post processing options:
 

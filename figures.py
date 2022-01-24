@@ -14,5 +14,6 @@ plt.rc('font', family='serif')
 tick_spacing = 0.01
 colorpop1 = 'tomato'
 colorpop2 = 'steelblue'
+colorpop3 = 'darkgreen'
 colorpop1data = 'red'
 colorpop2data = 'blue'

@@ -1,4 +1,4 @@
-###########################################################
+##########################################################
 #GravSphere
 ###########################################################
 
@@ -29,6 +29,10 @@ def lnprior_set_single(theta,n_betpars,bet0min,bet0max,\
                        clow,chigh,logrclow,logrchigh,\
                        nlow,nhigh,logrtlow,logrthigh,\
                        dellow,delhigh,\
+                       logMcenlow,logMcenhigh,\
+                       acenlow,acenhigh,\
+                       Arotlow,Arothigh,\
+                       drangelow,drangehigh,\
                        Mstar_min,Mstar_max):
 
     ndims = len(theta)
@@ -57,7 +61,14 @@ def lnprior_set_single(theta,n_betpars,bet0min,bet0max,\
     maxarr[n_betpars+nu_components*2+4] = logrthigh
     minarr[n_betpars+nu_components*2+5] = dellow
     maxarr[n_betpars+nu_components*2+5] = delhigh
-
+    minarr[n_betpars+nu_components*2+6] = logMcenlow
+    maxarr[n_betpars+nu_components*2+6] = logMcenhigh
+    minarr[n_betpars+nu_components*2+7] = acenlow
+    maxarr[n_betpars+nu_components*2+7] = acenhigh
+    minarr[n_betpars+nu_components*2+8] = Arotlow
+    maxarr[n_betpars+nu_components*2+8] = Arothigh
+    minarr[n_betpars+nu_components*2+9] = drangelow
+    maxarr[n_betpars+nu_components*2+9] = drangehigh
     minarr[ndims-1] = Mstar_min
     maxarr[ndims-1] = Mstar_max
 
@@ -105,21 +116,28 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     nupars = theta[n_betpars:n_betpars+nu_components*2]
     Mpars = theta[n_betpars+nu_components*2:\
                   n_betpars+nu_components*2+n_mpars]
-    Mstar = theta[n_betpars+nu_components*2+n_mpars]
+    Arot = theta[n_betpars+nu_components*2+n_mpars]
+    drange = theta[n_betpars+nu_components*2+n_mpars+1]
+    Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
     Mparsu[0] = 10.**Mpars[0]
     Mparsu[2] = 10.**Mpars[2]
     Mparsu[4] = 10.**Mpars[4]
+    Mparsu[6] = 10.**Mpars[6]
 
+    #Handle distance uncertainty:
+    x1u = x1 * drange
+    x2u = x2 * drange
+    
     #Add dummy data points for low and high x1
     #to ensure +ve definite surface density
     #if using negative Plummer components:
     if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
-        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+        x1u, y1, y1err = Sig_addpnts(x1u,y1,y1err)
     
     sigr2, Sig, sigLOS2 = \
-           sigp_fit(x1,x2,nuparsu,Mparsu,betpars,Mstar)
+           sigp_fit(x1u,x2u,nuparsu,Mparsu,betpars,Mstar,Arot)
 
     #And now, shrink the error wherever the
     #total density is negative to disfavour
@@ -128,11 +146,11 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                np.min(y1err)/np.float(len(x1))/1.0e3
+                np.min(y1err)/np.float(len(x1u))/1.0e3
     
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
-    
+
     inv_sigma2_1 = 1.0/y1err**2
     inv_sigma2_2 = 1.0/y2err**2
 
@@ -159,21 +177,28 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
     nupars = theta[n_betpars:n_betpars+nu_components*2]
     Mpars = theta[n_betpars+nu_components*2:\
                   n_betpars+nu_components*2+n_mpars]
-    Mstar = theta[n_betpars+nu_components*2+n_mpars]
+    Arot = theta[n_betpars+nu_components*2+n_mpars]
+    drange = theta[n_betpars+nu_components*2+n_mpars+1]
+    Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
     Mparsu[0] = 10.**Mpars[0]
     Mparsu[2] = 10.**Mpars[2]
     Mparsu[4] = 10.**Mpars[4]
+    Mparsu[6] = 10.**Mpars[6]
 
+    #Handle distance uncertainty:
+    x1u = x1 * drange
+    x2u = x2 * drange
+    
     #Add dummy data points for low and high x1
     #to ensure +ve definite surface density
     #if using negative Plummer components:
     if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
-        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+        x1u, y1, y1err = Sig_addpnts(x1u,y1,y1err)
     
     sigr2, Sig, sigLOS2, vs1, vs2 = \
-        sigp_fit_vs(x1,x2,nuparsu,Mparsu,betpars,Mstar)
+        sigp_fit_vs(x1u,x2u,nuparsu,Mparsu,betpars,Mstar,Arot)
 
     #And now, shrink the error wherever the
     #total density is negative to disfavour
@@ -182,7 +207,7 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1err)/np.float(len(x1))/1.0e3
+                  np.min(y1err)/np.float(len(x1u))/1.0e3
     
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
@@ -217,21 +242,33 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     nupars = theta[n_betpars:n_betpars+nu_components*2]
     Mpars = theta[n_betpars+nu_components*2:\
                   n_betpars+nu_components*2+n_mpars]
-    Mstar = theta[n_betpars+nu_components*2+n_mpars]
+    Arot = theta[n_betpars+nu_components*2+n_mpars]
+    drange = theta[n_betpars+nu_components*2+n_mpars+1]
+    Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
     Mparsu[0] = 10.**Mpars[0]
     Mparsu[2] = 10.**Mpars[2]
     Mparsu[4] = 10.**Mpars[4]
+    Mparsu[6] = 10.**Mpars[6]
 
+    #Handle distance uncertainty:
+    x1u = x1 * drange
+    x2u = x2 * drange
+    x3u = x3 * drange
+    y3u = y3 * drange
+    y3erru = y3err * drange
+    y4u = y4 * drange
+    y4erru = y4err * drange
+    
     #Add dummy data points for low and high x1
     #to ensure +ve definite surface density
     #if using negative Plummer components:
     if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
-        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+        x1u, y1, y1err = Sig_addpnts(x1u,y1,y1err)
     
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2 = \
-        sigp_fit_prop(x1,x2,x3,nuparsu,Mparsu,betpars,Mstar)
+        sigp_fit_prop(x1u,x2u,x3u,nuparsu,Mparsu,betpars,Mstar,Arot)
 
     #And now, shrink the error wherever the
     #total density is negative to disfavour
@@ -240,7 +277,7 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1err)/np.float(len(x1))/1.0e3
+                  np.min(y1err)/np.float(len(x1u))/1.0e3
 
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
@@ -249,13 +286,13 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
 
     inv_sigma2_1 = 1.0/y1err**2
     inv_sigma2_2 = 1.0/y2err**2
-    inv_sigma2_3 = 1.0/y3err**2
-    inv_sigma2_4 = 1.0/y4err**2
+    inv_sigma2_3 = 1.0/y3erru**2
+    inv_sigma2_4 = 1.0/y4erru**2
 
     lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2)+\
-                       np.sum((y3-model3)**2*inv_sigma2_3)+\
-                       np.sum((y4-model4)**2*inv_sigma2_4))
+                       np.sum((y3u-model3)**2*inv_sigma2_3)+\
+                       np.sum((y4u-model4)**2*inv_sigma2_4))
 
     if (cosmo_cprior == 'yes'):
         #Add the conc. to the likelihood function
@@ -278,21 +315,33 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     nupars = theta[n_betpars:n_betpars+nu_components*2]
     Mpars = theta[n_betpars+nu_components*2:\
                   n_betpars+nu_components*2+n_mpars]
-    Mstar = theta[n_betpars+nu_components*2+n_mpars]
+    Arot = theta[n_betpars+nu_components*2+n_mpars]
+    drange = theta[n_betpars+nu_components*2+n_mpars+1]
+    Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
     Mparsu[0] = 10.**Mpars[0]
     Mparsu[2] = 10.**Mpars[2]
     Mparsu[4] = 10.**Mpars[4]
+    Mparsu[6] = 10.**Mpars[6]
 
+    #Handle distance uncertainty:
+    x1u = x1 * drange
+    x2u = x2 * drange
+    x3u = x3 * drange
+    y3u = y3 * drange
+    y3erru = y3err * drange
+    y4u = y4 * drange
+    y4erru = y4err * drange                
+    
     #Add dummy data points for low and high x1
     #to ensure +ve definite surface density
     #if using negative Plummer components:
     if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
-        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+        x1u, y1, y1err = Sig_addpnts(x1u,y1,y1err)
     
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2, vs1, vs2 = \
-        sigp_fit_prop_vs(x1,x2,x3,nuparsu,Mparsu,betpars,Mstar)
+        sigp_fit_prop_vs(x1u,x2u,x3u,nuparsu,Mparsu,betpars,Mstar,Arot)
 
     #And now, shrink the error wherever the
     #total density is negative to disfavour
@@ -301,7 +350,7 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1err)/np.float(len(x1))/1.0e3
+                  np.min(y1err)/np.float(len(x1u))/1.0e3
     
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
@@ -312,13 +361,13 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     
     inv_sigma2_1 = 1.0/y1err**2
     inv_sigma2_2 = 1.0/y2err**2
-    inv_sigma2_3 = 1.0/y3err**2
-    inv_sigma2_4 = 1.0/y4err**2
+    inv_sigma2_3 = 1.0/y3erru**2
+    inv_sigma2_4 = 1.0/y4erru**2
     
     lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2)+\
-                       np.sum((y3-model3)**2*inv_sigma2_3)+\
-                       np.sum((y4-model4)**2*inv_sigma2_4))+\
+                       np.sum((y3u-model3)**2*inv_sigma2_3)+\
+                       np.sum((y4u-model4)**2*inv_sigma2_4))+\
                        np.log(vsp_pdf(model5,vsp1val,vsp1pdf))+\
                        np.log(vsp_pdf(model6,vsp2val,vsp2pdf))
 
@@ -363,7 +412,8 @@ import matplotlib as mpl
 mpl.use('Agg')
 
 #Welcome blurb: 
-print('###### GRAVSPHERE VERSION 1.0 ######\n')
+print('###### GRAVSPHERE VERSION 1.5 ######\n')
+
 
 ###########################################################
 #Code parameters:
@@ -372,10 +422,11 @@ nwalkers = 250
 nmodels = 25000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
+
 
 ###########################################################
-#Input data selection here:
+#Input data selection here.
 
 #MW satellites:
 #from gravsphere_initialise_Draco import *
@@ -410,7 +461,15 @@ if (cosmo_cprior == 'yes'):
         print('Warm dark matter cosmology with mWDM(keV):',mWDM)
     else:
         print('Cold dark matter cosmology')
-
+if (logMcenlow > 0.0):
+    print('Including central dark mass in the range [1e6 Msun]:', \
+          10.0**logMcenlow/1.0e6, 10.0**logMcenhigh/1.0e6)
+if (Arothigh > 1.0e-3):
+    print('Including rotation')
+if (drangelow < 0.999):
+    print('Allowing distance to vary in the fit over the range [kpc]:', \
+          dgal_kpc*drangelow, dgal_kpc*drangehigh)
+        
 #Set up output data folder structure:
 outdir = outdirbase
 if (propermotion == 'yes'):
@@ -539,32 +598,35 @@ rho = lambda r, Mpars: \
 dlnrhodlnr = lambda r, Mpars: \
     corenfw_tides_dlnrhodlnr(r,Mpars[0],Mpars[1],Mpars[2],\
                                Mpars[3],Mpars[4],Mpars[5])
-n_mpars = 6
- 
+#Central dark mass:
+Mcentral = lambda r, Mpars: \
+           plummass(r,Mpars[6:8])
+n_mpars = 8
+
 #Set min/max priors on the stellar mass:                        
 Mstar_min = Mstar - Mstar_err
 Mstar_max = Mstar + Mstar_err
 
 #Set up the Jeans functions to use for the fit:
-ndim = n_betpars + n_nupars + n_mpars + 1
+ndim = n_betpars + n_nupars + n_mpars + 3
 if (propermotion == 'no'):
     if (virialshape == 'no'):
-        sigp_fit = lambda r1,r2,nupars,Mpars,betpars,Mstar: \
-            sigp(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-                 Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
+        sigp_fit = lambda r1,r2,nupars,Mpars,betpars,Mstar,Arot: \
+            sigp(r1,r2,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,betpars,\
+                 Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,Guse,rmin,rmax)
     else:
-        sigp_fit_vs = lambda r1,r2,nupars,Mpars,betpars,Mstar: \
-            sigp_vs(r1,r2,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-                    Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
+        sigp_fit_vs = lambda r1,r2,nupars,Mpars,betpars,Mstar,Arot: \
+            sigp_vs(r1,r2,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,betpars,\
+                    Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,Guse,rmin,rmax)
 elif (propermotion == 'yes'):
     if (virialshape == 'no'):
-        sigp_fit_prop = lambda r1,r2,r3,nupars,Mpars,betpars,Mstar: \
-            sigp_prop(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-                      Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
+        sigp_fit_prop = lambda r1,r2,r3,nupars,Mpars,betpars,Mstar,Arot: \
+            sigp_prop(r1,r2,r3,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,betpars,\
+                      Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,Guse,rmin,rmax)
     else:
-        sigp_fit_prop_vs = lambda r1,r2,r3,nupars,Mpars,betpars,Mstar: \
-            sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,beta,betaf,nupars,Mpars,betpars,\
-                         Mstar_rad,Mstar_prof,Mstar,Guse,rmin,rmax)
+        sigp_fit_prop_vs = lambda r1,r2,r3,nupars,Mpars,betpars,Mstar,Arot: \
+            sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,betpars,\
+                         Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,Guse,rmin,rmax)
 
 
 #Set the priors and starting blob for the tracer density profile.
@@ -624,6 +686,14 @@ if (codemode == 'run'):
         np.random.uniform(logrtlow,logrthigh,nwalkers)
     pos[:,n_betpars+nu_components*2+5] = \
         np.random.uniform(dellow,delhigh,nwalkers)
+    pos[:,n_betpars+nu_components*2+6] = \
+        np.random.uniform(logMcenlow,logMcenhigh,nwalkers)
+    pos[:,n_betpars+nu_components*2+7] = \
+        np.random.uniform(acenlow,acenhigh,nwalkers)
+    pos[:,n_betpars+nu_components*2+8] = \
+        np.random.uniform(Arotlow,Arothigh,nwalkers)
+    pos[:,n_betpars+nu_components*2+9] = \
+        np.random.uniform(drangelow,drangehigh,nwalkers)
     pos[:,ndim-1] = \
         np.random.uniform(Mstar_min,Mstar_max,nwalkers)
 
@@ -657,6 +727,10 @@ if (codemode == 'run'):
                     clow,chigh,logrclow,logrchigh,\
                     nlow,nhigh,logrtlow,logrthigh,\
                     dellow,delhigh,\
+                    logMcenlow,logMcenhigh,\
+                    acenlow,acenhigh,\
+                    Arotlow,Arothigh,\
+                    drangelow,drangehigh,\
                     Mstar_min,Mstar_max)            
 
     print('Running chains ... ')
@@ -789,9 +863,10 @@ elif (codemode == 'plot'):
     Mstar_int = np.zeros((7,len(Mstar_rad)))
     Mdynrat_int = np.zeros((7,len(Mstar_rad)))
     nu_int = np.zeros((7,len(Mstar_rad)))
+    Mcen_int = np.zeros((7,len(rbin)))
     if (calc_Jfac == 'yes'):
         J_int = np.zeros(7)
-    
+        
     Mstore = np.zeros((len(rbin),nsamples))
     rhostore = np.zeros((len(rbin),nsamples))
     dlnrhodlnrstore = np.zeros((len(rbin),nsamples))
@@ -805,13 +880,17 @@ elif (codemode == 'plot'):
     nstore = np.zeros(nsamples)
     rtstore = np.zeros(nsamples)
     delstore = np.zeros(nsamples)
+    Mcenstore = np.zeros((len(rbin),nsamples))
+    Arotstore = np.zeros(nsamples)
+    dstore = np.zeros(nsamples)
     if (calc_Jfac == 'yes'):
-        Jstore = np.zeros(nsamples)       
+        Jstore = np.zeros(nsamples)    
     
     bet_int = np.zeros((7,len(rbin)))
     betstar_int = np.zeros((7,len(rbin)))
     Sig_int = np.zeros((7,len(rbin)))
     sigp_int = np.zeros((7,len(rbin)))
+    vphirot_int = np.zeros((7,len(rbin)))
     if (virialshape == 'yes'):
         vs1_int = np.zeros((7,1))
         vs2_int = np.zeros((7,1))
@@ -822,6 +901,7 @@ elif (codemode == 'plot'):
     betstarstore = np.zeros((len(rbin),nsamples))
     Sigstore = np.zeros((len(rbin),nsamples))
     sigpstore = np.zeros((len(rbin),nsamples))
+    vphirotstore = np.zeros((len(rbin),nsamples))
     if (virialshape == 'yes'):
         vs1store = np.zeros(nsamples)
         vs2store = np.zeros(nsamples)
@@ -835,51 +915,57 @@ elif (codemode == 'plot'):
         nupars = theta[n_betpars:n_betpars+nu_components*2]
         Mpars = theta[n_betpars+nu_components*2:\
                       n_betpars+nu_components*2+n_mpars]
+        Arot = theta[n_betpars+nu_components*2+n_mpars]
+        drange = theta[n_betpars+nu_components*2+n_mpars+1]
         Mstar = theta[ndim-1]
         nuparsu = np.array(nupars)
         Mparsu = np.array(Mpars)
         Mparsu[0] = 10.**Mpars[0]
         Mparsu[2] = 10.**Mpars[2]
         Mparsu[4] = 10.**Mpars[4]
-
+        Mparsu[6] = 10.**Mpars[6]
+        
         #Calculate all profiles we want to plot:
         if (propermotion == 'no'):
             if (virialshape == 'no'):
                 sigr2,Sig,sigLOS2 = \
-                    sigp_fit(rbin,rbin,nuparsu,\
-                             Mparsu,betpars,Mstar)
+                   sigp_fit(rbin,rbin,nuparsu,\
+                             Mparsu,betpars,Mstar,Arot)
             else:
                 sigr2,Sig,sigLOS2,vs1,vs2 = \
                     sigp_fit_vs(rbin,rbin,nuparsu,\
-                                Mparsu,betpars,Mstar)
+                                Mparsu,betpars,Mstar,Arot)
         elif (propermotion == 'yes'):
             if (virialshape == 'no'):
                 sigr2,Sig,sigLOS2,sigpmr2,sigpmt2 = \
                     sigp_fit_prop(rbin,rbin,rbin,nuparsu,Mparsu,betpars,\
-                                  Mstar)
+                                  Mstar,Arot)
             else:
                 sigr2,Sig,sigLOS2,sigpmr2,sigpmt2,vs1,vs2 = \
                     sigp_fit_prop_vs(rbin,rbin,rbin,nuparsu,Mparsu,betpars,\
-                                     Mstar)
-                
+                                     Mstar,Arot)
+
         Mr = M(rbin,Mparsu)
         betar = beta(rbin,betpars)
         rhor = rho(rbin,Mparsu)
         dlnrhodlnrr = dlnrhodlnr(rbin,Mparsu)
         Mstarr = Mstar_prof*Mstar
         nu_mass_r = multiplummass(Mstar_rad,nuparsu)
-
+        Mcenr = Mcentral(rbin,Mparsu)
+        
         Mstore[:,i] = Mr
         betstore[:,i] = betar
         betstarstore[:,i] = betar/(2.0-betar)
         sigpstore[:,i] = np.sqrt(sigLOS2)/1000. 
         Sigstore[:,i] = Sig
+        vphirotstore[:,i] = np.sqrt(2.0*sigLOS2*Arot*rbin/Rhalf)/1000.
         rhostore[:,i] = rhor
         dlnrhodlnrstore[:,i] = dlnrhodlnrr
         Mstarstore[:,i] = Mstarr
-        Mdynratstore[:,i] = M(Mstar_rad,Mparsu)//Mstarr
+        Mdynratstore[:,i] = M(Mstar_rad,Mparsu)/Mstarr
         nustore[:,i] = nu_mass_r
-
+        Mcenstore[:,i] = Mcenr
+        
         vmaxstore[i] = vmax_func(Mparsu[0],Mparsu[1],h)
         M200store[i] = Mparsu[0]
         cstore[i] = Mparsu[1]
@@ -887,7 +973,9 @@ elif (codemode == 'plot'):
         nstore[i] = Mparsu[3]
         rtstore[i] = Mparsu[4]
         delstore[i] = Mparsu[5]
-
+        Arotstore[i] = Arot
+        dstore[i] = drange*dgal_kpc
+        
         if (calc_Jfac == 'yes'):
             alpha_rmax = dgal_kpc*alpha_Jfac_deg/deg
             Jstore[i] = get_J(rho,Mparsu,dgal_kpc,alpha_rmax)
@@ -935,10 +1023,16 @@ elif (codemode == 'plot'):
                 nu_int[5,j], \
                 nu_int[6,j] = \
                 calcmedquartnine(nustore[j,:])
+        for j in range(len(rbin)):
+            Mcen_int[0,j], Mcen_int[1,j], Mcen_int[2,j], \
+                Mcen_int[3,j], \
+                Mcen_int[4,j], \
+                Mcen_int[5,j], \
+                Mcen_int[6,j] = \
+                calcmedquartnine(Mcenstore[j,:])
         if (calc_Jfac == 'yes'):
             J_int = \
-                    calcmedquartnine(Jstore[:])
-            
+                calcmedquartnine(Jstore[:])
         for j in range(len(rbin)):
             bet_int[0,j], bet_int[1,j], bet_int[2,j], \
                 bet_int[3,j], \
@@ -964,6 +1058,12 @@ elif (codemode == 'plot'):
                 Sig_int[5,j], \
                 Sig_int[6,j] = \
                 calcmedquartnine(Sigstore[j,:])
+            vphirot_int[0,j], vphirot_int[1,j], vphirot_int[2,j], \
+                vphirot_int[3,j], \
+                vphirot_int[4,j], \
+                vphirot_int[5,j], \
+                vphirot_int[6,j] = \
+                calcmedquartnine(vphirotstore[j,:])
             if (propermotion == 'yes'):
                 sigpmr_int[0,j], sigpmr_int[1,j], \
                     sigpmr_int[2,j], sigpmr_int[3,j], \
@@ -991,9 +1091,10 @@ elif (codemode == 'plot'):
                 vs2_int[6] = \
                 calcmedquartnine(vs2store[:])
 
+    #######################################################
     #And now make the plots:
 
-    ##### Surface density ##### 
+    ##### Stellar surface density ##### 
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
@@ -1029,7 +1130,7 @@ elif (codemode == 'plot'):
     plt.ylim([ymin_Sigstar,ymax_Sigstar])
     plt.savefig(outdir+'output_Sigstar.pdf',bbox_inches='tight')
 
-    ##### Projected velocity dispersion #####  
+    ##### Stellar projected velocity dispersion #####  
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
@@ -1069,7 +1170,7 @@ elif (codemode == 'plot'):
     
     plt.savefig(outdir+'output_sigLOS.pdf',bbox_inches='tight')
 
-    ##### Proper motion dispersions ##### 
+    ##### Stellar proper motion dispersions ##### 
     if (propermotion == 'yes'):
         #First in the radial direction (on the sky):
         fig = plt.figure(figsize=(figx,figy))
@@ -1153,7 +1254,7 @@ elif (codemode == 'plot'):
 
         plt.savefig(outdir+'output_sigpmt.pdf',bbox_inches='tight')
 
-    ##### Beta(r) profile ##### 
+    ##### Stellar beta(r) anisotropy profile ##### 
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
@@ -1173,7 +1274,7 @@ elif (codemode == 'plot'):
     plt.plot(np.log10(rbin),bet_int[0,:],'k',linewidth=mylinewidth,\
              label=r'Fit')
 
-    #And true answer (mock data):
+    #And true answer (for mock data):
     if (overtrue == 'yes'):
         plt.plot(np.log10(ranal),betatrue,'b--',linewidth=mylinewidth,\
                  label=r'True')
@@ -1195,7 +1296,7 @@ elif (codemode == 'plot'):
                  bet_int[4,i],bet_int[5,i],bet_int[6,i]))
     f.close()
 
-    ###### Symmetrised Beta(r) profile ##### 
+    ###### Stellar symmetrised betastar(r) profile ##### 
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
@@ -1215,7 +1316,7 @@ elif (codemode == 'plot'):
     plt.plot(np.log10(rbin),betstar_int[0,:],'k',linewidth=mylinewidth,\
              label=r'Fit')
  
-    #And true answer (mock data):
+    #And true answer (for mock data):
     if (overtrue == 'yes'):
          plt.plot(np.log10(ranal),betatruestar,'b--',linewidth=mylinewidth,\
                  label=r'True')
@@ -1239,7 +1340,7 @@ elif (codemode == 'plot'):
                  betstar_int[6,i]))
     f.close()
 
-    ##### Mass profile ##### 
+    ##### Cumulative mass profiles ##### 
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
@@ -1274,12 +1375,26 @@ elif (codemode == 'plot'):
                      facecolor=colorpop2,alpha=0.66,\
                      edgecolor='none')
 
+    plt.fill_between(rbin,Mcen_int[5,:],Mcen_int[6,:],\
+                     facecolor=colorpop3,alpha=alp3sig,\
+                     edgecolor='none')
+    plt.fill_between(rbin,Mcen_int[3,:],Mcen_int[4,:],\
+                     facecolor=colorpop3,alpha=0.33,\
+                     edgecolor='none')
+    plt.fill_between(rbin,Mcen_int[1,:],Mcen_int[2,:],\
+                     facecolor=colorpop3,alpha=0.66,\
+                     edgecolor='none')            
+    
     if (Mstar > 1.0):
-        plt.plot(Mstar_rad,Mstar_int[0,:],color=colorpop2,\
+        plt.plot(Mstar_rad,Mstar_int[0,:],color=colorpop3,\
                  linewidth=mylinewidth,\
                  label=r'Fit Stars')
-
-    #Overplot true answer (mock data):
+    if (np.max(Mcen_int) > 0.0):
+        plt.plot(rbin,Mcen_int[0,:],color=colorpop3,\
+                 linewidth=mylinewidth,\
+                 label=r'Fit Central Dark Mass')
+        
+    #Overplot true answer (for mock data):
     if (overtrue == 'yes'):
         plt.plot(ranal,truemass,'b--',linewidth=mylinewidth,\
                  label=r'True')        
@@ -1323,7 +1438,25 @@ elif (codemode == 'plot'):
               nu_int[4,i], nu_int[5,i], nu_int[6,i]))
     f.close()
 
-    ##### Density profile ##### 
+    #And Mstar:
+    f = open(outdir+'output_Mass_Mstar.txt','w')
+    for i in range(len(Mstar_rad)):
+        f.write('%f %f %f %f %f %f %f %f\n' % \
+                (Mstar_rad[i],Mstar_int[0,i],Mstar_int[1,i],Mstar_int[2,i],\
+                 Mstar_int[3,i],\
+                 Mstar_int[4,i], Mstar_int[5,i], Mstar_int[6,i]))
+    f.close()
+
+    #And central dark mass:
+    f = open(outdir+'output_Mass_Mcen.txt','w')
+    for i in range(len(rbin)):
+        f.write('%f %f %f %f %f %f %f %f\n' % \
+                (rbin[i],Mcen_int[0,i],Mcen_int[1,i],Mcen_int[2,i],\
+                 Mcen_int[3,i],\
+                 Mcen_int[4,i], Mcen_int[5,i], Mcen_int[6,i]))
+    f.close()
+    
+    ##### Dark matter density profile ##### 
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
@@ -1379,7 +1512,7 @@ elif (codemode == 'plot'):
                  delstore[i],vmaxstore[i]))
     f.close()
 
-    ##### Density exponent #####
+    ##### Dark matter log density exponent #####
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)
     for axis in ['top','bottom','left','right']:
@@ -1399,7 +1532,7 @@ elif (codemode == 'plot'):
     plt.plot(np.log10(rbin),dlnrhodlnr_int[0,:],'k',linewidth=mylinewidth,\
              label=r'Fit')
 
-    #And overplot true model (if mock):
+    #And overplot true model (for mock data):
     if (overtrue == 'yes'):
         plt.plot(np.log10(ranal),truedlnrhodlnr,'b--',linewidth=mylinewidth,\
                  label=r'True')
@@ -1428,6 +1561,40 @@ elif (codemode == 'plot'):
               dlnrhodlnr_int[6,i]))
     f.close()
 
+    ##### Rotation velocity profile #####
+    fig = plt.figure(figsize=(figx,figy))
+    ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(mylinewidth)
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
+
+    plt.fill_between(np.log10(rbin),vphirot_int[5,:],vphirot_int[6,:],\
+                     facecolor='black',alpha=alp3sig,\
+                     edgecolor='none')
+    plt.fill_between(np.log10(rbin),vphirot_int[3,:],vphirot_int[4,:],\
+                     facecolor='black',alpha=0.33,\
+                     edgecolor='none')
+    plt.fill_between(np.log10(rbin),vphirot_int[1,:],vphirot_int[2,:],\
+                     facecolor='black',alpha=0.66,\
+                     edgecolor='none')
+            
+    plt.axvline(x=np.log10(Rhalf),color='blue',alpha=0.5,\
+                                linewidth=mylinewidth)
+
+    plt.xlabel(r'${\rm Log}_{10}[R/{\rm kpc}]$',\
+               fontsize=myfontsize)
+    plt.ylabel(r'$v_\phi[{\rm km}\,{\rm s}^{-1}]$',\
+               fontsize=myfontsize)
+    
+
+    plt.xlim([np.log10(np.min(rbin)),np.log10(np.max(rbin))])
+    plt.ylim([0,y_sigLOSmax])
+    
+    plt.savefig(outdir+'output_vphirot.pdf',bbox_inches='tight')
+    
+    #######################################################
+    #Additional write output
     #And write the J-factor data:
     if (calc_Jfac == 'yes'):
         f = open(outdir+'output_Jfac.txt','w')
@@ -1435,6 +1602,59 @@ elif (codemode == 'plot'):
             f.write('%f\n' % Jstore[i])
         f.close()
 
+    #And write the distance data:
+    f = open(outdir+'output_dstore.txt','w')
+    for i in range(len(dstore)):
+        f.write('%f\n' % dstore[i])
+    f.close()
+
+    #######################################################
+    ##### Histograms #####
+    
+    ##### Distance #####
+    fig = plt.figure(figsize=(figx,figy))
+    ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(mylinewidth)
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
+    nbin = 25
+
+    n, bins, patches = plt.hist(dstore,bins=nbin,\
+                                range=(np.min(dstore),\
+                                       np.max(dstore)),\
+                                facecolor='b', \
+                                histtype='bar',alpha=0.5, \
+                                label='distance')
+    
+    plt.xlabel(r'$d\,[{\rm kpc}]$',\
+               fontsize=myfontsize)
+    plt.ylabel(r'$N$',fontsize=myfontsize)
+    plt.ylim([0,np.max(n)])
+    plt.savefig(outdir+'output_d.pdf',bbox_inches='tight')
+    
+    ##### J-factor #####
+    if (calc_Jfac == 'yes'):
+        fig = plt.figure(figsize=(figx,figy))
+        ax = fig.add_subplot(111)
+        for axis in ['top','bottom','left','right']:
+            ax.spines[axis].set_linewidth(mylinewidth)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
+        nbin = 25
+
+        n, bins, patches = plt.hist(Jstore,bins=nbin,\
+                                    range=(np.min(Jstore),\
+                                           np.max(Jstore)),\
+                                    facecolor='b', \
+                                    histtype='bar',alpha=0.5, \
+                                    label='J')
+        plt.xlabel(r'$J\,[\rm GeV}^2\,{\rm c}^{-4}\,{\rm cm}^{-5}$]',\
+                   fontsize=myfontsize)
+        plt.ylabel(r'$N$',fontsize=myfontsize)
+        plt.ylim([0,np.max(n)])
+        plt.savefig(outdir+'output_Jfac.pdf',bbox_inches='tight')
+    
     ##### Virial shape parameters #####
     if (virialshape == 'yes'):
         #And make a plot of the Virial shape parameters, if 
