@@ -67,7 +67,7 @@ tracertol = 0.75
 #is set, then we include a Gaussian spread in M200-c200 in
 #the likelihood. Without this, M200-c200 enters only if 
 #used to set the priors, below.
-cosmo_cprior = 'yes'
+cosmo_cprior = 'no'
 sig_c200 = 0.1
 mWDM = -1
 if (mWDM > 0):
@@ -110,8 +110,10 @@ if (cosmo_cprior == 'yes'):
 #to switch this off. Mcen is the mass in Msun; acen is the
 #scale length in kpc, usually assumed smaller than Rhalf
 #to avoid degeneracies with the stellar mass]:
-logMcenlow = 1.0
-logMcenhigh = 6.0
+#logMcenlow = 1.0
+#logMcenhigh = 6.0
+logMcenlow = -4.0
+logMcenhigh = -3.0
 acenlow = 1.0e-6
 acenhigh = 1.0e-3
 
@@ -132,7 +134,7 @@ Arothigh = 0.08
 #usually want drangelow < 1.0 and drangehigh > 1.0]:
 drangelow = 0.85
 drangehigh = 1.15
-    
+
 ###########################################################
 #Post processing options:
 

@@ -112,8 +112,8 @@ if (cosmo_cprior == 'yes'):
 #to switch this off. Mcen is the mass in Msun; acen is the
 #scale length in kpc, usually assumed smaller than Rhalf
 #to avoid degeneracies with the stellar mass]:
-logMcenlow = 1
-logMcenhigh = 5
+logMcenlow = -4
+logMcenhigh = -3
 acenlow = 1e-5
 acenhigh = 1e-2
 
@@ -122,7 +122,7 @@ acenhigh = 1e-2
 #rotation with radius. (Arot = 0.5 means an equal balance of
 #rotation and pressure support at Rhalf.)]:
 Arotlow = 0.0
-Arothigh = 1.0e-5
+Arothigh = 1.0e-12
 
 #Priors on distance [True distance follows as:
 #dgal_kpc * drange s.t. we usually want drangelow < 1.0 and

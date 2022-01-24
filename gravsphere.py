@@ -429,7 +429,7 @@ codemode = 'run'
 #Input data selection here.
 
 #MW satellites:
-#from gravsphere_initialise_Draco import *
+from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_UMi import *
 #from gravsphere_initialise_Carina import *
 #from gravsphere_initialise_LeoI import *
@@ -440,7 +440,7 @@ codemode = 'run'
 #from gravsphere_initialise_CVnI import *
 #from gravsphere_initialise_SegI import *
 #from gravsphere_initialise_SMC import *
-from gravsphere_initialise_Ocen import *
+#from gravsphere_initialise_Ocen import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
