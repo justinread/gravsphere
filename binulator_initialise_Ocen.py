@@ -3,7 +3,7 @@ from binulator_apis import *
 from constants import * 
 
 #Run on multiprocessor:
-nprocs = 1
+nprocs = 10
 
 #Data files and output base filename:
 whichgal = 'Ocen'

@@ -12,6 +12,8 @@ from constants import *
 from functions import * 
 from figures import *
 import emcee
+from multiprocessing import Pool
+from multiprocessing import cpu_count
 import sys
 
 #Select velocity distribution function:
@@ -45,7 +47,7 @@ def Rcutback(Rkin,vz,vzerr,mskin,Rfitvmin,Rfitvmax):
 def velfit_easy(R,vz,vzerr,ms,Nbin,\
                 vfitmin,vfitmax,\
                 p0vin_min,p0vin_max,p0best,\
-                nsamples,outfile):
+                nsamples,outfile,nprocs):
     #Uses easy non-para estimates rather than VDF fit
     #**only use for rapid testing; not recommended
     #for real analysis**. Assumes only Poisson error
@@ -253,7 +255,7 @@ def velfit_easy(R,vz,vzerr,ms,Nbin,\
 def velfit_full(R,vz,vzerr,ms,Nbin,\
                 vfitmin,vfitmax,\
                 p0vin_min,p0vin_max,p0best,\
-                nsamples,outfile):
+                nsamples,outfile,nprocs):
     #Code to fit the velocity data with
     #the velpdf model.
     
@@ -346,7 +348,7 @@ def velfit_full(R,vz,vzerr,ms,Nbin,\
             backsigbin[cnt],backsigbinlo[cnt],backsigbinhi[cnt],\
             vzfour_store,p0vbest = \
                 velfitbin(vzuse,vzerruse,msuse,\
-                          p0vin_min,p0vin_max,nsamples)
+                          p0vin_min,p0vin_max,nsamples,nprocs)
             vzfour_pdf[:,cnt] = vzfour_store
 
             #Calculate non-para versions for comparison:
@@ -466,45 +468,43 @@ def velfit_full(R,vz,vzerr,ms,Nbin,\
         vsp1_int[0],vsp1_int[1],vsp1_int[2],\
         vsp2_int[0],vsp2_int[1],vsp2_int[2],\
         ranal,vzfourstore,vsp1,vsp2
+
+
+#Functions:
+def lnprob_vel(theta, y, yerr, ms, p0vin_min, p0vin_max):
+    lp = lnprior_set_vel(theta,p0vin_min,p0vin_max)
+    if not np.isfinite(lp):
+        return -np.inf
+    return lp + lnlike_vel(theta, y, yerr, ms)
+
+def lnlike_vel(theta, y, yerr, ms):
+    modelpdf = velpdfuse(y,yerr,theta)
+    lnlike_out = np.sum(np.log(modelpdf)*ms)
     
-def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
+    if (lnlike_out != lnlike_out):
+        lnlike_out = -np.inf
+    
+    return lnlike_out
+    
+def lnprior_set_vel(theta,p0vin_min,p0vin_max):
+    ndims = len(theta)
+    minarr = np.zeros(ndims)
+    maxarr = np.zeros(ndims)
+    for i in range(ndims):
+        minarr[i] = p0vin_min[i]
+        maxarr[i] = p0vin_max[i]
+       
+    if all(minarr < thetau < maxarr for minarr,thetau,maxarr in \
+           zip(minarr,theta,maxarr)):
+        return 0.0
+    return -np.inf
+
+def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples,nprocs):
     #Fit the model velocity pdf to a single bin:
 
-    #Functions:
-    def lnprob_vel(theta, y, yerr, ms):
-        lp = lnprior_vel(theta)
-        if not np.isfinite(lp):
-            return -np.inf
-        return lp + lnlike_vel(theta, y, yerr, ms)
-
-    def lnlike_vel(theta, y, yerr, ms):
-        modelpdf = velpdfuse(y,yerr,theta)
-        lnlike_out = np.sum(np.log(modelpdf)*ms)
-    
-        if (lnlike_out != lnlike_out):
-            lnlike_out = -np.inf
-    
-        return lnlike_out
-    
-    def lnprior_set_vel(theta,p0vin_min,p0vin_max):
-        ndims = len(theta)
-        minarr = np.zeros(ndims)
-        maxarr = np.zeros(ndims)
-        for i in range(ndims):
-            minarr[i] = p0vin_min[i]
-            maxarr[i] = p0vin_max[i]
-       
-        if all(minarr < thetau < maxarr for minarr,thetau,maxarr in \
-               zip(minarr,theta,maxarr)):
-            return 0.0
-        return -np.inf
-
-    lnprior_vel = lambda theta: \
-                lnprior_set_vel(theta,p0vin_min,p0vin_max)
-
     #Emcee parameters:
-    nwalkers = 250
-    nmodels = 20000
+    nwalkers = 1000
+    nmodels = 2000
 
     #Starting guess
     ndims = len(p0vin_min)
@@ -516,9 +516,11 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples):
             p0vin_startmax[i],nwalkers)
 
     #Run chains:
-    sampler = emcee.EnsembleSampler(nwalkers, ndims, lnprob_vel, \
-                                    args=(vz, vzerr, ms))
-    sampler.run_mcmc(pos, nmodels)
+    with Pool(processes = nprocs) as pool:
+        sampler = emcee.EnsembleSampler(nwalkers, ndims, lnprob_vel, \
+                    args=(vz, vzerr, ms, p0vin_min, p0vin_max), \
+                    pool=pool)
+        sampler.run_mcmc(pos, nmodels, progress = True)
 
     #Extract results + errors:
     burn = np.int(0.75*nmodels)

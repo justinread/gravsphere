@@ -5,6 +5,9 @@ from functions import *
 #This file contains all the code options and choices for 
 #running a given model. Throughout, -1 means auto-calculate.
 
+#Set number of processors to run on:
+nprocs = 10
+
 #Data files and output base filename:
 whichgal = 'Draco'
 infile = output_base+whichgal+'/'+whichgal
@@ -114,17 +117,17 @@ if (cosmo_cprior == 'yes'):
 #to switch this off. Mcen is the mass in Msun; acen is the
 #scale length in kpc, usually assumed smaller than Rhalf
 #to avoid degeneracies with the stellar mass]:
-logMcenlow = -4
-logMcenhigh = -3
-acenlow = 1e-5
-acenhigh = 1e-2
+logMcenlow = 2
+logMcenhigh = 6
+acenlow = 1.0e-5
+acenhigh = 1.0e-1
 
 #Priors on rotation [Arot defined as:
 #vphimean^2 / (2 sigr^2) = Arot(r/Rhalf) which yields linear
 #rotation with radius. (Arot = 0.5 means an equal balance of
 #rotation and pressure support at Rhalf.)]:
 Arotlow = 0.0
-Arothigh = 1.0e-12
+Arothigh = 0.5
 
 #Priors on distance [True distance follows as:
 #dgal_kpc * drange s.t. we usually want drangelow < 1.0 and

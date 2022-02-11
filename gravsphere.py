@@ -403,6 +403,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import emcee
+from multiprocessing import Pool
+from multiprocessing import cpu_count
 from scipy.integrate import simps as integrator
 from functions import *
 from constants import *
@@ -411,26 +413,26 @@ from binulator_velfuncs import *
 from figures import * 
 import sys
 
-
 #Welcome blurb: 
 print('###### GRAVSPHERE VERSION 1.5 ######\n')
 
+#Default to run on a single CPU:
+nprocs = 1
 
 ###########################################################
 #Code parameters:
 datadir = './Data/'
-nwalkers = 250
-nmodels = 25000
+nwalkers = 750
+nmodels = 5000
 
 #Codemode [run or plot]:
-codemode = 'plot'
-
+codemode = 'run'
 
 ###########################################################
 #Input data selection here.
 
 #MW satellites:
-#from gravsphere_initialise_Draco import *
+from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_UMi import *
 #from gravsphere_initialise_Carina import *
 #from gravsphere_initialise_LeoI import *
@@ -441,7 +443,7 @@ codemode = 'plot'
 #from gravsphere_initialise_CVnI import *
 #from gravsphere_initialise_SegI import *
 #from gravsphere_initialise_SMC import *
-from gravsphere_initialise_Ocen import *
+#from gravsphere_initialise_Ocen import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
@@ -452,6 +454,7 @@ from gravsphere_initialise_Ocen import *
 #from gravsphere_initialise_And21 import *
 
 #Output some key choices:
+print('Running on %d cores' % (nprocs))
 print('Doing galaxy:',whichgal)
 print('Model parameters:')
 print('M200low, M200high [1e9 Msun]:', \
@@ -505,7 +508,6 @@ elif (propermotion == 'yes'):
         lnlike = lnlike_single_prop_vs
         lnprob = lnprob_single_prop_vs
         lnprior_set = lnprior_set_single
-        
 
 ###########################################################
 #Read in the the data. We assume here that the errors
@@ -629,7 +631,6 @@ elif (propermotion == 'yes'):
             sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,betpars,\
                          Mstar_rad,Mstar_prof,Mstar,Arot,Rhalf,Guse,rmin,rmax)
 
-
 #Set the priors and starting blob for the tracer density profile.
 #Code is a bit more involved here just to cope with potentially
 #negative Plummer masses, used to fit some steeply falling tracer
@@ -655,7 +656,6 @@ for i in range(len(pfits)):
         else:
             nupars_minstart[i] = pfits[i]*1.01
             nupars_maxstart[i] = pfits[i]*0.99
-                
 
 ###########################################################
 #Emcee fitting code:
@@ -735,27 +735,28 @@ if (codemode == 'run'):
                     Mstar_min,Mstar_max)            
 
     print('Running chains ... ')
-    if (propermotion == 'no'):
-        if (virialshape == 'no'):
-            sampler = \
-                emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
-                        args=(x1,x2,y1,y1err,y2,y2err))
-        else:
-            sampler = \
-                emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
+    with Pool(processes = nprocs) as pool:
+        if (propermotion == 'no'):
+            if (virialshape == 'no'):
+                sampler = \
+                    emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
+                        args=(x1,x2,y1,y1err,y2,y2err),pool=pool)
+            else:
+                sampler = \
+                    emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
                         args=(x1,x2,y1,y1err,y2,y2err,\
-                              vsp1val,vsp1pdf,vsp2val,vsp2pdf))
-    elif (propermotion == 'yes'):
-        if (virialshape == 'no'):
-            sampler = emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
-                            args=(x1,x2,x3,y1,y1err,y2,y2err,\
-                                  y3,y3err,y4,y4err))
-        else:
-            sampler = emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
-                            args=(x1,x2,x3,y1,y1err,y2,y2err,\
-                                  y3,y3err,y4,y4err,\
-                                  vsp1val,vsp1pdf,vsp2val,vsp2pdf))
-    sampler.run_mcmc(pos, nmodels)
+                              vsp1val,vsp1pdf,vsp2val,vsp2pdf),pool=pool)
+        elif (propermotion == 'yes'):
+            if (virialshape == 'no'):
+                sampler = emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
+                        args=(x1,x2,x3,y1,y1err,y2,y2err,\
+                              y3,y3err,y4,y4err),pool=pool)
+            else:
+                sampler = emcee.EnsembleSampler(nwalkers,ndim,lnprob,\
+                        args=(x1,x2,x3,y1,y1err,y2,y2err,\
+                              y3,y3err,y4,y4err,\
+                              vsp1val,vsp1pdf,vsp2val,vsp2pdf),pool=pool)
+        sampler.run_mcmc(pos, nmodels, progress = True)
 
     #Store the output (including the data):
     print('Writing data to file ... ')

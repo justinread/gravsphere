@@ -1,0 +1,17 @@
+nohup: ignoring input
+###### GRAVSPHERE VERSION 1.5 ######
+
+Running on 10 cores
+Doing galaxy: Draco
+Model parameters:
+M200low, M200high [1e9 Msun]: 0.03162277660168379 316.22776601683796
+clow, chigh: 1.0 50.0
+Including central dark mass in the range [1e6 Msun]: 0.0001 1.0
+Including rotation
+Inner/outer radial bin (phot): 0.011516 1.202707
+Inner/outer radial bin (kin): 0.020488 0.695787
+Inner/outer radial Jeans grid: 0.0019614899999999998 9.80745
+Running in fitting mode ... 
+Will write output to: /vol/ph/astro_temp/jread/gravsphere/Output/Draco/VirialShape/
+Running chains ... 
+  0%|          | 0/5000 [00:00<?, ?it/s]  0%|          | 1/5000 [00:03<5:22:16,  3.87s/it]

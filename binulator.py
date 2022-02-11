@@ -37,6 +37,9 @@ import sys
 #Welcome blurb: 
 print('###### BINULATOR VERSION 1.0 ######\n')
 
+#Default to run on single processor:
+nprocs = 1
+
 ###########################################################
 #Input data selection here:
 
@@ -85,6 +88,7 @@ else:
     velfit = velfit_full
 
 #Some output about parameter choices:
+print('Running on %d processors' % (nprocs))
 print('Doing galaxy:',whichgal)
 if (Nbin > 0):
     print('Number of stars per photometric bin:', Nbin)
@@ -135,7 +139,7 @@ else:
     
 Rplot,surf_int,Rhalf_int,p0best = \
     tracerfit(Rfit,surfdenfit,surfdenerrfit,\
-              p0in_min,p0in_max)
+              p0in_min,p0in_max,nprocs)
 print('Fitted Rhalf: %f -%f +%f' % \
     (Rhalf_int[0],Rhalf_int[0]-Rhalf_int[1],\
      Rhalf_int[2]-Rhalf_int[0]))
@@ -163,7 +167,7 @@ if (quicktestSB == 'no' and Nbinkin > 0):
             velfit(Rf,vzfit,vzerrfit,msfit,Nbinkin,\
                 vfitmin,vfitmax,\
                 p0vin_min,p0vin_max,p0best,\
-                   nsamples,outfile+'_vz')
+                   nsamples,outfile+'_vz',nprocs)
     print('Fitted VSP1: %f+%f-%f' % (vsp1,vsp1hi-vsp1,vsp1-vsp1lo))
     print('Fitted VSP2: %f+%f-%f' % (vsp2,vsp2hi-vsp2,vsp2-vsp2lo))
     
@@ -202,7 +206,7 @@ if (quicktestSB == 'no' and Nbinkin > 0):
                 velfit(Rpf,vphifit,vphierrfit,mspropfit,Nbinkin_prop,\
                        vfitmin,vfitmax,\
                        p0vin_min,p0vin_max,p0best,\
-                       nsamples,outfile+'_vphi')
+                       nsamples,outfile+'_vphi',nprocs)
         print('Fitted VSP1prop tan: %f+%f-%f' % \
               (vsppt1,vsppt1hi-vsppt1,vsppt1-vsppt1lo))
         print('Fitted VSP2prop tan: %f+%f-%f' % \
@@ -224,7 +228,7 @@ if (quicktestSB == 'no' and Nbinkin > 0):
                 velfit(Rpf,vRfit,vRerrfit,mspropfit,Nbinkin_prop,\
                        vfitmin,vfitmax,\
                        p0vin_min,p0vin_max,p0best,\
-                       nsamples,outfile+'_vR')
+                       nsamples,outfile+'_vR',nprocs)
         print('Fitted VSP1prop rad: %f+%f-%f' % \
               (vsppR1,vsppR1hi-vsppR1,vsppR1-vsppR1lo))
         print('Fitted VSP2prop rad: %f+%f-%f' % \

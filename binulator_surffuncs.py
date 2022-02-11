@@ -4,71 +4,70 @@ from scipy.special import gamma
 from constants import *
 from functions import * 
 import emcee
+from multiprocessing import Pool
+from multiprocessing import cpu_count
+
+#Functions:
+def lnprob_surf(theta, x, y, yerr, p0in_min, p0in_max):
+    lp = lnprior_set_surf(theta,p0in_min,p0in_max)
+    if not np.isfinite(lp):
+        return -np.inf
+    return lp + lnlike_surf(theta, x, y, yerr)
+
+def lnlike_surf(theta, x, y, yerr):
+    if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
+        #If using neg. Plummer component, add some more
+        #"data points" at large & small radii bounded on
+        #zero and the outermost data point. This
+        #will disfavour models with globally
+        #negative tracer density.
+        x,y,yerr = Sig_addpnts(x,y,yerr)
+        
+    model = threeplumsurf(x,theta[0],theta[1],theta[2],\
+               theta[3],theta[4],theta[5])
+        
+    #If using negative Plummer components,
+    #shrink the error to disfavour globally
+    #negative models. The shrinkage amount
+    #is designed to ensure the likelihood is
+    #penalised so we pick the smallest error
+    #on any point, divide it by the total
+    #number of points and then divide that
+    #by 1e3 for good measure.
+    if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
+        if (np.min(model) < 0):
+            yerr[np.where(model < 0)] = \
+                 np.min(yerr)/np.float(len(x))/1.0e3
+
+    inv_sigma2 = 1.0/(yerr)**2.0
+    lnlike_out = -0.5*(np.sum((y-model)**2*inv_sigma2))
+    
+    if (lnlike_out != lnlike_out):
+        lnlike_out = -np.inf
+            
+    return lnlike_out
+
+def lnprior_set_surf(theta,p0in_min,p0in_max):
+    ndims = len(theta)
+    minarr = np.zeros(ndims)
+    maxarr = np.zeros(ndims)
+    for i in range(ndims):
+        minarr[i] = p0in_min[i]
+        maxarr[i] = p0in_max[i]
+    if all(minarr < thetau < maxarr for \
+           minarr,thetau,maxarr in \
+           zip(minarr,theta,maxarr)):
+        return 0.0
+    return -np.inf
 
 #Functions for emcee (surface density):
-def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
+def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max,nprocs):
     #Code to fit the surface density profile with
     #a three-Plummer model:
 
-    #Functions:
-    def lnprob_surf(theta, x, y, yerr):
-        lp = lnprior_surf(theta)
-        if not np.isfinite(lp):
-            return -np.inf
-        return lp + lnlike_surf(theta, x, y, yerr)
-
-    def lnlike_surf(theta, x, y, yerr):
-        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
-            #If using neg. Plummer component, add some more
-            #"data points" at large & small radii bounded on
-            #zero and the outermost data point. This
-            #will disfavour models with globally
-            #negative tracer density.
-            x,y,yerr = Sig_addpnts(x,y,yerr)
-        
-        model = threeplumsurf(x,theta[0],theta[1],theta[2],\
-                              theta[3],theta[4],theta[5])
-        
-        #If using negative Plummer components,
-        #shrink the error to disfavour globally
-        #negative models. The shrinkage amount
-        #is designed to ensure the likelihood is
-        #penalised so we pick the smallest error
-        #on any point, divide it by the total
-        #number of points and then divide that
-        #by 1e3 for good measure.
-        if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
-            if (np.min(model) < 0):
-                yerr[np.where(model < 0)] = \
-                     np.min(yerr)/np.float(len(x))/1.0e3
-                
-        inv_sigma2 = 1.0/(yerr)**2.0
-        lnlike_out = -0.5*(np.sum((y-model)**2*inv_sigma2))
-    
-        if (lnlike_out != lnlike_out):
-            lnlike_out = -np.inf
-            
-        return lnlike_out
-
-    def lnprior_set_surf(theta,p0in_min,p0in_max):
-        ndims = len(theta)
-        minarr = np.zeros(ndims)
-        maxarr = np.zeros(ndims)
-        for i in range(ndims):
-            minarr[i] = p0in_min[i]
-            maxarr[i] = p0in_max[i]
-            if all(minarr < thetau < maxarr for \
-                   minarr,thetau,maxarr in \
-                   zip(minarr,theta,maxarr)):
-                return 0.0
-        return -np.inf
-
-    lnprior_surf = lambda theta: \
-        lnprior_set_surf(theta,p0in_min,p0in_max)
-
     #Emcee parameters:
-    nwalkers = 250
-    nmodels = 20000
+    nwalkers = 1000
+    nmodels = 2000
 
     #Starting guess:
     ndims = len(p0in_min)
@@ -80,10 +79,12 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
             p0in_startmax[i],nwalkers)
 
     #Run chains:
-    sampler = emcee.EnsembleSampler(nwalkers, ndims, \
-                lnprob_surf, \
-                args=(R, surfden, surfdenerr))
-    sampler.run_mcmc(pos, nmodels)
+    with Pool(processes = nprocs) as pool:
+        sampler = emcee.EnsembleSampler(nwalkers, ndims, \
+                    lnprob_surf, \
+                    args=(R, surfden, surfdenerr, \
+		          p0in_min, p0in_max),pool=pool)
+        sampler.run_mcmc(pos, nmodels, progress=True)
 
     #Extract results + errors:
     burn = np.int(0.75*nmodels)
