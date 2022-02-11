@@ -1,3 +1,8 @@
+#Forbid plots to screen so Binulator can run
+#remotely:
+import matplotlib as mpl
+mpl.use('Agg')
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams

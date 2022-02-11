@@ -12,6 +12,15 @@
 ###########################################################
 #Main code:
 
+#Suppress warning output:
+import warnings
+warnings.simplefilter("ignore")
+
+#Forbid plots to screen so Binulator can run
+#remotely:
+import matplotlib as mpl
+mpl.use('Agg')
+
 #Imports & dependencies:
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,15 +33,6 @@ from binulator_surffuncs import *
 from binulator_velfuncs import * 
 from figures import * 
 import sys
-
-#Suppress warning output:
-import warnings
-warnings.simplefilter("ignore")
-
-#Forbid plots to screen so binulator can run
-#remotely:
-import matplotlib as mpl
-mpl.use('Agg')
 
 #Welcome blurb: 
 print('###### BINULATOR VERSION 1.0 ######\n')
@@ -74,6 +74,16 @@ from binulator_initialise_Ocen import *
 #that takes longer to complete.
 quicktestSB = 'no'
 
+#velfiteasy => set to 'yes' if you want rapid non-para
+#velocity binning with incorrect errors. This is worthwhile
+#for quick testing of your velocity Nbinkin values. Not to
+#be used for the real analysis.
+velfiteasy = 'no'
+if (velfiteasy == 'yes'):
+    velfit = velfit_easy
+else:
+    velfit = velfit_full
+
 #Some output about parameter choices:
 print('Doing galaxy:',whichgal)
 if (Nbin > 0):
@@ -98,6 +108,7 @@ if (vfitmin != 0):
     print('Fitting v >',vfitmin)
 if (vfitmax != 0):
     print('Fitting v <',vfitmax)    
+print('Will write output to: %s_*' % (outfile))
 
 #Fit surface density:
 if (quicktestSB == 'yes'):

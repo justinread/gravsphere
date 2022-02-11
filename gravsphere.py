@@ -389,6 +389,15 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
 ###########################################################
 #Main code:
 
+#Suppress warning output:
+import warnings
+warnings.simplefilter("ignore")
+
+#Forbid plots to screen so GravSphere can run
+#remotely:
+import matplotlib as mpl
+mpl.use('Agg')
+
 #Imports & dependencies:
 import numpy as np
 import matplotlib.pyplot as plt
@@ -402,14 +411,6 @@ from binulator_velfuncs import *
 from figures import * 
 import sys
 
-#Suppress warning output:
-import warnings
-warnings.simplefilter("ignore")
-
-#Forbid plots to screen so GravSphere can run
-#remotely:
-import matplotlib as mpl
-mpl.use('Agg')
 
 #Welcome blurb: 
 print('###### GRAVSPHERE VERSION 1.5 ######\n')
@@ -422,14 +423,14 @@ nwalkers = 250
 nmodels = 25000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 
 ###########################################################
 #Input data selection here.
 
 #MW satellites:
-from gravsphere_initialise_Draco import *
+#from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_UMi import *
 #from gravsphere_initialise_Carina import *
 #from gravsphere_initialise_LeoI import *
@@ -440,7 +441,7 @@ from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_CVnI import *
 #from gravsphere_initialise_SegI import *
 #from gravsphere_initialise_SMC import *
-#from gravsphere_initialise_Ocen import *
+from gravsphere_initialise_Ocen import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
@@ -883,6 +884,8 @@ elif (codemode == 'plot'):
     Mcenstore = np.zeros((len(rbin),nsamples))
     Arotstore = np.zeros(nsamples)
     dstore = np.zeros(nsamples)
+    McenMstore = np.zeros(nsamples)
+    Mcenastore = np.zeros(nsamples)
     if (calc_Jfac == 'yes'):
         Jstore = np.zeros(nsamples)    
     
@@ -975,6 +978,8 @@ elif (codemode == 'plot'):
         delstore[i] = Mparsu[5]
         Arotstore[i] = Arot
         dstore[i] = drange*dgal_kpc
+        McenMstore[i] = Mparsu[6]
+        Mcenastore[i] = Mparsu[7]
         
         if (calc_Jfac == 'yes'):
             alpha_rmax = dgal_kpc*alpha_Jfac_deg/deg
@@ -1934,6 +1939,35 @@ elif (codemode == 'plot'):
         rtnineninelow, rtnineninehi = calcmedquartnine(rtstore)
     print('*******************************')
     print('rt -/+ 68% :: ', rtmed, rtsixlow, rtsixhi)
+
+    #And the same for d:
+    dmed, dsixlow, dsixhi,\
+        dninelow, dninehi, \
+        dnineninelow, dnineninehi = calcmedquartnine(dstore)
+    print('*******************************')
+    print('d -/+ 68% :: ', dmed, dsixlow, dsixhi)
+
+    #And the same for Mcen:
+    Mcenmed, Mcensixlow, Mcensixhi,\
+        Mcenninelow, Mcenninehi, \
+        Mcennineninelow, Mcennineninehi = calcmedquartnine(McenMstore)
+    print('*******************************')
+    print('Mcen -/+ 68% :: ', Mcenmed, Mcensixlow, Mcensixhi)
+
+    #And the same for acen:
+    acenmed, acensixlow, acensixhi,\
+        acenninelow, acenninehi, \
+        acennineninelow, acennineninehi = calcmedquartnine(Mcenastore)
+    print('*******************************')
+    print('acen -/+ 68% :: ', acenmed, acensixlow, acensixhi)
+
+    #And the same for J-factor:
+    if (calc_Jfac == 'yes'):
+        Jmed, Jsixlow, Jsixhi,\
+            Jninelow, Jninehi, \
+            Jnineninelow, Jnineninehi = calcmedquartnine(Jstore)
+        print('*******************************')
+        print('J -/+ 68% :: ', Jmed, Jsixlow, Jsixhi)
 
 
 ###########################################################

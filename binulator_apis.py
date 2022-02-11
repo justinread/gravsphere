@@ -226,7 +226,7 @@ def smc_prop_api(data_file_kin,dgal_kpc):
     
     return x, y, vx, vxerr, vy, vyerr, mskin
 
-def ocen_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
+def ocen_prebin_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
     #Surface density:
     data_phot = np.genfromtxt(infile_phot,dtype='f8')
     rbin_phot = data_phot[:,0]*dgal_kpc/arcsec
@@ -346,3 +346,40 @@ def ocen_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
         backpRampbin,backpRampbinlo,backpRampbinhi,\
         backpRmeanbin,backpRmeanbinlo,backpRmeanbinhi,\
         backpRsigbin,backpRsigbinlo,backpRsigbinhi
+
+def ocen_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
+    #Surface density:
+    data_phot = np.genfromtxt(infile_phot,dtype='f8')
+    rbin_phot = data_phot[:,0]*dgal_kpc/arcsec
+    surfden = data_phot[:,1]
+    surfdenerr = (data_phot[:,2]+data_phot[:,3])/2.0
+    
+    #Normalise the surface density and calc.
+    #the half light radius from the data:
+    Rhalf, Menc_tot = surf_renorm(rbin_phot,surfden)
+    surfden = surfden / Menc_tot
+    surfdenerr = surfdenerr / Menc_tot
+    print('Data Rhalf:', Rhalf)
+    
+    #Now the kinematic data:
+    print('Reading unbinned RV data ... ',infile_kin)
+    data_kin = np.genfromtxt(infile_kin,dtype='f8')
+    print('Reading unbinned proper motion data ... ',infile_prop)
+    data_pm = np.genfromtxt(infile_prop,dtype='f8')
+
+    Rkin = data_kin[:,0]*dgal_kpc/arcsec
+    vz = data_kin[:,1]
+    vzerr = data_kin[:,2]
+    mskin = np.zeros(len(vzerr))+1.0
+
+    x = data_pm[:,0]*dgal_kpc/arcsec
+    y = data_pm[:,1]*dgal_kpc/arcsec
+    vx = data_pm[:,2]*dgal_kpc/arcsec*1.0e-3/year*kpc/kms
+    vxerr = data_pm[:,3]*dgal_kpc/arcsec*1.0e-3/year*kpc/kms
+    vy = data_pm[:,4]*dgal_kpc/arcsec*1.0e-3/year*kpc/kms
+    vyerr = data_pm[:,5]*dgal_kpc/arcsec*1.0e-3/year*kpc/kms
+    msprop = np.zeros(len(vxerr))+1.0
+    
+    return rbin_phot, surfden, surfdenerr, Rhalf, \
+        Rkin, vz, vzerr, mskin, \
+        x, y, vx, vxerr, vy, vyerr, msprop

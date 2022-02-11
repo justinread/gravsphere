@@ -25,10 +25,10 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
             #will disfavour models with globally
             #negative tracer density.
             x,y,yerr = Sig_addpnts(x,y,yerr)
-            
+        
         model = threeplumsurf(x,theta[0],theta[1],theta[2],\
                               theta[3],theta[4],theta[5])
-
+        
         #If using negative Plummer components,
         #shrink the error to disfavour globally
         #negative models. The shrinkage amount
@@ -41,15 +41,15 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
             if (np.min(model) < 0):
                 yerr[np.where(model < 0)] = \
                      np.min(yerr)/np.float(len(x))/1.0e3
-        
+                
         inv_sigma2 = 1.0/(yerr)**2.0
-        lnlike_out = -0.5*(np.sum((y-model)**2*inv_sigma2))    
-        
+        lnlike_out = -0.5*(np.sum((y-model)**2*inv_sigma2))
+    
         if (lnlike_out != lnlike_out):
             lnlike_out = -np.inf
-    
+            
         return lnlike_out
-    
+
     def lnprior_set_surf(theta,p0in_min,p0in_max):
         ndims = len(theta)
         minarr = np.zeros(ndims)
@@ -57,12 +57,12 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max):
         for i in range(ndims):
             minarr[i] = p0in_min[i]
             maxarr[i] = p0in_max[i]
-        if all(minarr < thetau < maxarr for \
-               minarr,thetau,maxarr in \
-               zip(minarr,theta,maxarr)):
-            return 0.0
+            if all(minarr < thetau < maxarr for \
+                   minarr,thetau,maxarr in \
+                   zip(minarr,theta,maxarr)):
+                return 0.0
         return -np.inf
-        
+
     lnprior_surf = lambda theta: \
         lnprior_set_surf(theta,p0in_min,p0in_max)
 
