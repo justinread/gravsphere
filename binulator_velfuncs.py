@@ -503,8 +503,8 @@ def velfitbin(vz,vzerr,ms,p0vin_min,p0vin_max,nsamples,nprocs):
     #Fit the model velocity pdf to a single bin:
 
     #Emcee parameters:
-    nwalkers = 1000
-    nmodels = 2000
+    nwalkers = 750
+    nmodels = 5000
 
     #Starting guess
     ndims = len(p0vin_min)

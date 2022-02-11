@@ -66,8 +66,8 @@ def tracerfit(R,surfden,surfdenerr,p0in_min,p0in_max,nprocs):
     #a three-Plummer model:
 
     #Emcee parameters:
-    nwalkers = 1000
-    nmodels = 2000
+    nwalkers = 750
+    nmodels = 5000
 
     #Starting guess:
     ndims = len(p0in_min)
