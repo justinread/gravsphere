@@ -422,11 +422,11 @@ nprocs = 1
 ###########################################################
 #Code parameters:
 datadir = './Data/'
-nwalkers = 750
-nmodels = 5000
+nwalkers = 500
+nmodels = 10000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 ###########################################################
 #Input data selection here.

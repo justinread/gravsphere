@@ -1,0 +1,31 @@
+nohup: ignoring input
+###### GRAVSPHERE VERSION 1.5 ######
+
+Running on 10 cores
+Doing galaxy: Draco
+Model parameters:
+M200low, M200high [1e9 Msun]: 0.03162277660168379 316.22776601683796
+clow, chigh: 1.0 50.0
+Including central dark mass in the range [1e6 Msun]: 1.0002302850208248e-06 1.0023052380778996e-06
+Inner/outer radial bin (phot): 0.011516 1.202707
+Inner/outer radial bin (kin): 0.020488 0.695787
+Inner/outer radial Jeans grid: 0.0019614899999999998 9.80745
+Running in plotting mode ... 
+Loading data from: /vol/ph/astro_temp/jread/gravsphere/Output/Draco/VirialShape/
+Setting plot range: 0.01 5.0
+Min/max chisq: 57.599285371826866 279.4558354489509
+*******************************
+M200 -/+ 68% ::  5678294462.313479 3229766748.148575 14277594095.155396
+*******************************
+vmax -/+ 68% ::  36.45429107137866 31.738142957666295 45.321098528269225
+*******************************
+rt -/+ 68% ::  5.473340648393673 2.410069740447597 11.916678296287273
+*******************************
+d -/+ 68% ::  75.99996661122725 75.99942857792233 76.00049974643123
+*******************************
+Mcen -/+ 68% ::  1.0012028349514779 1.0005258853040284 1.0019333026402042
+*******************************
+acen -/+ 68% ::  0.04679530854276562 0.0157077771552766 0.08465319996567641
+
+Thank you for using GravSphere! Have a nice day.
+
