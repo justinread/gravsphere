@@ -218,7 +218,7 @@ def velfit_easy(R,vz,vzerr,ms,Nbin,\
     #assumes negligible error in the surface density
     #profile as compared to the velocity uncertainties.
     #This is usually fine, but something to bear in mind.
-    ranal = np.logspace(-3,3,np.int(5e3))
+    ranal = np.logspace(-5,3,np.int(5e4))
     surfden = threeplumsurf(ranal,p0best[0],p0best[1],p0best[2],\
                             p0best[3],p0best[4],p0best[5])
         
@@ -435,7 +435,7 @@ def velfit_full(R,vz,vzerr,ms,Nbin,\
     #assumes negligible error in the surface density 
     #profile as compared to the velocity uncertainties.
     #This is usually fine, but something to bear in mind.
-    ranal = np.logspace(-3,3,np.int(5e3))
+    ranal = np.logspace(-5,3,np.int(5e4))
     surfden = threeplumsurf(ranal,p0best[0],p0best[1],p0best[2],\
                             p0best[3],p0best[4],p0best[5])
 

@@ -426,13 +426,13 @@ nwalkers = 500
 nmodels = 10000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 ###########################################################
 #Input data selection here.
 
 #MW satellites:
-from gravsphere_initialise_Draco import *
+#from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_UMi import *
 #from gravsphere_initialise_Carina import *
 #from gravsphere_initialise_LeoI import *
@@ -443,7 +443,7 @@ from gravsphere_initialise_Draco import *
 #from gravsphere_initialise_CVnI import *
 #from gravsphere_initialise_SegI import *
 #from gravsphere_initialise_SMC import *
-#from gravsphere_initialise_Ocen import *
+from gravsphere_initialise_Ocen import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
@@ -1392,7 +1392,7 @@ elif (codemode == 'plot'):
                      edgecolor='none')            
     
     if (Mstar > 1.0):
-        plt.plot(Mstar_rad,Mstar_int[0,:],color=colorpop3,\
+        plt.plot(Mstar_rad,Mstar_int[0,:],color=colorpop2,\
                  linewidth=mylinewidth,\
                  label=r'Fit Stars')
     if (np.max(Mcen_int) > 0.0):
@@ -1416,6 +1416,7 @@ elif (codemode == 'plot'):
     plt.ylim([yMlow,yMhigh])
     plt.xlim([np.min(rbin),np.max(rbin)])
 
+    plt.legend(loc='upper left',fontsize=mylegendfontsize)
     plt.savefig(outdir+'output_Mass.pdf',bbox_inches='tight')
 
     #Write the above data to files for comparitive plotting later:

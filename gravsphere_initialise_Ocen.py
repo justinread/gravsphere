@@ -5,6 +5,9 @@ from functions import *
 #This file contains all the code options and choices for 
 #running a given model. Throughout, -1 means auto-calculate.
 
+#Run on multiple processors:
+nprocs = 12
+
 #Data files and output base filename:
 whichgal = 'Ocen'
 dgal_kpc = 5.4
@@ -13,7 +16,7 @@ outdirbase = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)
 print('Using Omega cen distance: %.1f kpc' % (dgal_kpc))
 
 #Plot ranges and sample points [-1 means auto-calculate]:
-rplot_inner = 1e-5
+rplot_inner = 1e-6
 rplot_outer = 5.0
 rplot_pnts = 2500
 y_sigLOSmax = 25
@@ -29,7 +32,7 @@ sigmhigh = 5.0
 
 #Code options:
 propermotion = 'yes'
-virialshape = 'no'
+virialshape = 'yes'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -38,7 +41,7 @@ virialshape = 'no'
 overtrue = 'no'
 
 #Radial grid range for Jeans calculation:
-rmin = 5.0e-5
+rmin = 1.0e-6
 rmax = 5.0
 
 #Galaxy properties. Assume here that the baryonic mass
@@ -49,9 +52,9 @@ rmax = 5.0
 Mstar = 3.0e6
 Mstar_err = Mstar*0.75
 baryonmass_follows_tracer = 'yes'
-barrad_min = 1.0e-5
+barrad_min = 1.0e-6
 barrad_max = 5.0
-bar_pnts = 2500
+bar_pnts = 5000
 
 
 ###########################################################
@@ -75,13 +78,13 @@ if (mWDM > 0):
         cosmo_cfunc_WDM(M200,h,OmegaM,rhocrit,mWDM)
 
 #Velocity anisotropy priors:
-betr0min = -3
+betr0min = -3.0
 betr0max = 0.0
 betnmin = 1.0
-betnmax = 3.0
-bet0min = -0.4
-bet0max = 0.4
-betinfmin = -0.4
+betnmax = 10.0
+bet0min = -1.0
+bet0max = 1.0
+betinfmin = -1.0
 betinfmax = 1.0
 
 #CoreNFWtides priors:
@@ -103,7 +106,7 @@ rthigh = 200.0 / 1000.0
 logrtlow = np.log10(rtlow)
 logrthigh = np.log10(rthigh)
 dellow = 4.0
-delhigh = 8.0
+delhigh = 6.0
 
 if (cosmo_cprior == 'yes'):
     clow = 1.0
@@ -127,13 +130,13 @@ acenhigh = 1.0e-3
 #find a mean rotation amplitude of 4.27+/-0.52 km/s. At Rhalf,
 #the dispersion of Ocen is 12-14km/s. This yields Arot in the
 #range: 0.035 < Arot < 0.08:
-#Arotlow = 0.035
-#Arothigh = 0.08
+Arotlow = 0.035
+Arothigh = 0.08
 
 #Switch off rotation, however, in favour of simply adding it
 #in quadratude to the dispersion profile (usual trick):
-Arotlow = 0.0
-Arothigh = 1.0e-12
+#Arotlow = 0.0
+#Arothigh = 1.0e-12
 
 #Priors on distance [set drangelow = drangehigh = 1.0 to switch
 #off. True distance follows as dgal_kpc * drange s.t. we
@@ -141,8 +144,8 @@ Arothigh = 1.0e-12
 
 #Priors here based on other distance determinations, e.g.:
 #https://ui.adsabs.harvard.edu/abs/2021MNRAS.505.5957B/abstract
-drangelow = 0.925
-drangehigh = 1.05
+drangelow = 0.8
+drangehigh = 1.2
 
 ###########################################################
 #Post processing options:
