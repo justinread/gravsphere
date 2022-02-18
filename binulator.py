@@ -60,7 +60,8 @@ nprocs = 1
 #from binulator_initialise_Fornax import *
 #from binulator_initialise_SegI import *
 #from binulator_initialise_SMC import *
-from binulator_initialise_Ocen import *
+#from binulator_initialise_Ocen import *
+from binulator_initialise_Ocenmock import *
 
 #Mocks:
 #from binulator_initialise_SMCmock import *

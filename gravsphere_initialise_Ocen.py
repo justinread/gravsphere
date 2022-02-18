@@ -6,11 +6,11 @@ from functions import *
 #running a given model. Throughout, -1 means auto-calculate.
 
 #Run on multiple processors:
-nprocs = 12
+nprocs = 10
 
 #Data files and output base filename:
 whichgal = 'Ocen'
-dgal_kpc = 5.4
+dgal_kpc = 5.0
 infile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)+whichgal
 outdirbase = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)
 print('Using Omega cen distance: %.1f kpc' % (dgal_kpc))
@@ -118,7 +118,7 @@ if (cosmo_cprior == 'yes'):
 #to avoid degeneracies with the stellar mass]:
 logMcenlow = 1.0
 logMcenhigh = 6.0
-acenlow = 1.0e-6
+acenlow = 1.0e-12
 acenhigh = 1.0e-3
 
 #Priors on rotation [set Arotlow = Arothigh = 0 to switch off.
@@ -130,13 +130,15 @@ acenhigh = 1.0e-3
 #find a mean rotation amplitude of 4.27+/-0.52 km/s. At Rhalf,
 #the dispersion of Ocen is 12-14km/s. This yields Arot in the
 #range: 0.035 < Arot < 0.08:
-Arotlow = 0.035
-Arothigh = 0.08
+#Arotlow = 0.035
+#Arothigh = 0.08
 
 #Switch off rotation, however, in favour of simply adding it
 #in quadratude to the dispersion profile (usual trick):
 #Arotlow = 0.0
 #Arothigh = 1.0e-12
+Arotlow = 0.0
+Arothigh = 0.1
 
 #Priors on distance [set drangelow = drangehigh = 1.0 to switch
 #off. True distance follows as dgal_kpc * drange s.t. we

@@ -383,3 +383,38 @@ def ocen_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
     return rbin_phot, surfden, surfdenerr, Rhalf, \
         Rkin, vz, vzerr, mskin, \
         x, y, vx, vxerr, vy, vyerr, msprop
+
+def ocenmock_api(data_file,verr,Nbin):
+    #Read in the data:
+    data = np.genfromtxt(data_file,dtype='f8')
+    
+    #Surface density [project along z]:
+    R = np.sqrt(data[:,0]**2.0 + data[:,1]**2.0)
+    ms = data[:,8] / np.sum(data[:,8]) * np.float(len(data[:,8]))
+    print('Total effective no. of tracers (photometric):', np.sum(ms))
+    rbin, surfden, surfdenerr, Rhalf = \
+          binthedata(R,ms,Nbin)
+    print('Data Rhalf:', Rhalf)
+
+    Rkin = R
+    vz = data[:,5]
+    vzerr = np.zeros(len(vz)) + verr
+    vz = vz + np.random.normal(0.0, verr, len(vz))
+    mskin = ms
+    vz = vz - np.sum(vz*mskin)/np.sum(mskin)
+    print('Total effective no. of tracers (kinematic):', np.sum(mskin))
+
+    x = data[:,0]
+    y = data[:,1]
+    vx = data[:,3]
+    vxerr = np.zeros(len(vx)) + verr
+    vy = data[:,4]
+    vyerr = np.zeros(len(vy)) + verr
+    msprop = ms
+    vx = vx + np.random.normal(0.0, verr, len(vx))
+    vy = vy + np.random.normal(0.0, verr, len(vy))
+    vx = vx - np.sum(vx*msprop)/np.sum(msprop)
+    vy = vy - np.sum(vy*msprop)/np.sum(msprop)
+    
+    return rbin, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin, \
+        x, y, vx, vxerr, vy, vyerr, msprop

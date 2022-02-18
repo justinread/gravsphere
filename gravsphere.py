@@ -330,9 +330,11 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     x2u = x2 * drange
     x3u = x3 * drange
     y3u = y3 * drange
-    y3erru = y3err * drange
+
+    #WARNING TEST TEST TEST WARNING
+    y3erru = y3err * drange * 5.0
     y4u = y4 * drange
-    y4erru = y4err * drange                
+    y4erru = y4err * drange * 5.0
     
     #Add dummy data points for low and high x1
     #to ensure +ve definite surface density
@@ -928,7 +930,7 @@ elif (codemode == 'plot'):
         Mparsu[2] = 10.**Mpars[2]
         Mparsu[4] = 10.**Mpars[4]
         Mparsu[6] = 10.**Mpars[6]
-        
+
         #Calculate all profiles we want to plot:
         if (propermotion == 'no'):
             if (virialshape == 'no'):
