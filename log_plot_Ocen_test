@@ -1,0 +1,35 @@
+nohup: ignoring input
+###### GRAVSPHERE VERSION 1.5 ######
+
+Using Omega cen distance: 5.0 kpc
+Running on 10 cores
+Doing galaxy: Ocen
+Model parameters:
+M200low, M200high [1e9 Msun]: 0.31622776601683794 31.622776601683793
+clow, chigh: 1.0 100.0
+Cold dark matter cosmology
+Including central dark mass in the range [1e6 Msun]: 1e-05 1.0
+Including rotation
+Allowing distance to vary in the fit over the range [kpc]: 4.0 6.0
+Inner/outer radial bin (phot): 4.1e-05 0.062683
+Inner/outer radial bin (kin): 4.6e-05 0.030715
+Inner/outer radial Jeans grid: 1e-06 5.0
+Running in plotting mode ... 
+Loading data from: /vol/ph/astro_temp/jread/gravsphere/Output/Ocen/dgal_5.0/Propermotion/VirialShape/CosmoC/
+Setting plot range: 1e-06 5.0
+Min/max chisq: 2929760.128599332 2929856.760610801
+*******************************
+M200 -/+ 68% ::  1974327567.9778402 556743291.1824688 12116289543.243382
+*******************************
+vmax -/+ 68% ::  24.383383528925183 16.739288874550414 42.94475182427665
+*******************************
+rt -/+ 68% ::  0.17683683087291158 0.16552532159392458 0.19164355098592475
+*******************************
+d -/+ 68% ::  5.1573756785729765 5.15736367366808 5.157382240566321
+*******************************
+Mcen -/+ 68% ::  137503.98910465147 108335.56958330407 162963.1455247298
+*******************************
+acen -/+ 68% ::  0.0007623319727662202 0.0005658140817896229 0.0009254366679298018
+
+Thank you for using GravSphere! Have a nice day.
+

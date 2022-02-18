@@ -16,6 +16,7 @@ print('Setting mock Omega cen distance to: %.1f kpc' % (dgal_kpc_offset))
 print('True Omega cen distance: %.1f kpc' % (dgal_kpc_true))
 Nbin = 1000.0
 Nbinkin = Nbin
+Nbinkin_prop = Nbin
 dgal_kpc_true = 5.0
 dgal_kpc_offset = 5.5
 verr = 2.0
@@ -71,3 +72,6 @@ vx = vx * dgal_kpc_offset / dgal_kpc_true
 vy = vy * dgal_kpc_offset / dgal_kpc_true
 vxerr = vxerr * dgal_kpc_offset / dgal_kpc_true
 vyerr = vyerr * dgal_kpc_offset / dgal_kpc_true
+
+#Set propermotions to be on:
+propermotion = 'yes'

@@ -330,11 +330,9 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     x2u = x2 * drange
     x3u = x3 * drange
     y3u = y3 * drange
-
-    #WARNING TEST TEST TEST WARNING
-    y3erru = y3err * drange * 5.0
+    y3erru = y3err * drange
     y4u = y4 * drange
-    y4erru = y4err * drange * 5.0
+    y4erru = y4err * drange
     
     #Add dummy data points for low and high x1
     #to ensure +ve definite surface density
@@ -428,7 +426,7 @@ nwalkers = 500
 nmodels = 10000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 ###########################################################
 #Input data selection here.
