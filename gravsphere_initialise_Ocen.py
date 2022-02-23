@@ -10,7 +10,7 @@ nprocs = 10
 
 #Data files and output base filename:
 whichgal = 'Ocen'
-dgal_kpc = 5.0
+dgal_kpc = 5.5
 infile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)+whichgal
 outdirbase = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)
 print('Using Omega cen distance: %.1f kpc' % (dgal_kpc))

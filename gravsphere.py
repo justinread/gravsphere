@@ -126,16 +126,21 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     Mparsu[4] = 10.**Mpars[4]
     Mparsu[6] = 10.**Mpars[6]
 
-    #Handle distance uncertainty:
-    x1u = x1 * drange
-    x2u = x2 * drange
-    
     #Add dummy data points for low and high x1
     #to ensure +ve definite surface density
     #if using negative Plummer components:
-    if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
-        x1u, y1, y1err = Sig_addpnts(x1u,y1,y1err)
+    if (nuparsu[0] < 0 or nuparsu[1] < 0 or nuparsu[2] < 0):
+        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
     
+    #Handle distance uncertainty:
+    x1u = x1 * drange
+    x2u = x2 * drange
+    y1u = y1 / drange**2.0
+    y1erru = y1err / drange**2.0
+    nuparsu[3] = nupars[3] * drange
+    nuparsu[4] = nupars[4] * drange
+    nuparsu[5] = nupars[5] * drange
+
     sigr2, Sig, sigLOS2 = \
            sigp_fit(x1u,x2u,nuparsu,Mparsu,betpars,Mstar,Arot)
 
@@ -145,16 +150,16 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     #for details):
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
-            y1err[np.where(Sig < 0)] = \
-                np.min(y1err)/np.float(len(x1u))/1.0e3
+            y1erru[np.where(Sig < 0)] = \
+                np.min(y1erru)/np.float(len(x1u))/1.0e3
     
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
 
-    inv_sigma2_1 = 1.0/y1err**2
+    inv_sigma2_1 = 1.0/y1erru**2
     inv_sigma2_2 = 1.0/y2err**2
 
-    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
+    lnlike_out = -0.5*(np.sum((y1u-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2))
 
     if (cosmo_cprior == 'yes'):
@@ -187,15 +192,20 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
     Mparsu[4] = 10.**Mpars[4]
     Mparsu[6] = 10.**Mpars[6]
 
-    #Handle distance uncertainty:
-    x1u = x1 * drange
-    x2u = x2 * drange
-    
     #Add dummy data points for low and high x1
     #to ensure +ve definite surface density
     #if using negative Plummer components:
-    if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
-        x1u, y1, y1err = Sig_addpnts(x1u,y1,y1err)
+    if (nuparsu[0] < 0 or nuparsu[1] < 0 or nuparsu[2] < 0):
+        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+    
+    #Handle distance uncertainty:
+    x1u = x1 * drange
+    x2u = x2 * drange
+    y1u = y1 / drange**2.0
+    y1erru = y1err / drange**2.0
+    nuparsu[3] = nupars[3] * drange
+    nuparsu[4] = nupars[4] * drange
+    nuparsu[5] = nupars[5] * drange                
     
     sigr2, Sig, sigLOS2, vs1, vs2 = \
         sigp_fit_vs(x1u,x2u,nuparsu,Mparsu,betpars,Mstar,Arot)
@@ -207,17 +217,17 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1err)/np.float(len(x1u))/1.0e3
+                  np.min(y1erru)/np.float(len(x1u))/1.0e3
     
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
     model3 = vs1/1.0e12
     model4 = vs2/1.0e12
 
-    inv_sigma2_1 = 1.0/y1err**2
+    inv_sigma2_1 = 1.0/y1erru**2
     inv_sigma2_2 = 1.0/y2err**2
 
-    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
+    lnlike_out = -0.5*(np.sum((y1u-model1)**2*inv_sigma2_1)+\
                  np.sum((y2-model2)**2*inv_sigma2_2))+\
                  np.log(vsp_pdf(model3,vsp1val,vsp1pdf))+\
                  np.log(vsp_pdf(model4,vsp2val,vsp2pdf))
@@ -252,20 +262,25 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     Mparsu[4] = 10.**Mpars[4]
     Mparsu[6] = 10.**Mpars[6]
 
+    #Add dummy data points for low and high x1
+    #to ensure +ve definite surface density
+    #if using negative Plummer components:
+    if (nuparsu[0] < 0 or nuparsu[1] < 0 or nuparsu[2] < 0):
+        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+
     #Handle distance uncertainty:
     x1u = x1 * drange
     x2u = x2 * drange
     x3u = x3 * drange
+    y1u = y1 / drange**2.0
+    y1erru = y1err / drange**2.0
+    nuparsu[3] = nupars[3] * drange
+    nuparsu[4] = nupars[4] * drange
+    nuparsu[5] = nupars[5] * drange
     y3u = y3 * drange
     y3erru = y3err * drange
     y4u = y4 * drange
     y4erru = y4err * drange
-    
-    #Add dummy data points for low and high x1
-    #to ensure +ve definite surface density
-    #if using negative Plummer components:
-    if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
-        x1u, y1, y1err = Sig_addpnts(x1u,y1,y1err)
     
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2 = \
         sigp_fit_prop(x1u,x2u,x3u,nuparsu,Mparsu,betpars,Mstar,Arot)
@@ -277,19 +292,19 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1err)/np.float(len(x1u))/1.0e3
+                  np.min(y1erru)/np.float(len(x1u))/1.0e3
 
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
     model3 = np.sqrt(sigpmr2)/1000.
     model4 = np.sqrt(sigpmt2)/1000.
 
-    inv_sigma2_1 = 1.0/y1err**2
+    inv_sigma2_1 = 1.0/y1erru**2
     inv_sigma2_2 = 1.0/y2err**2
     inv_sigma2_3 = 1.0/y3erru**2
     inv_sigma2_4 = 1.0/y4erru**2
 
-    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
+    lnlike_out = -0.5*(np.sum((y1u-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2)+\
                        np.sum((y3u-model3)**2*inv_sigma2_3)+\
                        np.sum((y4u-model4)**2*inv_sigma2_4))
@@ -325,20 +340,25 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     Mparsu[4] = 10.**Mpars[4]
     Mparsu[6] = 10.**Mpars[6]
 
+    #Add dummy data points for low and high x1
+    #to ensure +ve definite surface density
+    #if using negative Plummer components:
+    if (nuparsu[0] < 0 or nuparsu[1] < 0 or nuparsu[2] < 0):
+        x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
+
     #Handle distance uncertainty:
     x1u = x1 * drange
     x2u = x2 * drange
     x3u = x3 * drange
+    y1u = y1 / drange**2.0
+    y1erru = y1err / drange**2.0
+    nuparsu[3] = nupars[3] * drange
+    nuparsu[4] = nupars[4] * drange
+    nuparsu[5] = nupars[5] * drange
     y3u = y3 * drange
     y3erru = y3err * drange
     y4u = y4 * drange
     y4erru = y4err * drange
-    
-    #Add dummy data points for low and high x1
-    #to ensure +ve definite surface density
-    #if using negative Plummer components:
-    if (nupars[0] < 0 or nupars[1] < 0 or nupars[2] < 0):
-        x1u, y1, y1err = Sig_addpnts(x1u,y1,y1err)
     
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2, vs1, vs2 = \
         sigp_fit_prop_vs(x1u,x2u,x3u,nuparsu,Mparsu,betpars,Mstar,Arot)
@@ -350,7 +370,7 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1err)/np.float(len(x1u))/1.0e3
+                  np.min(y1erru)/np.float(len(x1u))/1.0e3
     
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
@@ -359,12 +379,12 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     model5 = vs1/1.0e12
     model6 = vs2/1.0e12
     
-    inv_sigma2_1 = 1.0/y1err**2
+    inv_sigma2_1 = 1.0/y1erru**2
     inv_sigma2_2 = 1.0/y2err**2
     inv_sigma2_3 = 1.0/y3erru**2
     inv_sigma2_4 = 1.0/y4erru**2
     
-    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
+    lnlike_out = -0.5*(np.sum((y1u-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2)+\
                        np.sum((y3u-model3)**2*inv_sigma2_3)+\
                        np.sum((y4u-model4)**2*inv_sigma2_4))+\
@@ -423,10 +443,10 @@ nprocs = 1
 #Code parameters:
 datadir = './Data/'
 nwalkers = 500
-nmodels = 10000
+nmodels = 20000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
 
 ###########################################################
 #Input data selection here.
@@ -928,7 +948,10 @@ elif (codemode == 'plot'):
         Mparsu[2] = 10.**Mpars[2]
         Mparsu[4] = 10.**Mpars[4]
         Mparsu[6] = 10.**Mpars[6]
-
+        nuparsu[3] = nupars[3] * drange
+        nuparsu[4] = nupars[4] * drange
+        nuparsu[5] = nupars[5] * drange
+        
         #Calculate all profiles we want to plot:
         if (propermotion == 'no'):
             if (virialshape == 'no'):
@@ -1100,6 +1123,13 @@ elif (codemode == 'plot'):
     #######################################################
     #And now make the plots:
 
+    #First calculate median distance; plot all data at
+    #median:
+    dmed, dsixlow, dsixhi,\
+        dninelow, dninehi, \
+        dnineninelow, dnineninehi = calcmedquartnine(dstore)
+    dcorr = dmed/dgal_kpc
+    
     ##### Stellar surface density ##### 
     fig = plt.figure(figsize=(figx,figy))
     ax = fig.add_subplot(111)
@@ -1110,7 +1140,7 @@ elif (codemode == 'plot'):
 
     plt.loglog()
 
-    plt.errorbar(rbin_phot,surfden,surfdenerr,\
+    plt.errorbar(rbin_phot*dcorr,surfden/dcorr**2.0,surfdenerr/dcorr**2.0,\
                  color='b',ecolor='b',linewidth=2,alpha=0.75,\
                  fmt='o')
     plt.fill_between(rbin,Sig_int[5,:],Sig_int[6,:],\
@@ -1144,7 +1174,7 @@ elif (codemode == 'plot'):
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
     
-    plt.errorbar(np.log10(rbin_kin),sigpmean,sigperr,\
+    plt.errorbar(np.log10(rbin_kin*dcorr),sigpmean,sigperr,\
                  linewidth=2,color='b',alpha=0.75,\
                  fmt='o')
 
@@ -1187,7 +1217,7 @@ elif (codemode == 'plot'):
         plt.yticks(fontsize=myfontsize)
 
         psel = sigpmr > 0
-        plt.errorbar(np.log10(rbin_kinp[psel]),sigpmr[psel],sigpmrerr[psel],\
+        plt.errorbar(np.log10(rbin_kinp[psel]*dcorr),sigpmr[psel]*dcorr,sigpmrerr[psel]*dcorr,\
                      linewidth=2,color='b',alpha=0.75,\
                      fmt='o')
             
@@ -1228,7 +1258,7 @@ elif (codemode == 'plot'):
         plt.yticks(fontsize=myfontsize)
  
         psel = sigpmt > 0
-        plt.errorbar(np.log10(rbin_kinp[psel]),sigpmt[psel],sigpmterr[psel],\
+        plt.errorbar(np.log10(rbin_kinp[psel]*dcorr),sigpmt[psel]*dcorr,sigpmterr[psel]*dcorr,\
                      linewidth=2,color='b',alpha=0.75,\
                      fmt='o')
             
@@ -1942,10 +1972,7 @@ elif (codemode == 'plot'):
     print('*******************************')
     print('rt -/+ 68% :: ', rtmed, rtsixlow, rtsixhi)
 
-    #And the same for d:
-    dmed, dsixlow, dsixhi,\
-        dninelow, dninehi, \
-        dnineninelow, dnineninehi = calcmedquartnine(dstore)
+    #And the same for d (already calculated, above):
     print('*******************************')
     print('d -/+ 68% :: ', dmed, dsixlow, dsixhi)
 

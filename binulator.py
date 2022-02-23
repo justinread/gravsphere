@@ -235,7 +235,6 @@ if (quicktestSB == 'no' and Nbinkin > 0):
         print('Fitted VSP2prop rad: %f+%f-%f' % \
               (vsppR2,vsppR2hi-vsppR2,vsppR2-vsppR2lo))
 
-    
 ###########################################################
 #Store the surface density, velocity dispersions, VSPs,
 #best fit surfden parameters and Rhalf for GravSphere:
@@ -253,50 +252,51 @@ f = open(outfile+'_Rhalf.txt','w')
 for i in range(len(Rhalf_int)):
     f.write('%f\n' % (Rhalf_int[i]))
 f.close()
-f = open(outfile+'_vel.txt','w')
-for i in range(len(rbin)):
-    f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
-            (rbin[i],vzmeanbin[i],vzmeanbinlo[i],vzmeanbinhi[i],\
-             vztwobin[i],vztwobinlo[i],vztwobinhi[i],\
-             vzfourbin[i],vzfourbinlo[i],vzfourbinhi[i],\
-             backampbin[i],backampbinlo[i],backampbinhi[i],\
-             backmeanbin[i],backmeanbinlo[i],backmeanbinhi[i],\
-             backsigbin[i],backsigbinlo[i],backsigbinhi[i]))
-f.close()
-f = open(outfile+'_vsps.txt','w')
-f.write('%f %f %f\n' % (vsp1,vsp1lo,vsp1hi))
-f.write('%f %f %f\n' % (vsp2,vsp2lo,vsp2hi))
-f.close()
-f = open(outfile+'_vsp1full.txt','w')
-for i in range(len(vsp1store)):
-    f.write('%f\n' % (vsp1store[i]))
-f.close()
-f = open(outfile+'_vsp2full.txt','w')
-for i in range(len(vsp2store)):
-    f.write('%f\n' % (vsp2store[i]))
-f.close()
+if (quicktestSB == 'no'):
+    f = open(outfile+'_vel.txt','w')
+    for i in range(len(rbin)):
+        f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
+                (rbin[i],vzmeanbin[i],vzmeanbinlo[i],vzmeanbinhi[i],\
+                 vztwobin[i],vztwobinlo[i],vztwobinhi[i],\
+                 vzfourbin[i],vzfourbinlo[i],vzfourbinhi[i],\
+                 backampbin[i],backampbinlo[i],backampbinhi[i],\
+                 backmeanbin[i],backmeanbinlo[i],backmeanbinhi[i],\
+                 backsigbin[i],backsigbinlo[i],backsigbinhi[i]))
+    f.close()
+    f = open(outfile+'_vsps.txt','w')
+    f.write('%f %f %f\n' % (vsp1,vsp1lo,vsp1hi))
+    f.write('%f %f %f\n' % (vsp2,vsp2lo,vsp2hi))
+    f.close()
+    f = open(outfile+'_vsp1full.txt','w')
+    for i in range(len(vsp1store)):
+        f.write('%f\n' % (vsp1store[i]))
+    f.close()
+    f = open(outfile+'_vsp2full.txt','w')
+    for i in range(len(vsp2store)):
+        f.write('%f\n' % (vsp2store[i]))
+    f.close()
 
-if (propermotion == 'yes'):
-    f = open(outfile+'_velproptan.txt','w')
-    for i in range(len(rbinpt)):
-        f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
-                (rbinpt[i],vphimeanbin[i],vphimeanbinlo[i],vphimeanbinhi[i],\
-                 vphitwobin[i],vphitwobinlo[i],vphitwobinhi[i],\
-                 vphifourbin[i],vphifourbinlo[i],vphifourbinhi[i],\
-                 backptampbin[i],backptampbinlo[i],backptampbinhi[i],\
-                 backptmeanbin[i],backptmeanbinlo[i],backptmeanbinhi[i],\
-                 backptsigbin[i],backptsigbinlo[i],backptsigbinhi[i]))
-    f.close()
-    f = open(outfile+'_velpropR.txt','w')
-    for i in range(len(rbinpR)):
-        f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
-                (rbinpR[i],vRmeanbin[i],vRmeanbinlo[i],vRmeanbinhi[i],\
-                 vRtwobin[i],vRtwobinlo[i],vRtwobinhi[i],\
-                 vRfourbin[i],vRfourbinlo[i],vRfourbinhi[i],\
-                 backpRampbin[i],backpRampbinlo[i],backpRampbinhi[i],\
-                 backpRmeanbin[i],backpRmeanbinlo[i],backpRmeanbinhi[i],\
-                 backpRsigbin[i],backpRsigbinlo[i],backpRsigbinhi[i]))
-    f.close()
+    if (propermotion == 'yes'):
+        f = open(outfile+'_velproptan.txt','w')
+        for i in range(len(rbinpt)):
+            f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
+                    (rbinpt[i],vphimeanbin[i],vphimeanbinlo[i],vphimeanbinhi[i],\
+                     vphitwobin[i],vphitwobinlo[i],vphitwobinhi[i],\
+                     vphifourbin[i],vphifourbinlo[i],vphifourbinhi[i],\
+                     backptampbin[i],backptampbinlo[i],backptampbinhi[i],\
+                     backptmeanbin[i],backptmeanbinlo[i],backptmeanbinhi[i],\
+                     backptsigbin[i],backptsigbinlo[i],backptsigbinhi[i]))
+        f.close()
+        f = open(outfile+'_velpropR.txt','w')
+        for i in range(len(rbinpR)):
+            f.write('%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % \
+                    (rbinpR[i],vRmeanbin[i],vRmeanbinlo[i],vRmeanbinhi[i],\
+                     vRtwobin[i],vRtwobinlo[i],vRtwobinhi[i],\
+                     vRfourbin[i],vRfourbinlo[i],vRfourbinhi[i],\
+                     backpRampbin[i],backpRampbinlo[i],backpRampbinhi[i],\
+                     backpRmeanbin[i],backpRmeanbinlo[i],backpRmeanbinhi[i],\
+                     backpRsigbin[i],backpRsigbinlo[i],backpRsigbinhi[i]))
+        f.close()
 
 ###########################################################
 #Plots:

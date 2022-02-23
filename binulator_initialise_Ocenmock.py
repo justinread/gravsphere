@@ -6,17 +6,24 @@ from constants import *
 nprocs = 10
 
 #Data files and output base filename:
-whichgal = 'Ocenmock'
+whichgal = 'Ocenmock3'
 dgal_kpc_true = 5.0
 dgal_kpc_offset = 5.5
-data_file = \
-    '../Data/Ocen_mock/h383_fid_input.dat'
+if (whichgal == 'Ocenmock'):
+    data_file = \
+        '../Data/Ocen_mock/h383_fid_input.dat'
+elif (whichgal == 'Ocenmock2'):
+    data_file = \
+        '../Data/Ocen_mock/h383_288_input.dat'
+elif (whichgal == 'Ocenmock3'):
+    data_file = \
+        '../Data/Ocen_mock/h383_late_input.dat'
 outfile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc_offset)+whichgal
 print('Setting mock Omega cen distance to: %.1f kpc' % (dgal_kpc_offset))
 print('True Omega cen distance: %.1f kpc' % (dgal_kpc_true))
-Nbin = 1000.0
-Nbinkin = Nbin
-Nbinkin_prop = Nbin
+Nbin = 100.0
+Nbinkin = 100.0
+Nbinkin_prop = Nbinkin
 dgal_kpc_true = 5.0
 dgal_kpc_offset = 5.5
 verr = 2.0
@@ -34,8 +41,8 @@ vzfourpltmax = 1e7
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
 #and scale length. [-1 means use full radial range].
-p0in_min = np.array([0,0,0,0.001,0.001,0.001])
-p0in_max = np.array([9,9,9,0.05,0.05,0.05])
+p0in_min = np.array([-1e2,-1e2,-1e2,1.0e-5,1.0e-5,1.0e-5])
+p0in_max = np.array([1e2,1e2,1e2,0.5,0.5,1.0])
 Rfitmin = -1
 Rfitmax = -1
 

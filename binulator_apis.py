@@ -2,6 +2,8 @@ import numpy as np
 from scipy.integrate import simps as integrator
 from constants import *
 from functions import * 
+from figures import * 
+import pylab as plt
 
 ###########################################################
 #APIs for loading in data. These should convert input data
@@ -387,11 +389,98 @@ def ocen_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
 def ocenmock_api(data_file,verr,Nbin):
     #Read in the data:
     data = np.genfromtxt(data_file,dtype='f8')
+
+    #Centre the data:
+    comx = np.sum(data[:,0])/np.float(len(data[:,0]))
+    comy = np.sum(data[:,1])/np.float(len(data[:,1]))
+    comz = np.sum(data[:,2])/np.float(len(data[:,2]))
+    comvx = np.sum(data[:,3])/np.float(len(data[:,3]))
+    comvy = np.sum(data[:,4])/np.float(len(data[:,4]))
+    comvz = np.sum(data[:,5])/np.float(len(data[:,5]))
+    print('Initial com:', comx,comy,comz)
+    print('Initial comv:', comvx,comvy,comvz)
+    data[:,0] = data[:,0] - comx
+    data[:,1] = data[:,1] - comy
+    data[:,2] = data[:,2] - comz
+    data[:,3] = data[:,3] - comvx
+    data[:,4] = data[:,4] - comvy
+    data[:,5] = data[:,5] - comvz
+    niter = 4
+    spherer = 1.0
+    for i in range(niter):
+        sel = np.sqrt(data[:,0]**2.0+data[:,1]**2.0+data[:,2]**2.0) < spherer
+        print('Refining on inner particles:', spherer)
+        xuse = data[sel,0]
+        yuse = data[sel,1]
+        zuse = data[sel,2]
+        vxuse = data[sel,3]
+        vyuse = data[sel,4]
+        vzuse = data[sel,5]
+        print('Max refine radius:', np.max(np.sqrt(xuse**2.0+yuse**2.0+zuse**2.0)))
+        comx = np.sum(xuse)/np.float(len(xuse))
+        comy = np.sum(yuse)/np.float(len(yuse))
+        comz = np.sum(zuse)/np.float(len(zuse))
+        comvx = np.sum(vxuse)/np.float(len(vxuse))
+        comvy = np.sum(vyuse)/np.float(len(vyuse))
+        comvz = np.sum(vzuse)/np.float(len(vzuse))
+        print('Refined com:', comx,comy,comz)
+        print('Refined comv:', comvx,comvy,comvz)    
+        data[:,0] = data[:,0] - comx
+        data[:,1] = data[:,1] - comy
+        data[:,2] = data[:,2] - comz
+        data[:,3] = data[:,3] - comvx
+        data[:,4] = data[:,4] - comvy
+        data[:,5] = data[:,5] - comvz
+        spherer = spherer * 0.5
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(mylinewidth)
+    ax.minorticks_on()
+    ax.tick_params('both', length=10, width=2, which='major')
+    ax.tick_params('both', length=5, width=1, which='minor')
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
+    
+    plt.xlabel(r'x(kpc)',fontsize=myfontsize)
+    plt.ylabel(r'y(kpc)',fontsize=myfontsize)
+
+    plt.plot(data[:,0],data[:,1],'ok',markersize=1)
+    plt.axhline(y=0)
+    plt.axvline(x=0)
+    
+    plt.xlim([-spherer,spherer])
+    plt.ylim([-spherer,spherer])
+    plt.savefig('ocen_cenr.png',bbox_inches='tight')
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    for axis in ['top','bottom','left','right']:
+        ax.spines[axis].set_linewidth(mylinewidth)
+    ax.minorticks_on()
+    ax.tick_params('both', length=10, width=2, which='major')
+    ax.tick_params('both', length=5, width=1, which='minor')
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
+    
+    plt.xlabel(r'vx(km/s)',fontsize=myfontsize)
+    plt.ylabel(r'vy(km/s)',fontsize=myfontsize)
+    
+    plt.plot(data[:,3],data[:,4],'ok',markersize=1)
+    plt.axhline(y=0)
+    plt.axvline(x=0)
+
+    plt.xlim([-10,10])
+    plt.ylim([-10,10])
+    plt.savefig('ocen_cenv.png',bbox_inches='tight')
     
     #Surface density [project along z]:
     R = np.sqrt(data[:,0]**2.0 + data[:,1]**2.0)
     ms = data[:,8] / np.sum(data[:,8]) * np.float(len(data[:,8]))
     print('Total effective no. of tracers (photometric):', np.sum(ms))
+    print('Min/max stellar mass:', np.min(data[:,8]), np.max(data[:,8]))
+    print('Min/max tracer weight:', np.min(ms), np.max(ms))
     rbin, surfden, surfdenerr, Rhalf = \
           binthedata(R,ms,Nbin)
     print('Data Rhalf:', Rhalf)
@@ -401,9 +490,8 @@ def ocenmock_api(data_file,verr,Nbin):
     vzerr = np.zeros(len(vz)) + verr
     vz = vz + np.random.normal(0.0, verr, len(vz))
     mskin = ms
-    vz = vz - np.sum(vz*mskin)/np.sum(mskin)
     print('Total effective no. of tracers (kinematic):', np.sum(mskin))
-
+    
     x = data[:,0]
     y = data[:,1]
     vx = data[:,3]
@@ -413,8 +501,6 @@ def ocenmock_api(data_file,verr,Nbin):
     msprop = ms
     vx = vx + np.random.normal(0.0, verr, len(vx))
     vy = vy + np.random.normal(0.0, verr, len(vy))
-    vx = vx - np.sum(vx*msprop)/np.sum(msprop)
-    vy = vy - np.sum(vy*msprop)/np.sum(msprop)
     
     return rbin, surfden, surfdenerr, Rhalf, Rkin, vz, vzerr, mskin, \
         x, y, vx, vxerr, vy, vyerr, msprop
