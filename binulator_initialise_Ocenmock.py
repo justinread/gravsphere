@@ -21,8 +21,8 @@ elif (whichgal == 'Ocenmock3'):
 outfile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc_offset)+whichgal
 print('Setting mock Omega cen distance to: %.1f kpc' % (dgal_kpc_offset))
 print('True Omega cen distance: %.1f kpc' % (dgal_kpc_true))
-Nbin = 100.0
-Nbinkin = 100.0
+Nbin = 50.0
+Nbinkin = 500.0
 Nbinkin_prop = Nbinkin
 dgal_kpc_true = 5.0
 dgal_kpc_offset = 5.5

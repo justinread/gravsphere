@@ -10,7 +10,7 @@ nprocs = 10
 
 #Data files and output base filename:
 whichgal = 'Ocen'
-dgal_kpc = 5.5
+dgal_kpc = 5.0
 infile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)+whichgal
 outdirbase = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)
 print('Using Omega cen distance: %.1f kpc' % (dgal_kpc))
@@ -62,7 +62,7 @@ bar_pnts = 5000
 
 #For surface density fit tracertol = [0,1] sets the spread 
 #around the best-fit value from the binulator.
-tracertol = 0.75
+tracertol = 0.95
 
 #Cosmology priors on the coreNFWtides model. mWDM(keV) is
 #the mass of a thermal relic; <0 means CDM; sig_c200 is 
@@ -146,7 +146,7 @@ Arothigh = 0.1
 
 #Priors here based on other distance determinations, e.g.:
 #https://ui.adsabs.harvard.edu/abs/2021MNRAS.505.5957B/abstract
-drangelow = 0.8
+drangelow = 0.99
 drangehigh = 1.2
 
 ###########################################################

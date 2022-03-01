@@ -279,7 +279,7 @@ def sigp(r1,r2,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
     #so that it peaks at 1.0. The total stellar mass is passed in Mstar.
 
     #Set up theta integration array:
-    intpnts = np.int(250)
+    intpnts = np.int(150)
     thmin = 0.
     bit = 1.e-5
     thmax = np.pi/2.-bit
@@ -335,7 +335,7 @@ def sigp_vs(r1,r2,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
     #described in their equations 8 and 9.
 
     #Set up theta integration array:
-    intpnts = np.int(250)
+    intpnts = np.int(150)
     thmin = 0.
     bit = 1.e-5
     thmax = np.pi/2.-bit
@@ -345,7 +345,7 @@ def sigp_vs(r1,r2,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
     cth2 = cth**2.
 
     #Set up rint interpolation array:
-    rintpnts = np.int(250)
+    rintpnts = np.int(150)
     rint = np.logspace(np.log10(rmin),\
                        np.log10(rmax),rintpnts)
 
@@ -399,7 +399,7 @@ def sigp_prop(r1,r2,r3,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
     #so that it peaks at 1.0. The total stellar mass is passed in Mstar.
 
     #Set up theta integration array:
-    intpnts = np.int(250)
+    intpnts = np.int(150)
     thmin = 0.
     bit = 1.e-5
     thmax = np.pi/2.-bit
@@ -457,7 +457,7 @@ def sigp_prop_vs(r1,r2,r3,nu,Sigfunc,M,Mcentral,beta,betaf,nupars,Mpars,\
     #so that it peaks at 1.0. The total stellar mass is passed in Mstar.
     
     #Set up theta integration array:
-    intpnts = np.int(250)
+    intpnts = np.int(150)
     thmin = 0.
     bit = 1.e-5
     thmax = np.pi/2.-bit

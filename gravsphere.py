@@ -1,4 +1,4 @@
-##########################################################
+###########################################################
 #GravSphere
 ###########################################################
 
@@ -132,17 +132,9 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     if (nuparsu[0] < 0 or nuparsu[1] < 0 or nuparsu[2] < 0):
         x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
     
-    #Handle distance uncertainty:
-    x1u = x1 * drange
-    x2u = x2 * drange
-    y1u = y1 / drange**2.0
-    y1erru = y1err / drange**2.0
-    nuparsu[3] = nupars[3] * drange
-    nuparsu[4] = nupars[4] * drange
-    nuparsu[5] = nupars[5] * drange
-
     sigr2, Sig, sigLOS2 = \
-           sigp_fit(x1u,x2u,nuparsu,Mparsu,betpars,Mstar,Arot)
+        sigp_fit(x1*drange,x2*drange,\
+                 nuparsu,Mparsu,betpars,Mstar,Arot)
 
     #And now, shrink the error wherever the
     #total density is negative to disfavour
@@ -150,16 +142,24 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     #for details):
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
-            y1erru[np.where(Sig < 0)] = \
-                np.min(y1erru)/np.float(len(x1u))/1.0e3
-    
+            y1err[np.where(Sig < 0)] = \
+                np.min(y1err)/np.float(len(x1))/1.0e3
+        
+    #Handle distance uncertainty. Convert distances to
+    #angle units before doing model-data comparison:
+    duse = dgal_kpc * drange
+    x1u = x1 / dgal_kpc
+    x2u = x2 / dgal_kpc
+            
+    #And convert model to angel units, but using
+    #new rather than default distance:
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
 
-    inv_sigma2_1 = 1.0/y1erru**2
+    inv_sigma2_1 = 1.0/y1err**2
     inv_sigma2_2 = 1.0/y2err**2
 
-    lnlike_out = -0.5*(np.sum((y1u-model1)**2*inv_sigma2_1)+\
+    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2))
 
     if (cosmo_cprior == 'yes'):
@@ -198,18 +198,10 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
     if (nuparsu[0] < 0 or nuparsu[1] < 0 or nuparsu[2] < 0):
         x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
     
-    #Handle distance uncertainty:
-    x1u = x1 * drange
-    x2u = x2 * drange
-    y1u = y1 / drange**2.0
-    y1erru = y1err / drange**2.0
-    nuparsu[3] = nupars[3] * drange
-    nuparsu[4] = nupars[4] * drange
-    nuparsu[5] = nupars[5] * drange                
-    
     sigr2, Sig, sigLOS2, vs1, vs2 = \
-        sigp_fit_vs(x1u,x2u,nuparsu,Mparsu,betpars,Mstar,Arot)
-
+        sigp_fit_vs(x1*drange,x2*drange,\
+                    nuparsu,Mparsu,betpars,Mstar,Arot)
+    
     #And now, shrink the error wherever the
     #total density is negative to disfavour
     #those models (see binulator_surffuncs.py
@@ -217,17 +209,25 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1erru)/np.float(len(x1u))/1.0e3
+                  np.min(y1err)/np.float(len(x1))/1.0e3
+
+    #Handle distance uncertainty. Convert distances to
+    #angle units before doing model-data comparison:
+    duse = dgal_kpc * drange
+    x1u = x1 / dgal_kpc
+    x2u = x2 / dgal_kpc
     
+    #And convert model to angle units, but using
+    #new rather than default distance:
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
     model3 = vs1/1.0e12
     model4 = vs2/1.0e12
 
-    inv_sigma2_1 = 1.0/y1erru**2
+    inv_sigma2_1 = 1.0/y1err**2
     inv_sigma2_2 = 1.0/y2err**2
 
-    lnlike_out = -0.5*(np.sum((y1u-model1)**2*inv_sigma2_1)+\
+    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                  np.sum((y2-model2)**2*inv_sigma2_2))+\
                  np.log(vsp_pdf(model3,vsp1val,vsp1pdf))+\
                  np.log(vsp_pdf(model4,vsp2val,vsp2pdf))
@@ -268,22 +268,9 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     if (nuparsu[0] < 0 or nuparsu[1] < 0 or nuparsu[2] < 0):
         x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
 
-    #Handle distance uncertainty:
-    x1u = x1 * drange
-    x2u = x2 * drange
-    x3u = x3 * drange
-    y1u = y1 / drange**2.0
-    y1erru = y1err / drange**2.0
-    nuparsu[3] = nupars[3] * drange
-    nuparsu[4] = nupars[4] * drange
-    nuparsu[5] = nupars[5] * drange
-    y3u = y3 * drange
-    y3erru = y3err * drange
-    y4u = y4 * drange
-    y4erru = y4err * drange
-    
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2 = \
-        sigp_fit_prop(x1u,x2u,x3u,nuparsu,Mparsu,betpars,Mstar,Arot)
+        sigp_fit_prop(x1*drange,x2*drange,x3*drange,\
+                      nuparsu,Mparsu,betpars,Mstar,Arot)
 
     #And now, shrink the error wherever the
     #total density is negative to disfavour
@@ -292,19 +279,32 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1erru)/np.float(len(x1u))/1.0e3
+                  np.min(y1err)/np.float(len(x1))/1.0e3
 
+    #Handle distance uncertainty. Convert distances to
+    #angle units before doing model-data comparison:
+    duse = dgal_kpc * drange
+    x1u = x1 / dgal_kpc
+    x2u = x2 / dgal_kpc
+    x3u = x3 / dgal_kpc
+    y3u = y3 / dgal_kpc
+    y3erru = y3err / dgal_kpc
+    y4u = y4 / dgal_kpc
+    y4erru = y4err / dgal_kpc
+
+    #And convert model to angle units, but using
+    #new rather than default distance:
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
-    model3 = np.sqrt(sigpmr2)/1000.
-    model4 = np.sqrt(sigpmt2)/1000.
+    model3 = np.sqrt(sigpmr2)/1000. / duse
+    model4 = np.sqrt(sigpmt2)/1000. / duse
 
-    inv_sigma2_1 = 1.0/y1erru**2
+    inv_sigma2_1 = 1.0/y1err**2
     inv_sigma2_2 = 1.0/y2err**2
     inv_sigma2_3 = 1.0/y3erru**2
     inv_sigma2_4 = 1.0/y4erru**2
 
-    lnlike_out = -0.5*(np.sum((y1u-model1)**2*inv_sigma2_1)+\
+    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2)+\
                        np.sum((y3u-model3)**2*inv_sigma2_3)+\
                        np.sum((y4u-model4)**2*inv_sigma2_4))
@@ -346,22 +346,9 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     if (nuparsu[0] < 0 or nuparsu[1] < 0 or nuparsu[2] < 0):
         x1, y1, y1err = Sig_addpnts(x1,y1,y1err)
 
-    #Handle distance uncertainty:
-    x1u = x1 * drange
-    x2u = x2 * drange
-    x3u = x3 * drange
-    y1u = y1 / drange**2.0
-    y1erru = y1err / drange**2.0
-    nuparsu[3] = nupars[3] * drange
-    nuparsu[4] = nupars[4] * drange
-    nuparsu[5] = nupars[5] * drange
-    y3u = y3 * drange
-    y3erru = y3err * drange
-    y4u = y4 * drange
-    y4erru = y4err * drange
-    
     sigr2, Sig, sigLOS2, sigpmr2, sigpmt2, vs1, vs2 = \
-        sigp_fit_prop_vs(x1u,x2u,x3u,nuparsu,Mparsu,betpars,Mstar,Arot)
+        sigp_fit_prop_vs(x1*drange,x2*drange,x3*drange,\
+                         nuparsu,Mparsu,betpars,Mstar,Arot)
 
     #And now, shrink the error wherever the
     #total density is negative to disfavour
@@ -370,21 +357,34 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     if (theta[0] < 0 or theta[1] < 0 or theta[2] < 0):
         if (np.min(Sig) < 0):
             y1err[np.where(Sig < 0)] = \
-                  np.min(y1erru)/np.float(len(x1u))/1.0e3
+                  np.min(y1err)/np.float(len(x1))/1.0e3
+            
+    #Handle distance uncertainty. Convert distances to
+    #angle units before doing model-data comparison:
+    duse = dgal_kpc * drange
+    x1u = x1 / dgal_kpc
+    x2u = x2 / dgal_kpc
+    x3u = x3 / dgal_kpc
+    y3u = y3 / dgal_kpc
+    y3erru = y3err / dgal_kpc
+    y4u = y4 / dgal_kpc
+    y4erru = y4err / dgal_kpc
     
+    #And convert model to angle units, but using
+    #new rather than default distance:                                                        
     model1 = Sig
     model2 = np.sqrt(sigLOS2)/1000.
-    model3 = np.sqrt(sigpmr2)/1000.
-    model4 = np.sqrt(sigpmt2)/1000.
+    model3 = np.sqrt(sigpmr2)/1000. / duse
+    model4 = np.sqrt(sigpmt2)/1000. / duse
     model5 = vs1/1.0e12
     model6 = vs2/1.0e12
     
-    inv_sigma2_1 = 1.0/y1erru**2
+    inv_sigma2_1 = 1.0/y1err**2
     inv_sigma2_2 = 1.0/y2err**2
     inv_sigma2_3 = 1.0/y3erru**2
     inv_sigma2_4 = 1.0/y4erru**2
     
-    lnlike_out = -0.5*(np.sum((y1u-model1)**2*inv_sigma2_1)+\
+    lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2)+\
                        np.sum((y3u-model3)**2*inv_sigma2_3)+\
                        np.sum((y4u-model4)**2*inv_sigma2_4))+\
@@ -442,8 +442,11 @@ nprocs = 1
 ###########################################################
 #Code parameters:
 datadir = './Data/'
-nwalkers = 500
-nmodels = 20000
+#nwalkers = 500
+#nmodels = 20000
+
+nwalkers = 1000
+nmodels = 10000
 
 #Codemode [run or plot]:
 codemode = 'run'
@@ -469,6 +472,7 @@ from gravsphere_initialise_Ocen import *
 #from gravsphere_initialise_PlumCoreOm import *
 #from gravsphere_initialise_PlumCuspOm import *
 #from gravsphere_initialise_SMCmock import *
+#from gravsphere_initialise_Ocenmock import *
 
 #M31 satellites:
 #from gravsphere_initialise_And21 import *
@@ -948,10 +952,7 @@ elif (codemode == 'plot'):
         Mparsu[2] = 10.**Mpars[2]
         Mparsu[4] = 10.**Mpars[4]
         Mparsu[6] = 10.**Mpars[6]
-        nuparsu[3] = nupars[3] * drange
-        nuparsu[4] = nupars[4] * drange
-        nuparsu[5] = nupars[5] * drange
-        
+
         #Calculate all profiles we want to plot:
         if (propermotion == 'no'):
             if (virialshape == 'no'):
@@ -1140,7 +1141,7 @@ elif (codemode == 'plot'):
 
     plt.loglog()
 
-    plt.errorbar(rbin_phot*dcorr,surfden/dcorr**2.0,surfdenerr/dcorr**2.0,\
+    plt.errorbar(rbin_phot*dcorr,surfden,surfdenerr,\
                  color='b',ecolor='b',linewidth=2,alpha=0.75,\
                  fmt='o')
     plt.fill_between(rbin,Sig_int[5,:],Sig_int[6,:],\
