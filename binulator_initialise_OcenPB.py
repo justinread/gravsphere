@@ -2,12 +2,15 @@ import numpy as np
 from binulator_apis import *
 from constants import * 
 
+#Run on multiproc:
+nprocs = 10
+
 #Data files and output base filename:
 whichgal = 'Ocen'
 infile_kin = '../Data/Ocen/Ocen_NoyoloVDV_RVs_N.txt'
 infile_phot = '../Data/Ocen/Ocen_surfden.txt'
 infile_prop = '../Data/Ocen/Ocen_HST_Gaia_PMs.txt'
-dgal_kpc = 5.4
+dgal_kpc = 5.5
 outfile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)+whichgal
 print('Using Omega cen distance: %.1f kpc' % (dgal_kpc))
 

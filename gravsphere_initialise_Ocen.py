@@ -10,7 +10,7 @@ nprocs = 10
 
 #Data files and output base filename:
 whichgal = 'Ocen'
-dgal_kpc = 5.0
+dgal_kpc = 4.8
 infile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)+whichgal
 outdirbase = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)
 print('Using Omega cen distance: %.1f kpc' % (dgal_kpc))
@@ -32,7 +32,7 @@ sigmhigh = 5.0
 
 #Code options:
 propermotion = 'yes'
-virialshape = 'yes'
+virialshape = 'no'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -82,8 +82,8 @@ betr0min = -3.0
 betr0max = 0.0
 betnmin = 1.0
 betnmax = 10.0
-bet0min = -1.0
-bet0max = 1.0
+bet0min = -0.05
+bet0max = 0.05
 betinfmin = -1.0
 betinfmax = 1.0
 
@@ -135,10 +135,10 @@ acenhigh = 1.0e-3
 
 #Switch off rotation, however, in favour of simply adding it
 #in quadratude to the dispersion profile (usual trick):
-#Arotlow = 0.0
-#Arothigh = 1.0e-12
 Arotlow = 0.0
-Arothigh = 0.1
+Arothigh = 1.0e-12
+#Arotlow = 0.0
+#Arothigh = 0.1
 
 #Priors on distance [set drangelow = drangehigh = 1.0 to switch
 #off. True distance follows as dgal_kpc * drange s.t. we
@@ -146,8 +146,8 @@ Arothigh = 0.1
 
 #Priors here based on other distance determinations, e.g.:
 #https://ui.adsabs.harvard.edu/abs/2021MNRAS.505.5957B/abstract
-drangelow = 0.99
-drangehigh = 1.2
+drangelow = 0.99999
+drangehigh = 1.00001
 
 ###########################################################
 #Post processing options:

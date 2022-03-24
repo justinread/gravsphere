@@ -442,14 +442,11 @@ nprocs = 1
 ###########################################################
 #Code parameters:
 datadir = './Data/'
-#nwalkers = 500
-#nmodels = 20000
-
-nwalkers = 1000
+nwalkers = 250
 nmodels = 10000
 
 #Codemode [run or plot]:
-codemode = 'run'
+codemode = 'plot'
 
 ###########################################################
 #Input data selection here.
@@ -1687,7 +1684,7 @@ elif (codemode == 'plot'):
                                     facecolor='b', \
                                     histtype='bar',alpha=0.5, \
                                     label='J')
-        plt.xlabel(r'$J\,[\rm GeV}^2\,{\rm c}^{-4}\,{\rm cm}^{-5}$]',\
+        plt.xlabel(r'$J\,[{\rm GeV}^2\,{\rm c}^{-4}\,{\rm cm}^{-5}]$',\
                    fontsize=myfontsize)
         plt.ylabel(r'$N$',fontsize=myfontsize)
         plt.ylim([0,np.max(n)])
