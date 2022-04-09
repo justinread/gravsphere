@@ -33,6 +33,9 @@ def lnprior_set_single(theta,n_betpars,bet0min,bet0max,\
                        acenlow,acenhigh,\
                        Arotlow,Arothigh,\
                        drangelow,drangehigh,\
+                       hyper_sigloslow,hyper_sigloshigh,\
+                       hyper_sigpmrlow,hyper_sigpmrhigh,\
+                       hyper_sigpmtlow,hyper_sigpmthigh,\
                        Mstar_min,Mstar_max):
 
     ndims = len(theta)
@@ -69,6 +72,12 @@ def lnprior_set_single(theta,n_betpars,bet0min,bet0max,\
     maxarr[n_betpars+nu_components*2+8] = Arothigh
     minarr[n_betpars+nu_components*2+9] = drangelow
     maxarr[n_betpars+nu_components*2+9] = drangehigh
+    minarr[n_betpars+nu_components*2+10] = hyper_sigloslow
+    maxarr[n_betpars+nu_components*2+10] = hyper_sigloshigh
+    minarr[n_betpars+nu_components*2+11] = hyper_sigpmrlow
+    maxarr[n_betpars+nu_components*2+11] = hyper_sigpmrhigh
+    minarr[n_betpars+nu_components*2+12] = hyper_sigpmtlow
+    maxarr[n_betpars+nu_components*2+12] = hyper_sigpmthigh
     minarr[ndims-1] = Mstar_min
     maxarr[ndims-1] = Mstar_max
 
@@ -118,6 +127,7 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
                   n_betpars+nu_components*2+n_mpars]
     Arot = theta[n_betpars+nu_components*2+n_mpars]
     drange = theta[n_betpars+nu_components*2+n_mpars+1]
+    hyper_siglos = theta[n_betpars+nu_components*2+n_mpars+2]
     Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
@@ -157,7 +167,7 @@ def lnlike_single(theta,x1,x2,y1,y1err,y2,y2err):
     model2 = np.sqrt(sigLOS2)/1000.
 
     inv_sigma2_1 = 1.0/y1err**2
-    inv_sigma2_2 = 1.0/y2err**2
+    inv_sigma2_2 = 1.0/(y2err**2+hyper_siglos**2.0)
 
     lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2))
@@ -184,6 +194,7 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
                   n_betpars+nu_components*2+n_mpars]
     Arot = theta[n_betpars+nu_components*2+n_mpars]
     drange = theta[n_betpars+nu_components*2+n_mpars+1]
+    hyper_siglos = theta[n_betpars+nu_components*2+n_mpars+2]
     Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
@@ -225,7 +236,7 @@ def lnlike_single_vs(theta,x1,x2,y1,y1err,y2,y2err,\
     model4 = vs2/1.0e12
 
     inv_sigma2_1 = 1.0/y1err**2
-    inv_sigma2_2 = 1.0/y2err**2
+    inv_sigma2_2 = 1.0/(y2err**2+hyper_siglos**2.0)
 
     lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                  np.sum((y2-model2)**2*inv_sigma2_2))+\
@@ -254,6 +265,9 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
                   n_betpars+nu_components*2+n_mpars]
     Arot = theta[n_betpars+nu_components*2+n_mpars]
     drange = theta[n_betpars+nu_components*2+n_mpars+1]
+    hyper_siglos = theta[n_betpars+nu_components*2+n_mpars+2]
+    hyper_sigpmr = theta[n_betpars+nu_components*2+n_mpars+3]
+    hyper_sigpmt = theta[n_betpars+nu_components*2+n_mpars+4]    
     Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
@@ -300,9 +314,9 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     model4 = np.sqrt(sigpmt2)/1000. / duse
 
     inv_sigma2_1 = 1.0/y1err**2
-    inv_sigma2_2 = 1.0/y2err**2
-    inv_sigma2_3 = 1.0/y3erru**2
-    inv_sigma2_4 = 1.0/y4erru**2
+    inv_sigma2_2 = 1.0/(y2err**2 + hyper_siglos**2.0)
+    inv_sigma2_3 = 1.0/(y3erru**2 + hyper_sigpmr**2.0)
+    inv_sigma2_4 = 1.0/(y4erru**2 + hyper_sigpmt**2.0)
 
     lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2)+\
@@ -332,6 +346,9 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
                   n_betpars+nu_components*2+n_mpars]
     Arot = theta[n_betpars+nu_components*2+n_mpars]
     drange = theta[n_betpars+nu_components*2+n_mpars+1]
+    hyper_siglos = theta[n_betpars+nu_components*2+n_mpars+2]
+    hyper_sigpmr = theta[n_betpars+nu_components*2+n_mpars+3]
+    hyper_sigpmt = theta[n_betpars+nu_components*2+n_mpars+4]
     Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
@@ -380,9 +397,9 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     model6 = vs2/1.0e12
     
     inv_sigma2_1 = 1.0/y1err**2
-    inv_sigma2_2 = 1.0/y2err**2
-    inv_sigma2_3 = 1.0/y3erru**2
-    inv_sigma2_4 = 1.0/y4erru**2
+    inv_sigma2_2 = 1.0/(y2err**2 + hyper_siglos**2.0)
+    inv_sigma2_3 = 1.0/(y3erru**2 + hyper_sigpmr**2.0)
+    inv_sigma2_4 = 1.0/(y4erru**2 + hyper_sigpmt**2.0)
     
     lnlike_out = -0.5*(np.sum((y1-model1)**2*inv_sigma2_1)+\
                        np.sum((y2-model2)**2*inv_sigma2_2)+\
@@ -446,7 +463,15 @@ nwalkers = 250
 nmodels = 10000
 
 #Codemode [run or plot]:
-codemode = 'plot'
+codemode = 'run'
+
+#Default no hyperparameters:
+hyper_sigloslow = 1.0e-12
+hyper_sigloshigh = 1.0e-11
+hyper_sigpmrlow = 1.0e-12
+hyper_sigpmrhigh = 1.0e-11
+hyper_sigpmtlow = 1.0e-12
+hyper_sigpmthigh = 1.0e-11
 
 ###########################################################
 #Input data selection here.
@@ -494,7 +519,16 @@ if (Arothigh > 1.0e-3):
 if (drangelow < 0.999):
     print('Allowing distance to vary in the fit over the range [kpc]:', \
           dgal_kpc*drangelow, dgal_kpc*drangehigh)
-        
+if (hyper_sigloshigh > 1.0e-11):
+    print('Using hyper-parameter for line of sight dispersion over range [km/s]:',\
+          hyper_sigloslow, hyper_sigloshigh)
+if (hyper_sigpmrhigh > 1.0e-11):
+    print('Using hyper-parameter for radial proper motion dispersion over range [km/s]:',\
+          hyper_sigpmrlow, hyper_sigpmrhigh)
+if (hyper_sigpmthigh > 1.0e-11):
+    print('Using hyper-parameter for tangential proper motion dispersion over range [km/s]:',\
+          hyper_sigpmtlow, hyper_sigpmthigh)
+
 #Set up output data folder structure:
 outdir = outdirbase
 if (propermotion == 'yes'):
@@ -632,7 +666,12 @@ Mstar_min = Mstar - Mstar_err
 Mstar_max = Mstar + Mstar_err
 
 #Set up the Jeans functions to use for the fit:
-ndim = n_betpars + n_nupars + n_mpars + 3
+#N.B. +6 on the ndims here corresponds to:
+#varying stellar mass to light ratio (+1)
+#varying distance (+1)
+#varying rotation parameter (+1)
+#hyper parameters for los, pmr, pmt (+3)
+ndim = n_betpars + n_nupars + n_mpars + 6
 if (propermotion == 'no'):
     if (virialshape == 'no'):
         sigp_fit = lambda r1,r2,nupars,Mpars,betpars,Mstar,Arot: \
@@ -716,6 +755,12 @@ if (codemode == 'run'):
         np.random.uniform(Arotlow,Arothigh,nwalkers)
     pos[:,n_betpars+nu_components*2+9] = \
         np.random.uniform(drangelow,drangehigh,nwalkers)
+    pos[:,n_betpars+nu_components*2+10] = \
+        np.random.uniform(hyper_sigloslow,hyper_sigloshigh,nwalkers)
+    pos[:,n_betpars+nu_components*2+11] = \
+        np.random.uniform(hyper_sigpmrlow,hyper_sigpmrhigh,nwalkers)
+    pos[:,n_betpars+nu_components*2+12] = \
+        np.random.uniform(hyper_sigpmtlow,hyper_sigpmthigh,nwalkers)
     pos[:,ndim-1] = \
         np.random.uniform(Mstar_min,Mstar_max,nwalkers)
 
@@ -753,6 +798,9 @@ if (codemode == 'run'):
                     acenlow,acenhigh,\
                     Arotlow,Arothigh,\
                     drangelow,drangehigh,\
+                    hyper_sigloslow,hyper_sigloshigh,\
+                    hyper_sigpmrlow,hyper_sigpmrhigh,\
+                    hyper_sigpmtlow,hyper_sigpmthigh,\
                     Mstar_min,Mstar_max)            
 
     print('Running chains ... ')
@@ -942,6 +990,9 @@ elif (codemode == 'plot'):
                       n_betpars+nu_components*2+n_mpars]
         Arot = theta[n_betpars+nu_components*2+n_mpars]
         drange = theta[n_betpars+nu_components*2+n_mpars+1]
+        hyper_siglos = theta[n_betpars+nu_components*2+n_mpars+2]
+        hyper_sigpmr = theta[n_betpars+nu_components*2+n_mpars+3]
+        hyper_sigpmt = theta[n_betpars+nu_components*2+n_mpars+4]
         Mstar = theta[ndim-1]
         nuparsu = np.array(nupars)
         Mparsu = np.array(Mpars)

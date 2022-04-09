@@ -10,7 +10,7 @@ nprocs = 10
 
 #Data files and output base filename:
 whichgal = 'Ocen'
-dgal_kpc = 4.8
+dgal_kpc = 5.0
 infile = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)+whichgal
 outdirbase = output_base+whichgal+'/dgal_%.1f/' % (dgal_kpc)
 print('Using Omega cen distance: %.1f kpc' % (dgal_kpc))
@@ -146,8 +146,19 @@ Arothigh = 1.0e-12
 
 #Priors here based on other distance determinations, e.g.:
 #https://ui.adsabs.harvard.edu/abs/2021MNRAS.505.5957B/abstract
-drangelow = 0.99999
-drangehigh = 1.00001
+#drangelow = 0.99999
+#drangehigh = 1.00001
+drangelow = 0.99
+drangehigh = 1.15
+
+#Hyper-parameters here for the velocity dispersions (because
+#dispersion data points wiggle more than formal uncertainties):
+hyper_sigloslow = 0.0
+hyper_sigloshigh = 10.0
+hyper_sigpmrlow = 0.0
+hyper_sigpmrhigh = 10.0
+hyper_sigpmtlow = 0.0
+hyper_sigpmthigh = 10.0
 
 ###########################################################
 #Post processing options:
