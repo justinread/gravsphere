@@ -149,9 +149,20 @@ Arothigh = 0.1
 drangelow = 0.8
 drangehigh = 1.2
 
+#Hyper-parameters here for the velocity dispersions (because
+#dispersion data points wiggle more than formal uncertainties):
+hyper_sigloslow = 0.0
+hyper_sigloshigh = 10.0
+hyper_sigpmrlow = 0.0
+hyper_sigpmrhigh = 10.0
+hyper_sigpmtlow = 0.0
+hyper_sigpmthigh = 10.0
+
 ###########################################################
 #Post processing options:
 
-#For calculating J-factors:
+#For calculating D+J-factors:
 calc_Jfac = 'no'
 alpha_Jfac_deg = 0.5
+calc_Dfac = 'no'
+alpha_Dfac_deg = 0.5

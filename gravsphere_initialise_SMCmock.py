@@ -148,6 +148,8 @@ drangehigh = 1.00001
 ###########################################################
 #Post processing options:
 
-#For calculating J-factors:
+#For calculating D+J-factors:
 calc_Jfac = 'no'
 alpha_Jfac_deg = 0.5
+calc_Dfac = 'no'
+alpha_Dfac_deg = 0.5

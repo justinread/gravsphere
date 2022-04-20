@@ -1,0 +1,37 @@
+nohup: ignoring input
+###### GRAVSPHERE VERSION 1.5 ######
+
+Using Omega cen distance: 5.0 kpc
+Running on 10 cores
+Doing galaxy: Ocen
+Model parameters:
+M200low, M200high [1e9 Msun]: 0.31622776601683794 31.622776601683793
+clow, chigh: 1.0 100.0
+Cold dark matter cosmology
+Including central dark mass in the range [1e6 Msun]: 1e-05 1.0
+Allowing distance to vary in the fit over the range [kpc]: 4.95 5.75
+Using hyper-parameter for line of sight dispersion over range [km/s]: 0.0 10.0
+Using hyper-parameter for radial proper motion dispersion over range [km/s]: 0.0 10.0
+Using hyper-parameter for tangential proper motion dispersion over range [km/s]: 0.0 10.0
+Inner/outer radial bin (phot): 4.1e-05 0.062683
+Inner/outer radial bin (kin): 4.6e-05 0.036033
+Inner/outer radial Jeans grid: 1e-06 5.0
+Running in plotting mode ... 
+Loading data from: /vol/ph/astro_temp/jread/gravsphere/Output/Ocen/dgal_5.0/Propermotion/CosmoC/
+Setting plot range: 1e-06 5.0
+Min/max chisq: 2880768.1238603075 2988709.220303678
+*******************************
+M200 -/+ 68% ::  3173600779.508808 677122717.0133846 15432285781.894163
+*******************************
+vmax -/+ 68% ::  33.19193010206779 18.30142093548859 52.73074652060122
+*******************************
+rt -/+ 68% ::  0.17807268524236106 0.16694246379098485 0.19032560280375257
+*******************************
+d -/+ 68% ::  4.950006505423877 4.950000916666149 5.20263644271531
+*******************************
+Mcen -/+ 68% ::  73000.69153386427 181.1185688853271 276414.8476944412
+*******************************
+acen -/+ 68% ::  0.0004285315467836025 0.0001243154246019138 0.0008167657887510284
+
+Thank you for using GravSphere! Have a nice day.
+

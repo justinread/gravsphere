@@ -267,7 +267,12 @@ def lnlike_single_prop(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     drange = theta[n_betpars+nu_components*2+n_mpars+1]
     hyper_siglos = theta[n_betpars+nu_components*2+n_mpars+2]
     hyper_sigpmr = theta[n_betpars+nu_components*2+n_mpars+3]
-    hyper_sigpmt = theta[n_betpars+nu_components*2+n_mpars+4]    
+    hyper_sigpmt = theta[n_betpars+nu_components*2+n_mpars+4]
+
+    #TEST!
+    hyper_sigpmr = hyper_siglos
+    hyper_sigpmt = hyper_siglos
+    
     Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
@@ -349,6 +354,11 @@ def lnlike_single_prop_vs(theta,x1,x2,x3,y1,y1err,y2,y2err,\
     hyper_siglos = theta[n_betpars+nu_components*2+n_mpars+2]
     hyper_sigpmr = theta[n_betpars+nu_components*2+n_mpars+3]
     hyper_sigpmt = theta[n_betpars+nu_components*2+n_mpars+4]
+
+    #TEST!
+    hyper_sigpmr = hyper_siglos
+    hyper_sigpmt = hyper_siglos
+    
     Mstar = theta[ndim-1]
     nuparsu = np.array(nupars)
     Mparsu = np.array(Mpars)
@@ -460,7 +470,7 @@ nprocs = 1
 #Code parameters:
 datadir = './Data/'
 nwalkers = 250
-nmodels = 10000
+nmodels = 50000
 
 #Codemode [run or plot]:
 codemode = 'run'
@@ -488,13 +498,13 @@ hyper_sigpmthigh = 1.0e-11
 #from gravsphere_initialise_CVnI import *
 #from gravsphere_initialise_SegI import *
 #from gravsphere_initialise_SMC import *
-from gravsphere_initialise_Ocen import *
+#from gravsphere_initialise_Ocen import *
 
 #Mocks:
 #from gravsphere_initialise_PlumCoreOm import *
 #from gravsphere_initialise_PlumCuspOm import *
 #from gravsphere_initialise_SMCmock import *
-#from gravsphere_initialise_Ocenmock import *
+from gravsphere_initialise_Ocenmock import *
 
 #M31 satellites:
 #from gravsphere_initialise_And21 import *
@@ -937,7 +947,8 @@ elif (codemode == 'plot'):
     Mcen_int = np.zeros((7,len(rbin)))
     if (calc_Jfac == 'yes'):
         J_int = np.zeros(7)
-        
+    if (calc_Dfac == 'yes'):
+        D_int = np.zeros(7)                
     Mstore = np.zeros((len(rbin),nsamples))
     rhostore = np.zeros((len(rbin),nsamples))
     dlnrhodlnrstore = np.zeros((len(rbin),nsamples))
@@ -958,7 +969,8 @@ elif (codemode == 'plot'):
     Mcenastore = np.zeros(nsamples)
     if (calc_Jfac == 'yes'):
         Jstore = np.zeros(nsamples)    
-    
+    if (calc_Dfac == 'yes'):
+        Dstore = np.zeros(nsamples)
     bet_int = np.zeros((7,len(rbin)))
     betstar_int = np.zeros((7,len(rbin)))
     Sig_int = np.zeros((7,len(rbin)))
@@ -1053,10 +1065,12 @@ elif (codemode == 'plot'):
         dstore[i] = drange*dgal_kpc
         McenMstore[i] = Mparsu[6]
         Mcenastore[i] = Mparsu[7]
-        
         if (calc_Jfac == 'yes'):
             alpha_rmax = dgal_kpc*alpha_Jfac_deg/deg
             Jstore[i] = get_J(rho,Mparsu,dgal_kpc,alpha_rmax)
+        if (calc_Dfac == 'yes'):
+            alpha_rmax = dgal_kpc*alpha_Dfac_deg/deg
+            Dstore[i] = get_D(rho,Mparsu,dgal_kpc,alpha_rmax)                                    
         if (virialshape == 'yes'):
             vs1store[i] = vs1/1.0e12
             vs2store[i] = vs2/1.0e12
@@ -1111,6 +1125,9 @@ elif (codemode == 'plot'):
         if (calc_Jfac == 'yes'):
             J_int = \
                 calcmedquartnine(Jstore[:])
+        if (calc_Dfac == 'yes'):
+            D_int = \
+                calcmedquartnine(Dstore[:])
         for j in range(len(rbin)):
             bet_int[0,j], bet_int[1,j], bet_int[2,j], \
                 bet_int[3,j], \
@@ -1681,12 +1698,17 @@ elif (codemode == 'plot'):
     
     #######################################################
     #Additional write output
-    #And write the J-factor data:
+    #And write the D+J-factor data:
     if (calc_Jfac == 'yes'):
         f = open(outdir+'output_Jfac.txt','w')
         for i in range(len(Jstore)):
             f.write('%f\n' % Jstore[i])
         f.close()
+    if (calc_Dfac == 'yes'):
+        f = open(outdir+'output_Dfac.txt','w')
+        for i in range(len(Dstore)):
+            f.write('%f\n' % Dstore[i])
+        f.close()                                   
 
     #And write the distance data:
     f = open(outdir+'output_dstore.txt','w')
@@ -1735,12 +1757,36 @@ elif (codemode == 'plot'):
                                     facecolor='b', \
                                     histtype='bar',alpha=0.5, \
                                     label='J')
+        
         plt.xlabel(r'$J\,[{\rm GeV}^2\,{\rm c}^{-4}\,{\rm cm}^{-5}]$',\
                    fontsize=myfontsize)
         plt.ylabel(r'$N$',fontsize=myfontsize)
         plt.ylim([0,np.max(n)])
         plt.savefig(outdir+'output_Jfac.pdf',bbox_inches='tight')
-    
+
+    ##### D-factor #####
+    if (calc_Dfac == 'yes'):
+        fig = plt.figure(figsize=(figx,figy))
+        ax = fig.add_subplot(111)
+        for axis in ['top','bottom','left','right']:
+            ax.spines[axis].set_linewidth(mylinewidth)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
+        nbin = 25
+
+        n, bins, patches = plt.hist(Dstore,bins=nbin,\
+                                    range=(np.min(Dstore),\
+                                           np.max(Dstore)),\
+                                    facecolor='b', \
+                                    histtype='bar',alpha=0.5, \
+                                    label='D')
+        
+        plt.xlabel(r'$D\,[{\rm GeV}\,{\rm c}^{-2}\,{\rm cm}^{-2}]$',\
+                   fontsize=myfontsize)
+        plt.ylabel(r'$N$',fontsize=myfontsize)
+        plt.ylim([0,np.max(n)])
+        plt.savefig(outdir+'output_Dfac.pdf',bbox_inches='tight')
+
     ##### Virial shape parameters #####
     if (virialshape == 'yes'):
         #And make a plot of the Virial shape parameters, if 

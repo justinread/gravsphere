@@ -120,7 +120,7 @@ if (cosmo_cprior == 'yes'):
 logMcenlow = 1e-4
 logMcenhigh = 1e-3
 acenlow = 1.0e-5
-acenhigh = 1.0e-1
+acenhigh = 1.0e-4
 
 #Priors on rotation [Arot defined as:
 #vphimean^2 / (2 sigr^2) = Arot(r/Rhalf) which yields linear
@@ -139,7 +139,8 @@ drangehigh = 1.00001
 ###########################################################
 #Post processing options:
 
-#For calculating J-factors:
-get_Juse = get_J
-calc_Jfac = 'no'
+#For calculating D+J-factors:
+calc_Jfac = 'yes'
 alpha_Jfac_deg = 0.5 
+calc_Dfac = 'yes'
+alpha_Dfac_deg = 0.5

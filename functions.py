@@ -66,8 +66,23 @@ def radius_dsph(s, b, distance):
 def integrand(s, b, distance, rho, Mpars):
     value = np.sin(b) * rho(np.array([radius_dsph(s, b, distance)]), Mpars)**2
     return value
-                
+
+def integrand_D(s, b, distance, rho, Mpars):
+    value = np.sin(b) * rho(np.array([radius_dsph(s, b, distance)]), Mpars)
+    return value
+
 def get_J(rho, Mpars, distance, r_max):
+    """
+    Compute the J factor.
+    :param distance: the distance of the galaxy in kpc
+    :param r_max: the maximum radius over which to integrate
+                  [this gives an integration angle of
+                   alpha = r_max/distance (rads)]
+    :param r: the radius array for the density profile in kpc
+    :param rho: the density array for the density profile in Msun/kpc^3
+    :return: the J factor in in GeV c^-4 cm^-5
+    """
+    
     #Min/max integration angles in radians:
     b_min = 0.0
     b_max = np.arcsin(r_max/distance)
@@ -81,7 +96,6 @@ def get_J(rho, Mpars, distance, r_max):
     s_max_bound = lambda b : (Rmaximum**2 - (distance*np.sin(b))**2 )**0.5
     
     #Computation J_max:
-    Rmax_arr = Rmaximum
     Acc_arr = 1.0e-8
     J_max = dblquad(integrand,b_min,b_max,s_min_bound,\
                     s_max_bound,args=(distance,rho,Mpars),\
@@ -98,6 +112,48 @@ def get_J(rho, Mpars, distance, r_max):
         sys.exit(0)
 
     return J_max  # in GeV^2 c^-4 cm^-5
+
+def get_D(rho, Mpars, distance, r_max):
+    """
+    Compute the D factor.
+    :param distance: the distance of the galaxy in kpc
+    :param r_max: the maximum radius over which to integrate
+                  [this gives an integration angle of
+                   alpha = r_max/distance (rads)]
+    :param r: the radius array for the density profile in kpc
+    :param rho: the density array for the density profile in Msun/kpc^3
+    :return: the D factor in in GeV c^-2 cm^-2
+    """
+
+    # Min/max integration angles in radians:
+    r_min = 0.0
+    b_min = np.arcsin(r_min/distance)
+    b_max = np.arcsin(r_max/distance)
+                        
+    #This is an appropriate choice for Dwarf galaxies but
+    #should be reconsidered for large mass systems:
+    Rmaximum = 250.0
+    
+    #Upper/lower limits:
+    s_min_bound = lambda b :  -(Rmaximum**2 - (distance*np.sin(b))**2 )**0.5
+    s_max_bound = lambda b : (Rmaximum**2 - (distance*np.sin(b))**2 )**0.5
+    
+    #Computation J_max:
+    Acc_arr = 1.0e-8          
+    D_max = dblquad(integrand_D,b_min,b_max,s_min_bound,\
+                       s_max_bound,args=(distance,rho,Mpars),\
+                       epsabs=Acc_arr,epsrel=Acc_arr)
+    D_max = D_max[0]*kpccm*2.*np.pi*Msunkpc3toGeVcm3
+
+    #Error checking:
+    if (D_max == np.inf):
+        print('Argh! Infinite D_max!! Bye bye...')
+        sys.exit(0)
+    if (D_max < 0):
+        print('Argh! Negative D_max!! Bye bye...')
+        sys.exit(0)
+        
+    return D_max  # in GeV c^-2 cm^-2
 
 
 ###########################################################
