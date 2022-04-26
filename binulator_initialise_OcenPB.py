@@ -32,10 +32,10 @@ Nbinkin = -1
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
 #and scale length. [-1 means use full radial range].
-p0in_min = np.array([0,0,0,0.001,0.001,0.001])
-p0in_max = np.array([9,9,9,0.05,0.05,0.05])
+p0in_min = np.array([-10,-10,-10,0.001,0.001,0.001])
+p0in_max = np.array([10,10,10,0.05,0.05,0.05])
 Rfitmin = -1
-Rfitmax = -1
+Rfitmax = 40.0 / 1000.0
 
 #Priors for binulator velocity dispersion calculation. 
 #Array values are: [vzmean,alp,bet,backamp,backmean,backsig], 

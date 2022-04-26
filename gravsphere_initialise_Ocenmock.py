@@ -32,7 +32,7 @@ sigmhigh = 5.0
 
 #Code options:
 propermotion = 'yes'
-virialshape = 'yes'
+virialshape = 'no'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -148,15 +148,6 @@ Arothigh = 0.1
 #https://ui.adsabs.harvard.edu/abs/2021MNRAS.505.5957B/abstract
 drangelow = 0.8
 drangehigh = 1.2
-
-#Hyper-parameters here for the velocity dispersions (because
-#dispersion data points wiggle more than formal uncertainties):
-hyper_sigloslow = 0.0
-hyper_sigloshigh = 10.0
-hyper_sigpmrlow = 0.0
-hyper_sigpmrhigh = 10.0
-hyper_sigpmtlow = 0.0
-hyper_sigpmthigh = 10.0
 
 ###########################################################
 #Post processing options:

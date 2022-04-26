@@ -233,7 +233,7 @@ def ocen_prebin_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
     data_phot = np.genfromtxt(infile_phot,dtype='f8')
     rbin_phot = data_phot[:,0]*dgal_kpc/arcsec
     surfden = data_phot[:,1]
-    surfdenerr = (data_phot[:,2]+data_phot[:,3])/2.0
+    surfdenerr = (np.abs(data_phot[:,2])+np.abs(data_phot[:,3]))/2.0
 
     #Normalise the surface density and calc.
     #the half light radius from the data:
@@ -354,7 +354,7 @@ def ocen_api(dgal_kpc,infile_phot,infile_kin,infile_prop):
     data_phot = np.genfromtxt(infile_phot,dtype='f8')
     rbin_phot = data_phot[:,0]*dgal_kpc/arcsec
     surfden = data_phot[:,1]
-    surfdenerr = (data_phot[:,2]+data_phot[:,3])/2.0
+    surfdenerr = (np.abs(data_phot[:,2])+np.abs(data_phot[:,3]))/2.0
     
     #Normalise the surface density and calc.
     #the half light radius from the data:

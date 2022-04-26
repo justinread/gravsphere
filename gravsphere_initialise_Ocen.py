@@ -62,7 +62,7 @@ bar_pnts = 5000
 
 #For surface density fit tracertol = [0,1] sets the spread 
 #around the best-fit value from the binulator.
-tracertol = 0.95
+tracertol = 0.8
 
 #Cosmology priors on the coreNFWtides model. mWDM(keV) is
 #the mass of a thermal relic; <0 means CDM; sig_c200 is 
@@ -151,20 +151,11 @@ Arothigh = 1.0e-12
 drangelow = 0.99
 drangehigh = 1.15
 
-#Hyper-parameters here for the velocity dispersions (because
-#dispersion data points wiggle more than formal uncertainties):
-hyper_sigloslow = 0.0
-hyper_sigloshigh = 10.0
-hyper_sigpmrlow = 0.0
-hyper_sigpmrhigh = 10.0
-hyper_sigpmtlow = 0.0
-hyper_sigpmthigh = 10.0
-
 ###########################################################
 #Post processing options:
 
 #For calculating D+J-factors:
-calc_Jfac = 'no'
+calc_Jfac = 'yes'
 alpha_Jfac_deg = 0.5
-calc_Dfac = 'no'
+calc_Dfac = 'yes'
 alpha_Dfac_deg = 0.5

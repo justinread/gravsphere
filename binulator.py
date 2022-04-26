@@ -61,13 +61,13 @@ nprocs = 1
 #from binulator_initialise_SegI import *
 #from binulator_initialise_SMC import *
 #from binulator_initialise_Ocen import *
-from binulator_initialise_OcenPB import *
+#from binulator_initialise_OcenPB import *
 
 #Mocks:
 #from binulator_initialise_SMCmock import *
 #from binulator_initialise_PlumCoreOm import *
 #from binulator_initialise_PlumCuspOm import *
-#from binulator_initialise_Ocenmock import *
+from binulator_initialise_Ocenmock import *
 
 #M31 satellites:
 #from binulator_initialise_And21 import *

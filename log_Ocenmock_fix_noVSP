@@ -1,0 +1,20 @@
+nohup: ignoring input
+###### GRAVSPHERE VERSION 1.5 ######
+
+Using Omega cen distance: 5.5 kpc
+Running on 10 cores
+Doing galaxy: Ocenmock3
+Model parameters:
+M200low, M200high [1e9 Msun]: 0.31622776601683794 31.622776601683793
+clow, chigh: 1.0 100.0
+Cold dark matter cosmology
+Including central dark mass in the range [1e6 Msun]: 1e-05 1.0
+Including rotation
+Allowing distance to vary in the fit over the range [kpc]: 4.4 6.6
+Inner/outer radial bin (phot): 0.000487 8.054394
+Inner/outer radial bin (kin): 0.001651 2.292925
+Inner/outer radial Jeans grid: 1e-06 5.0
+Running in fitting mode ... 
+Will write output to: /vol/ph/astro_temp/jread/gravsphere/Output/Ocenmock3/dgal_5.5/Propermotion/CosmoC/
+Running chains ... 
+  0%|          | 0/50000 [00:00<?, ?it/s]  0%|          | 1/50000 [00:03<45:25:47,  3.27s/it]  0%|          | 2/50000 [00:06<44:59:43,  3.24s/it]  0%|          | 3/50000 [00:10<47:36:59,  3.43s/it]  0%|          | 4/50000 [00:14<50:00:58,  3.60s/it]  0%|          | 5/50000 [00:18<51:19:55,  3.70s/it]  0%|          | 6/50000 [00:22<52:42:03,  3.79s/it]  0%|          | 7/50000 [00:26<53:58:43,  3.89s/it]  0%|          | 8/50000 [00:30<54:26:15,  3.92s/it]  0%|          | 9/50000 [00:34<57:19:39,  4.13s/it]  0%|          | 10/50000 [00:40<61:41:21,  4.44s/it]  0%|          | 11/50000 [00:45<64:04:01,  4.61s/it]  0%|          | 12/50000 [00:50<65:59:31,  4.75s/it]  0%|          | 13/50000 [00:55<66:32:05,  4.79s/it]  0%|          | 14/50000 [01:00<69:56:01,  5.04s/it]  0%|          | 15/50000 [01:05<69:35:49,  5.01s/it]  0%|          | 16/50000 [01:11<71:24:57,  5.14s/it]  0%|          | 17/50000 [01:16<71:29:10,  5.15s/it]

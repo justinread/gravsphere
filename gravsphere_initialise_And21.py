@@ -131,7 +131,6 @@ dgal_kpc = 827.0
 drangelow = 0.99999
 drangehigh = 1.00001
 
-    
 ###########################################################
 #Post processing options:
 
