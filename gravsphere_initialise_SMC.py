@@ -5,6 +5,9 @@ from functions import *
 #This file contains all the code options and choices for 
 #running a given model. Throughout, -1 means auto-calculate.
 
+#Run on multiple processors:
+nprocs = 10
+
 #Data files and output base filename:
 whichgal = 'SMC'
 infile = output_base+whichgal+'/'+whichgal
@@ -26,8 +29,8 @@ sigmlow = 1e-3
 sigmhigh = 5.0
 
 #Code options:
-propermotion = 'no'
-virialshape = 'yes'
+propermotion = 'yes'
+virialshape = 'no'
 
 #Overplot true solution (for mock data). If 
 #yes, then the true solutions should be passed
@@ -132,9 +135,9 @@ Arothigh = 1.0e-12
 #dgal_kpc * drange s.t. we usually want drangelow < 1.0 and
 #drangehigh > 1.0]:
 dgal_kpc = 60.0
-drangelow = 0.99999
-drangehigh = 1.00001
-    
+drangelow = 0.9
+drangehigh = 1.1
+
 ###########################################################
 #Post processing options:
 

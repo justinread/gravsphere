@@ -10,30 +10,25 @@ clow, chigh: 1.0 100.0
 Cold dark matter cosmology
 Including central dark mass in the range [1e6 Msun]: 1e-05 1.0
 Allowing distance to vary in the fit over the range [kpc]: 4.95 5.75
-Using hyper-parameter for line of sight dispersion over range [km/s]: 0.0 0.001
-Using hyper-parameter for radial proper motion dispersion over range [km/s]: 0.0 0.001
-Using hyper-parameter for tangential proper motion dispersion over range [km/s]: 0.0 0.001
 Inner/outer radial bin (phot): 4.1e-05 0.03795
 Inner/outer radial bin (kin): 4.6e-05 0.036033
 Inner/outer radial Jeans grid: 1e-06 5.0
 Running in plotting mode ... 
 Loading data from: /vol/ph/astro_temp/jread/gravsphere/Output/Ocen/dgal_5.0/Propermotion/CosmoC/
 Setting plot range: 1e-06 5.0
-Min/max chisq: 141.10705001917427 208.61046379023463
+Min/max chisq: 146.48208677615892 206.2208775670725
 *******************************
-M200 -/+ 68% ::  1346925794.2894752 463049650.6992232 7511507578.287478
+M200 -/+ 68% ::  1255743372.5421443 453209689.5767994 6724218740.417028
 *******************************
-vmax -/+ 68% ::  21.4813048035918 15.45433663573312 36.73718798909054
+vmax -/+ 68% ::  20.89211581186278 15.38105595726495 34.71277240113701
 *******************************
-rt -/+ 68% ::  0.17736497588808148 0.1653616838530743 0.19137540815272117
+rt -/+ 68% ::  0.1783509437355403 0.16578258037588792 0.19283249197772892
 *******************************
-d -/+ 68% ::  5.283648256731677 5.1730883084489 5.398846037697252
+d -/+ 68% ::  5.345939430950992 5.252152393331818 5.4381719213498485
 *******************************
-Mcen -/+ 68% ::  70484.73978631821 53847.11469051663 90012.60120044308
+Mcen -/+ 68% ::  46518.84624472828 38474.002308392664 56548.53113005706
 *******************************
-acen -/+ 68% ::  0.00028084969079462854 0.00016327458845066098 0.0004714301269721484
-*******************************
-J -/+ 68% ::  4.183756702327247e+18 1.0613453127485873e+18 1.4311053484063044e+19
+acen -/+ 68% ::  5.719377752311476e-12 2.5074887160394516e-12 8.624079966918357e-12
 
 Thank you for using GravSphere! Have a nice day.
 

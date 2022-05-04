@@ -70,7 +70,7 @@ tracertol = 0.8
 #is set, then we include a Gaussian spread in M200-c200 in
 #the likelihood. Without this, M200-c200 enters only if 
 #used to set the priors, below.
-cosmo_cprior = 'yes'
+cosmo_cprior = 'no'
 sig_c200 = 0.1
 mWDM = -1
 if (mWDM > 0):
@@ -116,10 +116,13 @@ if (cosmo_cprior == 'yes'):
 #to switch this off. Mcen is the mass in Msun; acen is the
 #scale length in kpc, usually assumed smaller than Rhalf
 #to avoid degeneracies with the stellar mass]:
+#logMcenlow = 1.0
+#logMcenhigh = 6.0
 logMcenlow = 1.0
-logMcenhigh = 6.0
+logMcenhigh = 2.0
 acenlow = 1.0e-12
-acenhigh = 1.0e-3
+#acenhigh = 1.0e-11
+acenhigh = 5.0e-3
 
 #Priors on rotation [set Arotlow = Arothigh = 0 to switch off.
 #Arot defined s.t. vphimean^2 / (2 sigr^2) = Arot(r/Rhalf)
@@ -130,15 +133,13 @@ acenhigh = 1.0e-3
 #find a mean rotation amplitude of 4.27+/-0.52 km/s. At Rhalf,
 #the dispersion of Ocen is 12-14km/s. This yields Arot in the
 #range: 0.035 < Arot < 0.08:
-#Arotlow = 0.035
-#Arothigh = 0.08
+#Arotlow = 0.0
+#Arothigh = 0.1
 
 #Switch off rotation, however, in favour of simply adding it
 #in quadratude to the dispersion profile (usual trick):
 Arotlow = 0.0
 Arothigh = 1.0e-12
-#Arotlow = 0.0
-#Arothigh = 0.1
 
 #Priors on distance [set drangelow = drangehigh = 1.0 to switch
 #off. True distance follows as dgal_kpc * drange s.t. we
@@ -155,7 +156,7 @@ drangehigh = 1.15
 #Post processing options:
 
 #For calculating D+J-factors:
-calc_Jfac = 'yes'
+calc_Jfac = 'no'
 alpha_Jfac_deg = 0.5
-calc_Dfac = 'yes'
+calc_Dfac = 'no'
 alpha_Dfac_deg = 0.5

@@ -8,7 +8,7 @@ nprocs = 10
 #Data files and output base filename:
 whichgal = 'Ocenmock3'
 dgal_kpc_true = 5.0
-dgal_kpc_offset = 5.9
+dgal_kpc_offset = 5.0
 if (whichgal == 'Ocenmock'):
     data_file = \
         '../Data/Ocen_mock/h383_fid_input.dat'
@@ -39,11 +39,15 @@ vzfourpltmax = 1e7
 #Priors for surface density fit. Array values are:
 #[M1,M2,M3,a1,a2,a3] where M,a are the Plummer mass
 #and scale length. [-1 means use full radial range].
-p0in_min = np.array([-1e2,-1e2,-1e2,1.0e-5,1.0e-5,1.0e-5])
-p0in_max = np.array([1e2,1e2,1e2,0.5,0.5,1.0])
-Rfitmin = -1
-#Rfitmax = -1
-Rfitmax = 40.0/1000.0
+p0in_min = np.array([-1e3,-1e3,-1e3,1.0e-5,1.0e-5,1.0e-5])
+if (dgal_kpc_offset == 5.5):
+    p0in_max = np.array([1e3,1e3,1e3,1.0,1.0,2.0])
+    Rfitmin = -1
+    Rfitmax = -1
+else:
+    p0in_max = np.array([1e3,1e3,1e3,0.2,0.2,0.2])
+    Rfitmin = -1
+    Rfitmax = 40.0/1000.0
 
 #Priors for binulator velocity dispersion calculation. 
 #Array values are: [vzmean,alp,bet,backamp,backmean,backsig], 
@@ -54,9 +58,12 @@ p0vin_min = np.array([-50.0,1.0,1.0,1e-4,-250.0,30.0])
 p0vin_max = np.array([50.0,30.0,5.0,1.0,250.0,150.0])
 vfitmin = 0
 vfitmax = 0
-Rfitvmin = -1
-#Rfitvmax = -1
-Rfitvmax = 40.0/1000.0
+if (dgal_kpc_offset == 5.5):
+    Rfitvmin = -1
+    Rfitvmax = -1
+else:
+    Rfitvmin = -1
+    Rfitvmax = 40.0/1000.0
 
 #Convert input data to binulator format (see APIs, above).
 #Note that we also calculate Rhalf directly from the data here.
